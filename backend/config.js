@@ -11,8 +11,7 @@ const PORT = +process.env.PORT || 3001;
 const HOST = +process.env.HOST || "127.0.0.1";
 const DB_PORT = process.env.DB_PORT || 5432
 const DB_USERNAME = process.env.DATABASE_USERNAME
-const DB_PW = process.env.DATABASE_PW
-console.log(DB_USERNAME, DB_PW)
+const DB_PW = process.env.DB_PW
 // Use dev database, testing database, or via env var, production database
 function getDatabaseUri() {
   return (process.env.NODE_ENV === "test")
