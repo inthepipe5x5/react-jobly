@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
-import { BrowserRouter } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
 import JoblyApi from "../../api";
 import AppRoutes from "./AppRoutes";
 import { MainNavBar } from "./MainNavBar";
+import { UserContext, UserContextProvider } from "./UserContextProvider";
 import "./App.css";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState(null);
+  const { currentUser, setCurrentUser } = useContext(UserContext);
 
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
@@ -36,10 +36,15 @@ function App() {
 
   return (
     <>
+    <UserContextProvider>
       <div className="App">
         <MainNavBar user={currentUser}></MainNavBar>
+        <main>
+          
+        </main>
         <AppRoutes jobs={jobs} companies={companies} users={users} />
       </div>
+    </UserContextProvider>
     </>
   );
 }

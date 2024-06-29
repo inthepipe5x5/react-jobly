@@ -21,9 +21,7 @@ class JoblyApi {
     //this has been provided to show you another way to pass the token. you are only expected to read this code for this project.
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${JoblyApi.token}` };
-    const params = (method === "get")
-        ? data
-        : {};
+    const params = method === "get" ? data : {};
 
     try {
       return (await axios({ url, method, data, params, headers })).data;
@@ -43,10 +41,53 @@ class JoblyApi {
     return res.company;
   }
 
-  // obviously, you'll add a lot here ...
+  /** register a new user */
+
+  static async registerNewUser(userData) {
+    let res = await this.request(
+      `/auth/register`,
+      (data = { userData }),
+      (method = "post")
+    );
+    return res.company;
+  }
+  /** Login a user */
+
+  static async LoginUser(userData) {
+    if (!userData || !userData.username || !userData.password)
+      throw new Error(`Bad Client Login Request`, 400);
+    try {
+      let res = await this.request(
+        `/auth/token`,
+        (data = { userData }),
+        (method = "post")
+      );
+      return res.company;
+    } catch (error) {
+      console.error("Error in login attempt", error);
+    }
+  }
+  /** Edit a user */
+
+  static async EditUser(userData) {
+    if (!userData || !userData.username || !userData.password)
+      throw new Error(`Bad Client Patch Request`, 400);
+    const { id } = userData;
+    try {
+      let res = await this.request(
+        `/users/${id}`,
+        (data = { userData }),
+        (method = "patch")
+      );
+      return res.company;
+    } catch (error) {
+      console.error("Error in user patch attempt", error);
+    }
+  }
 }
 
 // for now, put token ("testuser" / "password" on class)
-JoblyApi.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
-    "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
-    "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";
+JoblyApi.token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
+  "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
+  "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";

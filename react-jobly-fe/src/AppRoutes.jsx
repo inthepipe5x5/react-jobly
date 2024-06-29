@@ -22,9 +22,8 @@ import SubmitNew from './SubmitNew'
  * - /signup  Signup form
  * - /profile  Edit profile page
  * 
- * 
- * 
  */
+
 const AppRoutes = ({ jobs, companies, users }) => {
   return (
     <Routes>

@@ -3,22 +3,22 @@
 import React, { useRef, useState } from "react";
 
 import {
-  Navbar,
+  // Navbar,
   NavLink,
   NavItem,
-  NavBrand,
+  NavbarBrand,
   // Form,
   // NavBar,
   // Button,
   // Offcanvas,
   // NavDropdown,
   // Container,
-} from "react-strap";
+} from "reactstrap";
 import { Link } from "react-router-dom";
 function MainNavBar({ user = null }) {
   const userLink = user ? (
     <>
-      <Link eventKey={`/users/${user.id}`}>${user.username}</Link>
+      <Link eventKey={`/users/${user.username}`}>${user.username}</Link>
       <Link eventKey="/logout">Logout</Link>
     </>
   ) : (

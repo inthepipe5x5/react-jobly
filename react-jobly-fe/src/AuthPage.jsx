@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useState, useContext } from "react";
 import {
   Form,
   FormGroup,
@@ -10,9 +11,12 @@ import {
   CardTitle,
   Col,
 } from "reactstrap";
+import { useHistory } from "react-router-dom";
+import { UserContext } from "./UserContextProvider";
 import JoblyApi from "../../api";
 
-const AuthPage = ({newUserBool=false}) => {
+const AuthPage = ({ authType = "signup" }) => {
+  const history = useHistory()
   // Default state for the form inputs
   const defaultInputData = {
     name: "",
@@ -24,7 +28,26 @@ const AuthPage = ({newUserBool=false}) => {
 
   // useState hook to manage form input data
   const [inputData, setInputData] = useState(defaultInputData);
+  const [currentUser, setCurrentUser] = useContext(UserContext);
 
+  //handle user login => update UserContext
+  const handleLogin = async (userData) => {
+    try {
+      const resp = await JoblyApi.loginUser(userData); //send userData to backend for authentication
+      setCurrentUser(resp); //update context
+    } catch (error) {
+      console.error(`handleLogin error: ${error}`);
+    }
+  };
+  //handle user registration => update UserContext
+  const handleNewUser = async (userData) => {
+    try {
+      const resp = await JoblyApi.registerNewUser(userData); //send userData to backend to save to db
+      setCurrentUser(resp); //update context
+    } catch (error) {
+      console.error(`handleLogin error: ${error}`);
+    }
+  };
   // Handle input changes for text and textarea fields
   const handleInput = (evt) => {
     const { name, value } = evt.target;
@@ -45,30 +68,29 @@ const AuthPage = ({newUserBool=false}) => {
   // Handle form submission
   const handleSubmit = async (evt) => {
     evt.preventDefault();
-    const { name, description, recipe, serve, foodType } = inputData;
-
+    // const { name, description, recipe, serve } = inputData;
+    const userData = currentUser
+      ? { ...inputData, currentUser }
+      : { ...inputData };
     try {
-      // Make API call based on foodType
-      if (foodType === "snack") {
-        await JoblyApi.postSnack({
-          id: name.toLowerCase(),
-          name,
-          description,
-          recipe,
-          serve,
-        });
-      } else if (foodType === "drink") {
-        await JoblyApi.postDrink({
-          id: name.toLowerCase(),
-          name,
-          description,
-          recipe,
-          serve,
-        });
+      // Make API call based on authType => truthy => register; falsy => login
+      if (authType === "signup") {
+        const newUser = await JoblyApi.handleNewUser(userData);
+        console.log('signup successful', newUser)
       }
-
+      if (authType === "login") {
+        const newUser = await JoblyApi.handleLogin(userData);
+        console.log('login successful', newUser)
+      }
+      if (authType === "edit") {
+        const newUser = await JoblyApi.editUser(userData);
+        console.log('edit successful', newUser)
+      }
       // Reset the form after successful submission
       setInputData(defaultInputData);
+      
+      //navigate user to homepage or user profile if authType === 'edit'
+      authType !== 'edit' ? history.push('/') : history.push(`/users/${currentUser.username}`)
     } catch (error) {
       console.error("Error submitting data:", error);
     }
