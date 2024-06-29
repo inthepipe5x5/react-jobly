@@ -1,14 +1,15 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Card, CardBody, CardTitle, Button, Col, Row } from "reactstrap";
 
 const NotFound = () => {
-  // useHistory hook to programmatically navigate
-  const history = useHistory();
+  // useNavigate hook to programmatically navigate
+  const navigate = useNavigate();
 
   // Handler for the button click event
   const handleGoHome = () => {
-    history.push("/"); // Navigate to the home page
+    navigate.push("/"); // Navigate to the home page
   };
 
   return (

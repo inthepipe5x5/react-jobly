@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState, useContext } from "react";
 import {
@@ -11,12 +12,12 @@ import {
   CardTitle,
   Col,
 } from "reactstrap";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContextProvider";
 import JoblyApi from "../../api";
 
 const AuthPage = ({ authType = "signup" }) => {
-  const history = useHistory()
+  const navigate = useNavigate()
   // Default state for the form inputs
   const defaultInputData = {
     name: "",
@@ -90,7 +91,7 @@ const AuthPage = ({ authType = "signup" }) => {
       setInputData(defaultInputData);
       
       //navigate user to homepage or user profile if authType === 'edit'
-      authType !== 'edit' ? history.push('/') : history.push(`/users/${currentUser.username}`)
+      authType !== 'edit' ? navigate.push('/') : navigate.push(`/users/${currentUser.username}`)
     } catch (error) {
       console.error("Error submitting data:", error);
     }

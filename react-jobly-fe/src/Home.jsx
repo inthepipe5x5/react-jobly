@@ -9,8 +9,8 @@ import {
   CardTitle,
   CardBody,
   Button,
-} from "react-strap";
-import { Link } from "react-router";
+} from "reactstrap";
+import { Link } from "react-router-dom";
 const Home = ({ jobs, companies, users }) => {
   return (
     <Container fluid>

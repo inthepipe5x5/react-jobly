@@ -30,10 +30,10 @@ const AppRoutes = ({ jobs, companies, users }) => {
       <Route path="/" element={<Home />}></Route>
       <Route path="signup" element={<AuthPage newUser={true} />}></Route>
       <Route path="login" element={<AuthPage newUser={false} />}></Route>
-      <Route path="companies/:companyName" element={<Result />} />
+      <Route path="companies/:companyName" element={<Result resultType="company"/>} />
       <Route exact path="companies" element={<List list={companies} />} />
       <Route exact path="users" element={<List list={users} />} />
-      <Route path="jobs/:jobName" element={<Result />} />
+      <Route path="jobs/:jobName" element={<Result resultType="job"/>} />
       <Route exact path="jobs" element={<List list={jobs} />} />
       <Route exact path="jobs/new" element={<SubmitNew type="job" />} />
       <Route path="*" element={NotFound}></Route>

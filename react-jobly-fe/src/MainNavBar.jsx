@@ -3,7 +3,7 @@
 import React, { useRef, useState } from "react";
 
 import {
-  // Navbar,
+  Navbar,
   NavLink,
   NavItem,
   NavbarBrand,
@@ -30,7 +30,7 @@ function MainNavBar({ user = null }) {
 
   return (
     <Navbar defaultActiveKey="/home" className="flex-column">
-      <NavBrand href="/">Jobly</NavBrand>
+      <NavbarBrand href="/">Jobly</NavbarBrand>
       <NavItem>
         <NavLink eventKey="/users">Users</NavLink>
       </NavItem>
