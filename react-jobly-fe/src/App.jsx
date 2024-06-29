@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import { BrowserRouter } from "react-router-dom";
+import JoblyApi from "../../api";
+import Routes from "./Routes";
+import { MainNavbar } from "./MainNavBar";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [companies, setCompanies] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    const getAllData = async () => {
+      //GET requests
+      const usersResp = await JoblyApi.request("users");
+      const jobsResp = await JoblyApi.request("jobs");
+      const companiesResp = await JoblyApi.request("companies");
+      //update users, jobs and companies state
+      setUsers((users) => [...users, ...usersResp]);
+      setJobs((jobs) => [...jobs, ...jobsResp]);
+      setCompanies((companies) => [...companies, ...companiesResp]);
+      //update isLoading state
+      setIsLoading(false);
+    };
+    getAllData();
+  }, []);
+
+  if (isLoading) {
+    return <p>Loading &hellip;</p>;
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="App">
+        <BrowserRouter>
+          <MainNavBar></MainNavBar>
+          <Routes jobs={jobs} companies={companies} users={users} />
+        </BrowserRouter>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

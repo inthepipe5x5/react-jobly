@@ -5,7 +5,8 @@ import axios from "axios";
 import Home from "./Home";
 import List from "./List";
 import Result from "./Result";
-
+import AuthPage from "./AuthPage";
+import NotFound from "./NotFound";
 /**
  * 
  *  Homepage — just a simple welcome message
@@ -25,31 +26,20 @@ import Result from "./Result";
  * 
  * 
  */
-const Routes = () => {
-  const BASE_URL = "http://localhost:3001";
-
-  // Function to make a GET request
-  const fetchData = async (endpoint = "companies") => {
-    try {
-      const response = await axios.get(`${BASE_URL}/${endpoint}`);
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const companies = useEffect(fetchData("companies"), []);
-  const users = useEffect(fetchData("users"), []);
-  const jobs = useEffect(fetchData("jobs"), []);
+const Routes = ({jobs, companies, users}) => {
 
   return (
     <Routes>
       <Route path="/" element={<Home />}></Route>
+      <Route path='signup' element={(<AuthPage newUser={true} />)}></Route>
+      <Route path='login' element={(<AuthPage newUser={false} />)}></Route>
       <Route path="companies/:companyName" element={<Result />} />
-      <Route path="companies" element={<List list={companies} />} />
-      <Route path="users" element={<List list={users} />} />
+      <Route exact path="companies" element={<List list={companies} />} />
+      <Route exact path="users" element={<List list={users} />} />
       <Route path="jobs/:jobName" element={<Result />} />
-      <Route path="jobs" element={<List list={jobs} />} />
+      <Route exact path="jobs" element={<List list={jobs} />} />
+      <Route exact path="jobs/new" element={<SubmitNew type="job" />} />
+      <Route path="*" element={NotFound}></Route>
     </Routes>
   );
 };
