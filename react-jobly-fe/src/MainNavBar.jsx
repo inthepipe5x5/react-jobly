@@ -1,6 +1,12 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import React, { useRef, useState } from "react";
+
 import {
-  Nav,
+  Navbar,
+  NavLink,
+  NavItem,
+  NavBrand,
   // Form,
   // NavBar,
   // Button,
@@ -23,14 +29,22 @@ function MainNavBar({ user = null }) {
   );
 
   return (
-    <Nav defaultActiveKey="/home" className="flex-column">
-      <Link href="/">Jobly</Link>
-      <Link eventKey="/users">Users</Link>
-      <Link eventKey="/companies">Companies</Link>
-      <Link eventKey="/jobs">Jobs</Link>
-      <Link eventKey="/submit">Submit A Job</Link>
+    <Navbar defaultActiveKey="/home" className="flex-column">
+      <NavBrand href="/">Jobly</NavBrand>
+      <NavItem>
+        <NavLink eventKey="/users">Users</NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink eventKey="/companies">Companies</NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink eventKey="/jobs">Jobs</NavLink>
+      </NavItem>
+      <NavItem>
+        <NavLink eventKey="/submit">Submit A Job</NavLink>
+      </NavItem>
       {userLink}
-    </Nav>
+    </Navbar>
   );
 
   // return (
