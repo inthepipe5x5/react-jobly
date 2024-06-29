@@ -9,7 +9,7 @@ import {
   CardTitle,
   CardBody,
   Button,
-} from "react-bootstrap";
+} from "react-strap";
 import { Link } from "react-router";
 const Home = ({ jobs, companies, users }) => {
   return (
