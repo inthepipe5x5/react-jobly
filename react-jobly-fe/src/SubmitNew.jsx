@@ -12,7 +12,7 @@ import {
   CardTitle,
   Col,
 } from "reactstrap";
-import JoblyApi from "../../api";
+import JoblyApi from "./api";
 
 const SubmitNew = ({ type = "job" }) => {
   // Default state for the form inputs

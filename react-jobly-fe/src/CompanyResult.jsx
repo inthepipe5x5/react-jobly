@@ -8,6 +8,10 @@ import {
   CardHeader,
   CardImg,
   CardSubtitle,
+  ListGroup,
+  ListGroupItem,
+  ListGroupItemText,
+  ListGroupItemHeading,
 } from "reactstrap";
 
 const CompanyResult = ({ result }) => {
@@ -16,7 +20,7 @@ const CompanyResult = ({ result }) => {
     <Card>
       <CardImg
         alt={`${handle} Logo`}
-        src={result.logo_url}
+        src={logo_url}
         style={{
           height: 180,
         }}
@@ -29,9 +33,12 @@ const CompanyResult = ({ result }) => {
           <b> Company Handle:</b> {handle}
         </CardSubtitle>
         <CardText className="font-italic">{description}</CardText>
-        <p>
-          <b>Employees:</b> {num_employees}
-        </p>
+        <ListGroup horizontal="md">
+          <ListGroupItem>
+            <ListGroupItemHeading>Employees:</ListGroupItemHeading>
+            <ListGroupItemText>{num_employees}</ListGroupItemText>
+          </ListGroupItem>
+        </ListGroup>
       </CardBody>
     </Card>
   );

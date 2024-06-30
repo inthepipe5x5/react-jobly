@@ -1,14 +1,15 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect, useContext } from "react";
-import JoblyApi from "../../api";
+import JoblyApi from "./api";
 import AppRoutes from "./AppRoutes";
-import { MainNavBar } from "./MainNavBar";
+import MainNavBar from "./MainNavBar";
 import { UserContext, UserContextProvider } from "./UserContextProvider";
 import "./App.css";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const user = useContext(UserContext);
+  const [currentUser, setCurrentUser] = useState(user)
 
   const [companies, setCompanies] = useState([]);
   const [users, setUsers] = useState([]);
@@ -20,6 +21,11 @@ function App() {
       const usersResp = await JoblyApi.request("users");
       const jobsResp = await JoblyApi.request("jobs");
       const companiesResp = await JoblyApi.request("companies");
+      console.log({
+        users: usersResp,
+        jobs: jobsResp,
+        company_data: companiesResp,
+      });
       //update users, jobs and companies state
       setUsers((users) => [...users, ...usersResp]);
       setJobs((jobs) => [...jobs, ...jobsResp]);
@@ -36,15 +42,13 @@ function App() {
 
   return (
     <>
-    <UserContextProvider>
-      <div className="App">
-        <MainNavBar user={currentUser}></MainNavBar>
-        <main>
-          
-        </main>
-        <AppRoutes jobs={jobs} companies={companies} users={users} />
-      </div>
-    </UserContextProvider>
+      <UserContextProvider>
+        <div className="App">
+          <MainNavBar user={currentUser}></MainNavBar>
+          <main></main>
+          <AppRoutes jobs={jobs} companies={companies} users={users} />
+        </div>
+      </UserContextProvider>
     </>
   );
 }

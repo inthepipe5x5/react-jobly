@@ -28,7 +28,7 @@ const JobResult = ({ result }) => {
           <b> Company:</b> {company_handle}
         </CardSubtitle>
         <CardText className="font-italic">
-          <ListGroup flush>
+          <ListGroup horizontal='md'>
             <ListGroupItem>${formatSalary(salary)}</ListGroupItem>
             <ListGroupItem>{`equity: ${equity}`}</ListGroupItem>
             <ListGroupItem>{`Job Id: ${id}`}</ListGroupItem>

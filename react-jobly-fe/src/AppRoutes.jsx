@@ -2,17 +2,16 @@
 /* eslint-disable no-unused-vars */
 import { React, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import axios from "axios";
 
 import Home from "./Home";
 import List from "./List";
 import Result from "./Result";
 import AuthPage from "./AuthPage";
 import NotFound from "./NotFound";
-import SubmitNew from './SubmitNew'
+import SubmitNew from "./SubmitNew";
 
 /**
- * React Routes for Jobly App: 
+ * React Routes for Jobly App:
  * Routes
  * - Homepage — just a simple welcome message
  * - /companies  List all companies
@@ -21,7 +20,7 @@ import SubmitNew from './SubmitNew'
  * - /login  Login/signup
  * - /signup  Signup form
  * - /profile  Edit profile page
- * 
+ *
  */
 
 const AppRoutes = ({ jobs, companies, users }) => {
@@ -30,12 +29,15 @@ const AppRoutes = ({ jobs, companies, users }) => {
       <Route path="/" element={<Home />}></Route>
       <Route path="signup" element={<AuthPage newUser={true} />}></Route>
       <Route path="login" element={<AuthPage newUser={false} />}></Route>
-      <Route path="companies/:companyName" element={<Result resultType="company"/>} />
-      <Route exact path="companies" element={<List list={companies} />} />
-      <Route exact path="users" element={<List list={users} />} />
-      <Route path="jobs/:jobName" element={<Result resultType="job"/>} />
-      <Route exact path="jobs" element={<List list={jobs} />} />
-      <Route exact path="jobs/new" element={<SubmitNew type="job" />} />
+      <Route
+        path="companies/:companyName"
+        element={<Result resultType="company" />}
+      />
+      <Route path="companies" element={<List list={companies} />} />
+      <Route path="users" element={<List list={users} />} />
+      <Route path="jobs/:jobName" element={<Result resultType="job" />} />
+      <Route path="jobs" element={<List list={jobs} />} />
+      <Route path="jobs/new" element={<SubmitNew type="job" />} />
       <Route path="*" element={NotFound}></Route>
     </Routes>
   );

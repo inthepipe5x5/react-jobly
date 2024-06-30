@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
 /* This is a React context called `UserContext` using `React.createContext()`. 
 It also defines a component called `UserProvider` that takes in `children` as a prop. 
@@ -10,13 +10,13 @@ Intended use:
 - providing user authentication context (user vs anon user) to React components
 
 */
-const UserContext = React.createContext();
+const UserContext = createContext(null);
 
 const UserContextProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useContext(UserContext);
 
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser }}>
+    <UserContext.Provider value={{ currentUser, setCurrentUser}}>
       {children}
     </UserContext.Provider>
   );

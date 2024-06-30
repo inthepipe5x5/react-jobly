@@ -1,0 +1,34 @@
+.
+├── api.js
+├── backend
+│   ├── Procfile
+│   ├── app.js
+│   ├── app.test.js
+│   ├── bun.lockb
+│   ├── config.js
+│   ├── config.test.js
+│   ├── db.js
+│   ├── expressError.js
+│   ├── helpers
+│   ├── jobly-schema.sql
+│   ├── jobly-seed.sql
+│   ├── jobly.sql
+│   ├── middleware
+│   ├── models
+│   ├── node_modules
+│   ├── package.json
+│   ├── routes
+│   ├── schemas
+│   └── server.js
+├── project_structure.txt
+└── react-jobly-fe
+    ├── README.md
+    ├── bun.lockb
+    ├── index.html
+    ├── node_modules
+    ├── package.json
+    ├── public
+    ├── src
+    └── vite.config.js
+
+11 directories, 20 files

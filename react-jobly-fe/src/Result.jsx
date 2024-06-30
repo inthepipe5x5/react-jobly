@@ -1,13 +1,14 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useEffect } from "react";
-import { Redirect, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import NotFound from "./NotFound";
 import CompanyResult from "./CompanyResult";
 import JobResult from "./JobResult";
-import JoblyApi from "../../api";
+import JoblyApi from "./api";
 const Result = ({ resultType = "company", cantFind = NotFound }) => {
   let urlParams = useParams();
+  const navigate = useNavigate()
   let result = null;
   if (resultType === "company") {
     const { companyName } = urlParams;
@@ -18,7 +19,10 @@ const Result = ({ resultType = "company", cantFind = NotFound }) => {
     result = JoblyApi.getCompany(jobName);
   }
 
-  if (!result) return <Redirect to={cantFind} />;
+  if (!result) {
+    navigate(cantFind)
+    return null
+  }
 
   return (
     <section>

@@ -14,7 +14,7 @@ import {
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContextProvider";
-import JoblyApi from "../../api";
+import JoblyApi from "./api";
 
 const AuthPage = ({ authType = "signup" }) => {
   const navigate = useNavigate()
