@@ -13,35 +13,6 @@ function App() {
   const user = useContext(UserContext);
   const [currentUser, setCurrentUser] = useState(user);
   console.log(currentUser);
-  // const [companies, setCompanies] = useState([]);
-  // const [users, setUsers] = useState([]);
-  // const [jobs, setJobs] = useState([]);
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   const getAllData = async () => {
-  //     //GET requests
-  //     // const usersResp = await JoblyApi.request("users");
-  //     // const jobsResp = await JoblyApi.request("jobs");
-  //     const companiesResp = await JoblyApi.request("companies");
-  //     console.log({
-  //       // users: usersResp,
-  //       // jobs: jobsResp,
-  //       company_data: companiesResp,
-  //     });
-  //     //update users, jobs and companies state
-  //     // setUsers((users) => [...users, ...usersResp]);
-  //     // setJobs((jobs) => [...jobs, ...jobsResp]);
-  //     setCompanies((companies) => [companiesResp, ...companies]);
-  //     //update isLoading state
-  //   };
-  //   try {
-  //     getAllData();
-  //     setIsLoading(false);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }, []);
 
   if (isLoading) {
     return <LoadingSpinner></LoadingSpinner>;

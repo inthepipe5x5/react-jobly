@@ -11,17 +11,6 @@ function Detail({ items, cantFind, type }) {
   if (!item || !["user", "company", "job"].includes(type))
     return <Redirect to={cantFind} />;
 
-  const capitalizeWord = (word) => {
-    const firstLetter = word.charAt(0);
-
-    const firstLetterCap = firstLetter.toUpperCase();
-
-    const remainingLetters = word.slice(1);
-
-    const final = firstLetterCap + remainingLetters;
-    return final;
-  };
-
   return (
     <section>
       <Card>
