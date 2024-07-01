@@ -5,6 +5,7 @@ import AppRoutes from "./AppRoutes";
 import MainNavBar from "./MainNavBar";
 import LoadingSpinner from './LoadingSpinner'
 import { UserContext, UserContextProvider } from "./UserContextProvider";
+import { Container } from "reactstrap";
 import "./App.css";
 
 function App() {
@@ -53,9 +54,9 @@ function App() {
       <UserContextProvider>
         <div className="App">
           <MainNavBar user={currentUser}></MainNavBar>
-          <main>
+          <Container tag = "main" fluid>
             <AppRoutes /*jobs={jobs} companies={companies} users={users}*/ />
-          </main>
+          </Container>
         </div>
       </UserContextProvider>
     </>
