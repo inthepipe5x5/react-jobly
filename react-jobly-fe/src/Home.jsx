@@ -7,26 +7,33 @@ import {
   Col,
   Card,
   CardTitle,
+  CardSubtitle,
   CardBody,
   Button,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+
 const Home = () => {
   return (
-    <Container fluid>
-      <Row>
-        <section className="col-md-8">
-          <Card>
+    <Container
+      fluid
+      className="d-flex justify-content-center align-items-center home-container"
+    >
+      <section className="col-md-8">
+        <Card>
+          <CardBody className="text-center">
             <CardTitle>
               <h3 className="font-weight-bold">Welcome to Jobly!</h3>
             </CardTitle>
-            <CardBody className="text-center">
-              Let's apply for some jobs!
-              {/* Currently, we have {users.length} users searching for{" "}
-                {jobs.length} job postings from {companies.length} companies! */}
+            <CardSubtitle>
+              <small>
+                <i>Where jobs meet people</i>
+              </small>
+            </CardSubtitle>
+            <Row className="mt-3 d-flex justify-content-around">
               <Link to="/jobs">
                 <Button outline color="primary">
-                  View Job Postings
+                  View Jobs
                 </Button>
               </Link>
               <Link to="/companies">
@@ -34,10 +41,10 @@ const Home = () => {
                   Discover Companies
                 </Button>
               </Link>
-            </CardBody>
-          </Card>
-        </section>
-      </Row>
+            </Row>
+          </CardBody>
+        </Card>
+      </section>
     </Container>
   );
 };

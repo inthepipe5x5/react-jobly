@@ -9,6 +9,7 @@ import {
   NavLink as BSNavLink
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import "./MainNavBar.css";
 
 const MainNavBar = ({ user = null }) => {
   const userLink = user ? (
@@ -32,7 +33,7 @@ const MainNavBar = ({ user = null }) => {
   );
 
   return (
-    <Navbar color="light" light expand="md">
+    <Navbar color="light" light expand="md" className="mb-4">
       <NavbarBrand tag={Link} to="/">Jobly</NavbarBrand>
       <Nav className="mr-auto" navbar>
         <NavItem>

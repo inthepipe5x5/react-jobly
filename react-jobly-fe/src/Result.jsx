@@ -40,7 +40,7 @@ const Result = ({ resultType = "company", cantFind = NotFound }) => {
   });
 
   if (isLoading) {
-    return <LoadingSpinner></LoadingSpinner>;
+    return <LoadingSpinner />;
   }
 
   if (!result) {

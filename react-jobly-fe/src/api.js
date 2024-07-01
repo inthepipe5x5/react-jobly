@@ -43,7 +43,7 @@ class JoblyApi {
 
   /** Get details on a job by title. */
 
-  static async getCompany(title) {
+  static async getJob(title) {
     let res = await this.request(`jobs/${title}`);
     return res.job;
   }
@@ -51,11 +51,7 @@ class JoblyApi {
   /** register a new user */
 
   static async registerNewUser(userData) {
-    let res = await this.request(
-      `/auth/register`,
-      (data = { userData }),
-      (method = "post")
-    );
+    let res = await this.request(`/auth/register`, { userData }, "post");
     return res.company;
   }
   /** Login a user */
@@ -64,11 +60,7 @@ class JoblyApi {
     if (!userData || !userData.username || !userData.password)
       throw new Error(`Bad Client Login Request`, 400);
     try {
-      let res = await this.request(
-        `/auth/token`,
-        (data = { userData }),
-        (method = "post")
-      );
+      let res = await this.request(`/auth/token`, { userData }, "post");
       return res.company;
     } catch (error) {
       console.error("Error in login attempt", error);
@@ -76,16 +68,12 @@ class JoblyApi {
   }
   /** Edit a user */
 
-  static async EditUser(userData) {
+  static async editUser(userData) {
     if (!userData || !userData.username || !userData.password)
       throw new Error(`Bad Client Patch Request`, 400);
     const { id } = userData;
     try {
-      let res = await this.request(
-        `/users/${id}`,
-        (data = { userData }),
-        (method = "patch")
-      );
+      let res = await this.request(`/users/${id}`, { userData }, "patch");
       return res.company;
     } catch (error) {
       console.error("Error in user patch attempt", error);
@@ -99,4 +87,4 @@ JoblyApi.token =
   "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
   "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";
 
-export default JoblyApi
+export default JoblyApi;
