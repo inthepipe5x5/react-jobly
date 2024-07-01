@@ -84,7 +84,7 @@ const AuthPage = ({ authType = "signup" }) => {
         console.log('login successful', newUser)
       }
       if (authType === "edit") {
-        const newUser = await JoblyApi.editUser(userData);
+        const newUser = await JoblyApi.EditUser(userData);
         console.log('edit successful', newUser)
       }
       // Reset the form after successful submission

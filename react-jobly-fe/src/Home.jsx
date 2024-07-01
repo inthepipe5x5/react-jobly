@@ -11,20 +11,19 @@ import {
   Button,
 } from "reactstrap";
 import { Link } from "react-router-dom";
-const Home = ({ jobs, companies, users }) => {
+const Home = () => {
   return (
     <Container fluid>
       <Row>
         <section className="col-md-8">
           <Card>
+            <CardTitle>
+              <h3 className="font-weight-bold">Welcome to Jobly!</h3>
+            </CardTitle>
             <CardBody className="text-center">
-              <CardTitle>
-                <h3 className="font-weight-bold">Welcome to Jobly!</h3>
-              </CardTitle>
-              <p>
-                Currently, we have {users.length} users searching for{" "}
-                {jobs.length} job postings from {companies.length} companies!
-              </p>
+              Let's apply for some jobs!
+              {/* Currently, we have {users.length} users searching for{" "}
+                {jobs.length} job postings from {companies.length} companies! */}
               <Link to="/jobs">
                 <Button outline color="primary">
                   View Job Postings
