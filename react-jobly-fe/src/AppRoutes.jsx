@@ -34,8 +34,9 @@ const AppRoutes = ({ jobs, companies, users }) => {
         element={<Result resultType="company" />}
       />
       <Route path="companies" element={<List list={companies} />} />
-      <Route path="users" element={<List list={users} />} />
+      <Route path="users/:username/edit" element={<AuthPage authType='edit' />} />
       <Route path="users/:username" element={<Result resultType='user' />} />
+      <Route path="users" element={<List list={users} />} />
       <Route path="jobs/:jobName" element={<Result resultType="job" />} />
       <Route path="jobs" element={<List list={jobs} />} />
       <Route path="jobs/new" element={<SubmitNew type="job" />} />
