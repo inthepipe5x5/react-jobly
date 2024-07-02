@@ -23,22 +23,25 @@ import SubmitNew from "./SubmitNew";
  *
  */
 
-const AppRoutes = ({ jobs, companies, users }) => {
+const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />}></Route>
-      <Route path="signup" element={<AuthPage authType='signup' />}></Route>
-      <Route path="login" element={<AuthPage authType='login' />}></Route>
+      <Route path="signup" element={<AuthPage authType="signup" />}></Route>
+      <Route path="login" element={<AuthPage authType="login" />}></Route>
       <Route
         path="companies/:companyName"
         element={<Result resultType="company" />}
       />
-      <Route path="companies" element={<List list={companies} />} />
-      <Route path="users/:username/edit" element={<AuthPage authType='edit' />} />
-      <Route path="users/:username" element={<Result resultType='user' />} />
-      <Route path="users" element={<List list={users} />} />
+      <Route path="companies" element={<List />} />
+      <Route
+        path="users/:username/edit"
+        element={<AuthPage authType="edit" />}
+      />
+      <Route path="users/:username" element={<Result resultType="user" />} />
+      <Route path="users" element={<List />} />
       <Route path="jobs/:jobName" element={<Result resultType="job" />} />
-      <Route path="jobs" element={<List list={jobs} />} />
+      <Route path="jobs" element={<List />} />
       <Route path="jobs/new" element={<SubmitNew type="job" />} />
       <Route path="/NotFound" element={NotFound}></Route>
       <Route path="*" element={NotFound}></Route>

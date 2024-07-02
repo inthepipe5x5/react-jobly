@@ -27,7 +27,7 @@ function App() {
             fluid
             className="d-flex justify-content-center align-items-center home-container"
           >
-            <AppRoutes /*jobs={jobs} companies={companies} users={users}*/ />
+            <AppRoutes />
           </Container>
         </div>
       </UserContextProvider>

@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React from "react";
+import React, { createElement } from "react";
 import {
+  Badge,
   Card,
   CardBody,
   CardTitle,
@@ -28,9 +29,9 @@ const JobResult = ({ result, detailed = false }) => {
   return (
     <Card className="my-3">
       <CardBody>
-        <CardTitle tag="h3">{title}</CardTitle>
+        <CardTitle tag="h3">{title} </CardTitle>
         <CardSubtitle tag="h6" className="mb-2 text-muted">
-          {company_handle}
+          {company_handle ? company_handle : 'Unknown Company'}
         </CardSubtitle>
         {detailed ? createElement(detailedOnly) : ""}
         <CardText className="mt-3">
