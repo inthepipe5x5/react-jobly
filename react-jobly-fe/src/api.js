@@ -56,7 +56,7 @@ class JoblyApi {
   }
   /** Login a user */
 
-  static async LoginUser(userData) {
+  static async loginUser(userData) {
     if (!userData || !userData.username || !userData.password)
       throw new Error(`Bad Client Login Request`, 400);
     try {

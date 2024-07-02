@@ -1,6 +1,9 @@
 /*
 Helper functions for frontend
 */
+import jsonschema from "../../backend/node_modules/jsonschema";
+import jobNewSchema  from "../../backend//schemas/jobNew.json";
+import JoblyApi from "./api";
 
 const capitalizeWord = (word) => {
   const firstLetter = word.charAt(0);
@@ -22,4 +25,20 @@ const formatSalary = (salary) => {
   }).format(salary);
 };
 
-export { capitalizeWord, formatSalary };
+const validateNewJobFormData = async (data) => {
+  try {
+    const {company_handle} = data
+    const validCompany = await JoblyApi.getCompany(company_handle)
+    if (!validCompany || validCompany.length === 0) throw new Error('Try again: Non-existent Company');
+    const validator = jsonschema.validate(data, jobNewSchema);
+    if (!validator.valid) {
+      const errs = validator.errors.map((e) => e.stack);
+      throw new Error(errs);
+    }
+  } catch (error) {
+    console.error("form submission validation error", error);
+    return false;
+  }
+  return true;
+};
+export { capitalizeWord, formatSalary, validateNewJobFormData };

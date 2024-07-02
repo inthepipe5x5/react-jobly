@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { createElement, useState } from "react";
 import {
+  Alert,
   Form,
   FormGroup,
   Label,
@@ -13,33 +14,23 @@ import {
   Col,
 } from "reactstrap";
 import JoblyApi from "./api";
+import LoadingSpinner from "./LoadingSpinner";
+import { validate } from "uuid";
+import { validateNewJobFormData } from "./helper";
 
-const SubmitNew = ({ type = "job" }) => {
-  // Default state for the form inputs
-  const defaultCompanyInputData = {
-    name: "",
-    description: "",
-    recipe: "",
-    serve: "",
-    // foodType: "snack", // Default to 'snack'; controlled by radio buttons
-  };
+const SubmitNew = () => {
   const defaultJobInputData = {
     title: "",
     description: "",
     salary: "",
     equity: "",
     company_handle: "",
-    // foodType: "snack", // Default to 'snack'; controlled by radio buttons
   };
-  const defaultInputData = {
-    job: defaultJobInputData,
-    company: defaultCompanyInputData,
-  }[type];
 
-  // useState hook to manage form input data
-  const [inputData, setInputData] = useState(defaultInputData);
+  const [inputData, setInputData] = useState(defaultJobInputData);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(null);
 
-  // Handle input changes for text and textarea fields
   const handleInput = (evt) => {
     const { name, value } = evt.target;
     setInputData((prevState) => ({
@@ -48,137 +39,105 @@ const SubmitNew = ({ type = "job" }) => {
     }));
   };
 
-  // Handle radio button input changes
-  const handleRadioInput = (evt) => {
-    setInputData((prevState) => ({
-      ...prevState,
-      foodType: evt.target.value,
-    }));
-  };
-
-  // Handle form submission
   const handleSubmit = async (evt) => {
     evt.preventDefault();
-    const { name, description, recipe, serve, foodType } = inputData;
+    setIsLoading(true);
+    const { title, salary, equity, company_handle } = inputData;
 
     try {
-      // Make API call based on foodType
-      if (foodType === "snack") {
-        await JoblyApi.postSnack({
-          id: name.toLowerCase(),
-          name,
-          description,
-          recipe,
-          serve,
-        });
-      } else if (foodType === "drink") {
-        await JoblyApi.postDrink({
-          id: name.toLowerCase(),
-          name,
-          description,
-          recipe,
-          serve,
-        });
-      }
+      const validInput = await validateNewJobFormData({
+        title,
+        salary,
+        equity,
+        company_handle,
+      });
+      if (!validInput) throw new Error("Invalid form submission");
+      await JoblyApi.postJob({
+        title,
+        salary: parseInt(salary),
+        equity: parseFloat(equity),
+        company_handle,
+      });
 
-      // Reset the form after successful submission
-      setInputData(defaultInputData);
+      setInputData(defaultJobInputData);
     } catch (error) {
-      console.error("Error submitting data:", error);
+      console.error("Error submitting job data:", error);
+      setError(error.message || "An error occurred. Please try again.");
     }
   };
-
+  if (isLoading) {
+    return createElement(LoadingSpinner);
+  }
   return (
     <Card>
-      <CardTitle className="font-weight-bold text-center">
-        Submit Your Own Snack or Booze Creation!
+      <CardTitle tag="h3" className="font-weight-bold text-center">
+        Submit A New Job
       </CardTitle>
+      {error && <Alert color="danger">{error}</Alert>}
       <CardBody>
         <Form onSubmit={handleSubmit}>
           <FormGroup row>
-            <Label for="name" sm={8}>
-              Food Name
+            <Label for="title" sm={8}>
+              Job Title
             </Label>
             <Col sm={10}>
               <Input
-                id="name"
-                name="name"
-                placeholder="New food name"
+                id="title"
+                name="title"
+                placeholder="Job title"
                 type="text"
-                value={inputData.name}
+                value={inputData.title}
                 onChange={handleInput}
               />
             </Col>
           </FormGroup>
 
           <FormGroup row>
-            <Label for="description" sm={8}>
-              Description
+            <Label for="salary" sm={8}>
+              Salary
             </Label>
             <Col sm={10}>
               <Input
-                id="description"
-                name="description"
-                type="textarea"
-                value={inputData.description}
+                id="salary"
+                name="salary"
+                placeholder="Salary"
+                type="number"
+                value={inputData.salary}
                 onChange={handleInput}
               />
             </Col>
           </FormGroup>
 
           <FormGroup row>
-            <Label for="recipe" sm={8}>
-              Recipe
+            <Label for="equity" sm={8}>
+              Equity
             </Label>
             <Col sm={10}>
               <Input
-                id="recipe"
-                name="recipe"
-                type="textarea"
-                value={inputData.recipe}
+                id="equity"
+                name="equity"
+                placeholder="Equity (0 to 1)"
+                type="number"
+                step="0.01"
+                value={inputData.equity}
                 onChange={handleInput}
               />
             </Col>
           </FormGroup>
 
           <FormGroup row>
-            <Label for="serve" sm={8}>
-              How To Serve
+            <Label for="company_handle" sm={8}>
+              Company Handle
             </Label>
             <Col sm={10}>
               <Input
-                id="serve"
-                name="serve"
-                type="textarea"
-                value={inputData.serve}
+                id="company_handle"
+                name="company_handle"
+                placeholder="Company handle"
+                type="text"
+                value={inputData.company_handle}
                 onChange={handleInput}
               />
-            </Col>
-          </FormGroup>
-
-          <FormGroup row tag="fieldset">
-            <legend className="col-form-label col-sm-8">Food Type</legend>
-            <Col sm={10}>
-              <FormGroup check>
-                <Input
-                  type="radio"
-                  name="foodType"
-                  value="snack"
-                  checked={inputData.foodType === "snack"}
-                  onChange={handleRadioInput}
-                />
-                <Label check>Snack</Label>
-              </FormGroup>
-              <FormGroup check>
-                <Input
-                  type="radio"
-                  name="foodType"
-                  value="drink"
-                  checked={inputData.foodType === "drink"}
-                  onChange={handleRadioInput}
-                />
-                <Label check>Drink</Label>
-              </FormGroup>
             </Col>
           </FormGroup>
 

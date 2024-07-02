@@ -70,7 +70,7 @@ const MainNavBar = () => {
             </BSNavLink>
           </NavItem>
           <NavItem>
-            <BSNavLink tag={Link} to="/submit">
+            <BSNavLink tag={Link} to="/jobs/new">
               Submit A Job
             </BSNavLink>
           </NavItem>
