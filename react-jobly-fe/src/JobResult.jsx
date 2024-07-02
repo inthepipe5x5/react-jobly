@@ -11,37 +11,32 @@ import {
   ListGroupItem,
 } from "reactstrap";
 
-const JobResult = ({ result }) => {
+const JobResult = ({ result, detailed = false }) => {
   if (!result) return null;
 
-  const { id, title, salary, equity, companyName } = result;
-
-  const formatSalary = (salary) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(salary);
-  };
-
+  const { id, title, salary, equity, company_handle } = result;
+  const detailedOnly = (
+    <ListGroup flush>
+      <ListGroupItem>
+        Salary: {salary ? `$${salary.toLocaleString()}` : "Not specified"}
+      </ListGroupItem>
+      <ListGroupItem>
+        Equity: {equity ? `${(equity * 100).toFixed(2)}%` : "None"}
+      </ListGroupItem>
+    </ListGroup>
+  );
   return (
-    <Card>
+    <Card className="my-3">
       <CardBody>
-        <CardTitle className="font-weight-bold text-center">{title}</CardTitle>
-        <CardSubtitle>
-          <small>
-            <i> Company:</i> {companyName}
-          </small>
+        <CardTitle tag="h3">{title}</CardTitle>
+        <CardSubtitle tag="h6" className="mb-2 text-muted">
+          {company_handle}
         </CardSubtitle>
-        <CardText className="font-italic">
-          <ListGroup horizontal="md">
-            <ListGroupItem>{formatSalary(salary)}</ListGroupItem>
-            <ListGroupItem>{`Equity: ${
-              equity ? equity : "no equity ❌"
-            }`}</ListGroupItem>
-            <ListGroupItem>{`Job Id: ${id}`}</ListGroupItem>
-          </ListGroup>
+        {detailed ? createElement(detailedOnly) : ""}
+        <CardText className="mt-3">
+          <Badge color="primary" pill>
+            Job ID: {id}
+          </Badge>
         </CardText>
       </CardBody>
     </Card>
