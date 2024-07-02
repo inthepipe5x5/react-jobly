@@ -41,4 +41,19 @@ const validateNewJobFormData = async (data) => {
   }
   return true;
 };
-export { capitalizeWord, formatSalary, validateNewJobFormData };
+const showFlashMessage = (
+    message,
+    type,
+    setFlashMessageFunc,
+    messageInterval = 5000
+  ) => {
+    setFlashMessageFunc({ message, type });
+    setTimeout(() => setFlashMessageFunc(null), messageInterval); // Auto-hide after 5 seconds
+  };
+
+  const dismissFlashMessage = (setFlashMessageFunc) => {
+    setFlashMessageFunc(null)
+  }
+
+
+export { capitalizeWord, formatSalary, validateNewJobFormData, showFlashMessage, dismissFlashMessage };

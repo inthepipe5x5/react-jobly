@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 import { React, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import {Alert} from "reactstrap"
 
 import Home from "./Home";
 import List from "./List";
@@ -29,6 +30,11 @@ const AppRoutes = () => {
       <Route path="/" element={<Home />}></Route>
       <Route path="signup" element={<AuthPage authType="signup" />}></Route>
       <Route path="login" element={<AuthPage authType="login" />}></Route>
+      <Route path="logout" element={<>
+        <Alert color="success">Log Out Successful!</Alert> 
+        <AuthPage authType="login" />
+        </>
+      }></Route>
       <Route
         path="companies/:companyName"
         element={<Result resultType="company" />}
