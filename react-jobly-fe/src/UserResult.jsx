@@ -20,7 +20,7 @@ const UserResult = ({ result }) => {
     <Card>
       <CardBody>
         <CardTitle className="font-weight-bold text-center">
-          {first_name} {last_name}
+          User: {first_name} {last_name}
         </CardTitle>
         <CardSubtitle>
           <b> User Handle:</b> {username}
