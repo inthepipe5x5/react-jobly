@@ -9,7 +9,7 @@ import {
   CardBody,
   CardTitle,
   Col,
-  Alert
+  Alert,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContextProvider";
@@ -17,16 +17,19 @@ import JoblyApi from "./api";
 
 const AuthPage = ({ authType = "signup" }) => {
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useContext(UserContext);
+  const { currentUser, setCurrentUser } = useContext(UserContext); // Adjusted destructuring
 
   // Default state for the form inputs
-  const defaultInputData = {
-    username: "",
-    password: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-  };
+  const defaultInputData =
+    authType === "login"
+      ? { username: "", password: "" }
+      : {
+          username: "",
+          password: "",
+          firstName: "",
+          lastName: "",
+          email: "",
+        };
 
   // useState hook to manage form input data
   const [inputData, setInputData] = useState(defaultInputData);
@@ -54,14 +57,14 @@ const AuthPage = ({ authType = "signup" }) => {
       } else if (authType === "edit") {
         result = await JoblyApi.editUser(currentUser.username, inputData);
       }
-      
+
       setCurrentUser(result);
       setInputData(defaultInputData);
-      
+
       if (authType === "edit") {
         navigate(`/users/${result.username}`);
       } else {
-        navigate('/');
+        navigate("/");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -71,10 +74,14 @@ const AuthPage = ({ authType = "signup" }) => {
 
   const getTitle = () => {
     switch (authType) {
-      case "signup": return "Sign Up";
-      case "login": return "Log In";
-      case "edit": return "Edit Profile";
-      default: return "Authentication";
+      case "signup":
+        return "Sign Up";
+      case "login":
+        return "Log In";
+      case "edit":
+        return "Edit Profile";
+      default:
+        return "Authentication";
     }
   };
 
@@ -89,7 +96,9 @@ const AuthPage = ({ authType = "signup" }) => {
           {authType !== "login" && (
             <>
               <FormGroup row>
-                <Label for="firstName" sm={3}>First Name</Label>
+                <Label for="firstName" sm={3}>
+                  First Name
+                </Label>
                 <Col sm={9}>
                   <Input
                     id="firstName"
@@ -103,7 +112,9 @@ const AuthPage = ({ authType = "signup" }) => {
                 </Col>
               </FormGroup>
               <FormGroup row>
-                <Label for="lastName" sm={3}>Last Name</Label>
+                <Label for="lastName" sm={3}>
+                  Last Name
+                </Label>
                 <Col sm={9}>
                   <Input
                     id="lastName"
@@ -119,7 +130,9 @@ const AuthPage = ({ authType = "signup" }) => {
             </>
           )}
           <FormGroup row>
-            <Label for="username" sm={3}>Username</Label>
+            <Label for="username" sm={3}>
+              Username
+            </Label>
             <Col sm={9}>
               <Input
                 id="username"
@@ -134,7 +147,9 @@ const AuthPage = ({ authType = "signup" }) => {
           </FormGroup>
           {authType !== "edit" && (
             <FormGroup row>
-              <Label for="password" sm={3}>Password</Label>
+              <Label for="password" sm={3}>
+                Password
+              </Label>
               <Col sm={9}>
                 <Input
                   id="password"
@@ -148,20 +163,24 @@ const AuthPage = ({ authType = "signup" }) => {
               </Col>
             </FormGroup>
           )}
-          <FormGroup row>
-            <Label for="email" sm={3}>Email</Label>
-            <Col sm={9}>
-              <Input
-                id="email"
-                name="email"
-                placeholder="Email"
-                type="email"
-                value={inputData.email}
-                onChange={handleInput}
-                required
-              />
-            </Col>
-          </FormGroup>
+          {authType !== "login" && (
+            <FormGroup row>
+              <Label for="email" sm={3}>
+                Email
+              </Label>
+              <Col sm={9}>
+                <Input
+                  id="email"
+                  name="email"
+                  placeholder="Email"
+                  type="email"
+                  value={inputData.email}
+                  onChange={handleInput}
+                  required
+                />
+              </Col>
+            </FormGroup>
+          )}
           <FormGroup row>
             <Col sm={{ offset: 3, size: 9 }}>
               <Button color="primary" type="submit">

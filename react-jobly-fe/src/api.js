@@ -61,7 +61,7 @@ class JoblyApi {
       throw new Error(`Bad Client Login Request`, 400);
     try {
       let res = await this.request(`/auth/token`, { userData }, "post");
-      return res.company;
+      return res.token;
     } catch (error) {
       console.error("Error in login attempt", error);
     }
@@ -74,7 +74,7 @@ class JoblyApi {
     const { id } = userData;
     try {
       let res = await this.request(`/users/${id}`, { userData }, "patch");
-      return res.company;
+      return res.user;
     } catch (error) {
       console.error("Error in user patch attempt", error);
     }
