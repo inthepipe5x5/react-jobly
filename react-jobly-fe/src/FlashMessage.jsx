@@ -3,7 +3,7 @@
 import React from 'react';
 import { Alert } from 'reactstrap';
 
-const FlashMessage = ({ message, type='danger', onDismiss }) => {
+const FlashMessage = ({ message, type = 'danger', onDismiss }) => {
   if (!message) return null;
 
   return (

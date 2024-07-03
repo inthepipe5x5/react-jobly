@@ -16,7 +16,7 @@ import {
 import JoblyApi from "./api";
 import LoadingSpinner from "./LoadingSpinner";
 import { validate } from "uuid";
-import { validateNewJobFormData } from "./helper";
+// import { validateNewJobFormData } from "./helper";
 
 const SubmitNew = () => {
   const defaultJobInputData = {
@@ -45,13 +45,13 @@ const SubmitNew = () => {
     const { title, salary, equity, company_handle } = inputData;
 
     try {
-      const validInput = await validateNewJobFormData({
-        title,
-        salary,
-        equity,
-        company_handle,
-      });
-      if (!validInput) throw new Error("Invalid form submission");
+      // const validInput = await validateNewJobFormData({
+      //   title,
+      //   salary,
+      //   equity,
+      //   company_handle,
+      // });
+      // if (!validInput) throw new Error("Invalid form submission");
       await JoblyApi.postJob({
         title,
         salary: parseInt(salary),
