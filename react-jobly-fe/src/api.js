@@ -10,9 +10,16 @@ const BASE_URL = "http://localhost:3001";
  *
  */
 
+// for now, put token ("testuser" / "password" on class)
+const testToken =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
+  "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
+  "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";
 class JoblyApi {
   // the token for interactive with the API will be stored here.
-  static token;
+  constructor(token) {
+    this.token = token ? token : localStorage.getItem('JoblyUserToken') || testToken;
+  }
 
   static async request(endpoint, data = {}, method = "get") {
     console.debug("API Call:", endpoint, data, method);
@@ -20,7 +27,7 @@ class JoblyApi {
     //there are multiple ways to pass an authorization token, this is how you pass it in the header.
     //this has been provided to show you another way to pass the token. you are only expected to read this code for this project.
     const url = `${BASE_URL}/${endpoint}`;
-    const headers = { Authorization: `Bearer ${JoblyApi.token}` };
+    const headers = this.token ? { Authorization: `Bearer ${this.token}` } : null;
     const params = method === "get" ? data : {};
 
     try {
@@ -64,6 +71,7 @@ class JoblyApi {
       return res.token;
     } catch (error) {
       console.error("Error in login attempt", error);
+      return new Error();
     }
   }
   /** Edit a user */
@@ -77,14 +85,9 @@ class JoblyApi {
       return res.user;
     } catch (error) {
       console.error("Error in user patch attempt", error);
+      return new Error(error, 400);
     }
   }
 }
-
-// for now, put token ("testuser" / "password" on class)
-JoblyApi.token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
-  "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
-  "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";
 
 export default JoblyApi;

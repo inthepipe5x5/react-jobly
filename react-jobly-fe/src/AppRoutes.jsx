@@ -32,7 +32,7 @@ const AppRoutes = () => {
       <Route path="login" element={<AuthPage authType="login" />}></Route>
       <Route path="logout" element={<>
         <Alert color="success">Log Out Successful!</Alert> 
-        <AuthPage authType="login" />
+        <AuthPage authType="logout" />
         </>
       }></Route>
       <Route

@@ -1,9 +1,8 @@
 /*
-Helper functions for frontend
+Helper functions for Jobly react frontend
 */
-// import jsonschema from "../../backend/node_modules/jsonschema";
-// import jobNewSchema from "../../backend//schemas/jobNew.json";
-// import JoblyApi from "./api";
+
+import JoblyApi from "./api";
 
 const capitalizeWord = (word) => {
   const firstLetter = word.charAt(0);
@@ -62,10 +61,75 @@ const dismissFlashMessage = (setFlashMessageFunc) => {
   setFlashMessageFunc(null);
 };
 
+const tokenKey = "JoblyUserToken";
+
+const updateLocalStorageToken = (token, username) => {
+  const localToken = localStorage.setItem(
+    tokenKey,
+    JSON.stringify({ token, username })
+  );
+  console.log(`{${localToken} successfully saved to local storage.}`);
+  return true;
+};
+
+const getUserByToken = async ({ token, username }) => {
+  try {
+    const api = new JoblyApi(token);
+    const user = await api.requests(`/${username}`);
+
+    if (user instanceof Error || user.error) {
+      // The user is an instance of Error
+      console.log("An error occurred:", user.message);
+      throw new Error(user, 404);
+    } else {
+      // The user is not an Error
+      console.log("Operation successful:", user);
+      return user;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const handleLogin = async (userData, setCurrentUserFunc) => {
+  //userData = {username || password}
+  //setCurrentUserFunc = useContext(UserContext).setCurrentUser
+  if (!userData) localStorage.getItem(tokenKey);
+  else {
+    try {
+      const result = await JoblyApi.loginUser(userData);
+      //handle if API rejects login credentials
+      if (!result.error) throw new Error(result.error, 400);
+      else {
+        const { username } = userData;
+        const { token } = result;
+        //save token to localStorage
+        updateLocalStorageToken(token, username);
+        const loggedInUser = await getUserByToken(token);
+        setCurrentUserFunc({ token, loggedInUser });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+};
+
+const handleLogout = (setCurrentUserFunc) => {
+  //setCurrentUserFunc is from: //const { currentUser, setCurrentUser } = useContext(UserContext);
+
+  //remove user token from local storage
+  localStorage.removeItem(tokenKey);
+  //remove user token from context
+  setCurrentUserFunc(null);
+};
+
 export {
   capitalizeWord,
   formatSalary,
   /*validateNewJobFormData,*/
   showFlashMessage,
   dismissFlashMessage,
+  handleLogin,
+  handleLogout,
+  getUserByToken,
 };

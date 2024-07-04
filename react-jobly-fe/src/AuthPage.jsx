@@ -14,22 +14,24 @@ import {
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContextProvider";
 import JoblyApi from "./api";
+import { handleLogin, handleLogout } from "./helper";
 
 const AuthPage = ({ authType = "signup" }) => {
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useContext(UserContext); // Adjusted destructuring
-
+  if (authType === "logout") {
+    currentUser ? handleLogout(setCurrentUser) : navigate('/login');
+  }
   // Default state for the form inputs
-  const defaultInputData =
-    authType === "login"
-      ? { username: "", password: "" }
-      : {
-          username: "",
-          password: "",
-          firstName: "",
-          lastName: "",
-          email: "",
-        };
+  const defaultInputData = ["login", "logout"].includes(authType)
+    ? { username: "", password: "" }
+    : {
+        username: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+      };
 
   // useState hook to manage form input data
   const [inputData, setInputData] = useState(defaultInputData);
@@ -57,14 +59,18 @@ const AuthPage = ({ authType = "signup" }) => {
       } else if (authType === "edit") {
         result = await JoblyApi.editUser(currentUser.username, inputData);
       }
-
-      setCurrentUser(result);
-      setInputData(defaultInputData);
-
-      if (authType === "edit") {
-        navigate(`/users/${result.username}`);
-      } else {
-        navigate("/");
+      //handle if API auth request is rejected
+      if (result.statusCode !== 201 || result.statusCode !== 200)
+        throw new Error(result.error, result.statusCode || 400);
+      else {
+        //handle if authenticated
+        handleLogin(inputData, setCurrentUser);
+        setInputData(defaultInputData);
+        if (authType === "edit") {
+          navigate(`/users/${result.username}`);
+        } else {
+          navigate("/");
+        }
       }
     } catch (error) {
       console.error("Error:", error);
@@ -76,7 +82,7 @@ const AuthPage = ({ authType = "signup" }) => {
     switch (authType) {
       case "signup":
         return "Sign Up";
-      case "login":
+      case "login" || "logout":
         return "Log In";
       case "edit":
         return "Edit Profile";
@@ -89,9 +95,9 @@ const AuthPage = ({ authType = "signup" }) => {
     <Card className="mt-5">
       <CardTitle className="font-weight-bold text-center mt-3">
         <h2>{getTitle()}</h2>
+        {error && <Alert color="danger">{error}</Alert>}
       </CardTitle>
       <CardBody>
-        {error && <Alert color="danger">{error}</Alert>}
         <Form onSubmit={handleSubmit}>
           {authType !== "login" && (
             <>

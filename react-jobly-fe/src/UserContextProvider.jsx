@@ -1,9 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { createContext, useState } from "react";
-//import the temp api Token
+import React, { createContext, useState, useEffect } from "react";
 import JoblyApi from "./api.js";
-
+import { getUserByToken } from "./helper.js";
 /* This is a React context called `UserContext` using `React.createContext()`. 
 It also defines a component called `UserProvider` that takes in `children` as a prop. 
 Within the `UserProvider` component, it uses the `useState` hook to create a state variable `currentUser`
@@ -19,8 +18,25 @@ const defaultUserContext = {
   password: "password",
   token: JoblyApi.token,
 };
+
 const UserContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(defaultUserContext);
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const localToken = localStorage.getItem("JoblyUserToken");
+      if (localToken) {
+        try {
+          let user = await getUserByToken(JSON.parse(localToken));
+          user = !(user instanceof Error || user.error) ? user : null;
+          setCurrentUser(user);
+        } catch (error) {
+          console.error("Error fetching user by token:", error);
+        }
+      }
+    };
+    checkToken();
+  }, []);
 
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>

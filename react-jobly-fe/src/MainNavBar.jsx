@@ -18,33 +18,6 @@ const MainNavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpenState = () => setIsOpen(!isOpen);
   const { currentUser: user } = useContext(UserContext);
-  const userLink = user ? (
-    <>
-      <NavItem>
-        <BSNavLink tag={Link} to={`/users/${user.username}`}>
-          {user.username}
-        </BSNavLink>
-      </NavItem>
-      <NavItem>
-        <BSNavLink tag={Link} to="/logout">
-          Logout
-        </BSNavLink>
-      </NavItem>
-    </>
-  ) : (
-    <>
-      <NavItem>
-        <BSNavLink tag={Link} to="/signup">
-          Sign up
-        </BSNavLink>
-      </NavItem>
-      <NavItem>
-        <BSNavLink tag={Link} to="/login">
-          Log In
-        </BSNavLink>
-      </NavItem>
-    </>
-  );
 
   return (
     <Navbar color="light" light expand="sm" className="mb-4">
@@ -76,7 +49,33 @@ const MainNavBar = () => {
           </NavItem>
         </Nav>
         <Nav className="ms-auto" navbar>
-          {userLink}
+          {user ? (
+            <>
+              <NavItem>
+                <BSNavLink tag={Link} to={`/users/${user.username}`}>
+                  {user.username}
+                </BSNavLink>
+              </NavItem>
+              <NavItem>
+                <BSNavLink tag={Link} to="/logout">
+                  Logout
+                </BSNavLink>
+              </NavItem>
+            </>
+          ) : (
+            <>
+              <NavItem>
+                <BSNavLink tag={Link} to="/signup">
+                  Sign up
+                </BSNavLink>
+              </NavItem>
+              <NavItem>
+                <BSNavLink tag={Link} to="/login">
+                  Log In
+                </BSNavLink>
+              </NavItem>
+            </>
+          )}
         </Nav>
       </Collapse>
     </Navbar>
