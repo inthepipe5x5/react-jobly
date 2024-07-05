@@ -11,12 +11,21 @@ import React, {
 
 export const FlashMessageContext = createContext(null);
 
+export const useFlashMessage = () => {
+  const context = useContext(FlashMessageContext);
+  if (context === undefined) {
+    throw new Error('useFlashMessage must be used within a FlashMessageProvider');
+  }
+  return context;
+};
+
 export const DismissFlashMessage = () => {
   const [flashMessage, setFlashMessage] = useContext(FlashMessageContext);
   //   const location = useLocation();
   flashMessage ? setFlashMessage(null) : null;
   return null;
 };
+
 
 export const FlashMessageProvider = ({ children }) => {
   const [flashMessage, setFlashMessage] = useState(null);
@@ -38,9 +47,11 @@ export const FlashMessageProvider = ({ children }) => {
     },
     []
   );
-  const contextValue = useMemo(() => {
-    flashMessage, showFlashMessage, DismissFlashMessage;
-  }, [flashMessage, showFlashMessage]);
+  const contextValue = useMemo(() => ({
+    flashMessage,
+    showFlashMessage,
+    DismissFlashMessage
+  }), [flashMessage, showFlashMessage]);
 
   return (
     <FlashMessageContext.Provider value={{ contextValue }}>

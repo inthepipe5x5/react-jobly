@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import {
+  Row,
   Form,
   FormGroup,
   Label,
@@ -12,7 +13,7 @@ import {
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContextProvider";
-import { FlashMessageContext } from "./FlashMessageContext";
+import { FlashMessageContext, useFlashMessage } from "./FlashMessageContext";
 import JoblyApi from "./api";
 import { handleAuth, handleLogout, getTitle } from "./helper";
 import FlashMessage from "./FlashMessage";
@@ -20,8 +21,8 @@ import FlashMessage from "./FlashMessage";
 const AuthPage = ({ authType = "signup" }) => {
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useContext(UserContext);
-  const { flashMessage, showFlashMessage, DismissFlashMessage } =
-    useContext(FlashMessageContext);
+  const { flashMessage, showFlashMessage, dismissFlashMessage } =
+    useFlashMessage();
 
   useEffect(() => {
     if (authType === "logout") {
@@ -40,7 +41,7 @@ const AuthPage = ({ authType = "signup" }) => {
       };
 
   const [inputData, setInputData] = useState(defaultInputData);
-  // const [validInput, setValidInput] = useState(false)
+
   const handleInput = (evt) => {
     const { name, value } = evt.target;
     setInputData((prevState) => ({
@@ -51,7 +52,7 @@ const AuthPage = ({ authType = "signup" }) => {
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
-    DismissFlashMessage();
+    dismissFlashMessage();
     try {
       //user handleAuth to dynamically set API call function
       const result = await handleAuth(inputData, authType, setCurrentUser);
@@ -93,7 +94,7 @@ const AuthPage = ({ authType = "signup" }) => {
           <FlashMessage
             message={flashMessage.message}
             type={flashMessage.type}
-            onDismiss={DismissFlashMessage}
+            onDismiss={dismissFlashMessage}
           />
         )}
       </CardTitle>
@@ -101,13 +102,12 @@ const AuthPage = ({ authType = "signup" }) => {
         <Form onSubmit={handleSubmit}>
           {authType !== "login" && (
             <>
-              <FormGroup container-fluid lg={10}>
+              <FormGroup>
                 <Label for="firstName" sm={3}>
                   First Name
                 </Label>
                 <Col sm={9}>
                   <Input
-                    // {validInput ? valid: ""}
                     bsSize="sm"
                     id="firstName"
                     name="firstName"
@@ -119,13 +119,12 @@ const AuthPage = ({ authType = "signup" }) => {
                   />
                 </Col>
               </FormGroup>
-              <FormGroup container-fluid lg={10}>
+              <FormGroup>
                 <Label for="lastName" sm={3}>
                   Last Name
                 </Label>
                 <Col sm={9}>
                   <Input
-                    // {validInput ? valid: ""}
                     bsSize="sm"
                     id="lastName"
                     name="lastName"
@@ -139,13 +138,12 @@ const AuthPage = ({ authType = "signup" }) => {
               </FormGroup>
             </>
           )}
-          <FormGroup container-fluid lg={10}>
+          <FormGroup>
             <Label for="username" sm={3}>
               Username
             </Label>
             <Col sm={9}>
               <Input
-                // {validInput ? valid: ""}
                 bsSize="sm"
                 id="username"
                 name="username"
@@ -158,13 +156,12 @@ const AuthPage = ({ authType = "signup" }) => {
             </Col>
           </FormGroup>
           {authType !== "edit" && (
-            <FormGroup container-fluid lg={10}>
+            <FormGroup>
               <Label for="password" sm={3}>
                 Password
               </Label>
               <Col sm={9}>
                 <Input
-                  // {validInput ? valid: ""}
                   bsSize="sm"
                   id="password"
                   name="password"
@@ -179,13 +176,12 @@ const AuthPage = ({ authType = "signup" }) => {
             </FormGroup>
           )}
           {authType !== "login" && (
-            <FormGroup container-fluid lg={10}>
+            <FormGroup>
               <Label for="email" sm={3}>
                 Email
               </Label>
               <Col sm={9}>
                 <Input
-                  // {validInput ? valid: ""}
                   bsSize="sm"
                   id="email"
                   name="email"
@@ -198,14 +194,26 @@ const AuthPage = ({ authType = "signup" }) => {
               </Col>
             </FormGroup>
           )}
-          <FormGroup container-fluid lg={10}>
+          <FormGroup>
             <Col sm={{ offset: 3, size: 9 }}>
-              <Button color="primary" type="submit" onClick={handleSubmit}>
+              <Button color="primary" type="submit">
                 {getTitle(authType)}
               </Button>
             </Col>
           </FormGroup>
         </Form>
+        <Row>
+          <Col sm={{ offset: 3, size: 9 }}>
+            <Button
+              color="secondary"
+              onClick={() =>
+                navigate(authType !== "signup" ? "/signup" : "/login")
+              }
+            >
+              {authType !== "signup" ? "Sign up" : "Login"}
+            </Button>
+          </Col>
+        </Row>
       </CardBody>
     </Card>
   );
