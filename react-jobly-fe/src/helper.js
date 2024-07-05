@@ -1,7 +1,7 @@
 /*
 Helper functions for Jobly react frontend
 */
-
+// import { useContext, useEffect } from "react";
 import JoblyApi from "./api";
 
 const capitalizeWord = (word) => {
@@ -47,20 +47,6 @@ const formatSalary = (salary) => {
 //   return true;
 // };
 
-const showFlashMessage = (
-  message,
-  type,
-  setFlashMessageFunc,
-  messageInterval = 5000
-) => {
-  setFlashMessageFunc({ message, type });
-  setTimeout(() => setFlashMessageFunc(null), messageInterval); // Auto-hide after 5 seconds
-};
-
-const dismissFlashMessage = (setFlashMessageFunc) => {
-  setFlashMessageFunc(null);
-};
-
 const tokenKey = "JoblyUserToken";
 
 const updateLocalStorageToken = (token, username) => {
@@ -91,25 +77,33 @@ const getUserByToken = async ({ token, username }) => {
   }
 };
 
-const handleLogin = async (userData, setCurrentUserFunc) => {
+const handleAuth = async (userData, authType = "login", setCurrentUserFunc) => {
   //userData = {username || password}
   //setCurrentUserFunc = useContext(UserContext).setCurrentUser
   if (!userData) localStorage.getItem(tokenKey);
   else {
     try {
-      const result = await JoblyApi.loginUser(userData);
-      //handle if API rejects login credentials
-      if (!result.error) throw new Error(result.error, 400);
+      const { username } = userData;
+      let result =
+        {
+          signup: await JoblyApi.registerNewUser(userData),
+          login: await JoblyApi.loginUser(userData),
+          edit: await JoblyApi.editUser(userData.username, userData),
+        }[authType] ||
+        new Error("An authentication error occurred. Bad request", 400);
+
+      //handle if API rejects auth attempt or if result=== error
+      if (!result.error || ![200, 201].includes(result.statusCode))
+        throw new Error(result.error, 400);
       else {
-        const { username } = userData;
-        const { token } = result;
+        const { token } = result || result.token;
         //save token to localStorage
         updateLocalStorageToken(token, username);
-        const loggedInUser = await getUserByToken(token);
-        setCurrentUserFunc({ token, loggedInUser });
+        setCurrentUserFunc({ token, username });
       }
     } catch (error) {
       console.error(error);
+      return error;
     }
   }
 };
@@ -122,14 +116,25 @@ const handleLogout = (setCurrentUserFunc) => {
   //remove user token from context
   setCurrentUserFunc(null);
 };
+const getTitle = (authPageType) => {
+  switch (authPageType) {
+    case "signup":
+      return "Sign Up";
+    case "login":
+      return "Log In";
+    case "edit":
+      return "Edit Profile";
+    default:
+      return "Authentication";
+  }
+};
 
 export {
   capitalizeWord,
   formatSalary,
   /*validateNewJobFormData,*/
-  showFlashMessage,
-  dismissFlashMessage,
-  handleLogin,
+  getTitle,
+  handleAuth,
   handleLogout,
   getUserByToken,
 };

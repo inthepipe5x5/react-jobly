@@ -7,14 +7,13 @@ import AppRoutes from "./AppRoutes";
 import MainNavBar from "./MainNavBar";
 import LoadingSpinner from "./LoadingSpinner";
 import { UserContext, UserContextProvider } from "./UserContextProvider";
-import { showFlashMessage, dismissFlashMessage } from "./helper";
 import "./App.css";
-import { FlashMessageProvider, useFlashMessage } from "./FlashMessageContext";
+import { FlashMessageContext } from "./FlashMessageContext";
 import FlashMessage from "./FlashMessage";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
-  const { flashMessage, showFlashMessage } = useFlashMessage();
+  const { flashMessage, showFlashMessage, DismissFlashMessage } = useContext(FlashMessageContext);
   const user = useContext(UserContext);
   const [currentUser, setCurrentUser] = useState(user);
 
@@ -32,7 +31,7 @@ function App() {
             <FlashMessage
               message={flashMessage.message}
               type={flashMessage.type}
-              onDismiss={() => dismissFlashMessage(showFlashMessage)}
+              onDismiss={() => DismissFlashMessage(showFlashMessage)}
             />
           )}
           <Container

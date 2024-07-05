@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Form,
   FormGroup,
@@ -9,20 +9,26 @@ import {
   CardBody,
   CardTitle,
   Col,
-  Alert,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContextProvider";
+import { FlashMessageContext } from "./FlashMessageContext";
 import JoblyApi from "./api";
-import { handleLogin, handleLogout } from "./helper";
+import { handleAuth, handleLogout, getTitle } from "./helper";
+import FlashMessage from "./FlashMessage";
 
 const AuthPage = ({ authType = "signup" }) => {
   const navigate = useNavigate();
-  const { currentUser, setCurrentUser } = useContext(UserContext); // Adjusted destructuring
-  if (authType === "logout") {
-    currentUser ? handleLogout(setCurrentUser) : navigate('/login');
-  }
-  // Default state for the form inputs
+  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { flashMessage, showFlashMessage, DismissFlashMessage } =
+    useContext(FlashMessageContext);
+
+  useEffect(() => {
+    if (authType === "logout") {
+      currentUser ? handleLogout(setCurrentUser) : navigate("/login");
+    }
+  }, [authType, currentUser, navigate, setCurrentUser]);
+
   const defaultInputData = ["login", "logout"].includes(authType)
     ? { username: "", password: "" }
     : {
@@ -33,11 +39,8 @@ const AuthPage = ({ authType = "signup" }) => {
         email: "",
       };
 
-  // useState hook to manage form input data
   const [inputData, setInputData] = useState(defaultInputData);
-  const [error, setError] = useState(null);
-
-  // Handle input changes for all fields
+  // const [validInput, setValidInput] = useState(false)
   const handleInput = (evt) => {
     const { name, value } = evt.target;
     setInputData((prevState) => ({
@@ -46,25 +49,25 @@ const AuthPage = ({ authType = "signup" }) => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (evt) => {
     evt.preventDefault();
-    setError(null);
+    DismissFlashMessage();
     try {
-      let result;
-      if (authType === "signup") {
-        result = await JoblyApi.registerNewUser(inputData);
-      } else if (authType === "login") {
-        result = await JoblyApi.loginUser(inputData);
-      } else if (authType === "edit") {
-        result = await JoblyApi.editUser(currentUser.username, inputData);
-      }
-      //handle if API auth request is rejected
-      if (result.statusCode !== 201 || result.statusCode !== 200)
-        throw new Error(result.error, result.statusCode || 400);
-      else {
-        //handle if authenticated
-        handleLogin(inputData, setCurrentUser);
+      //user handleAuth to dynamically set API call function
+      const result = await handleAuth(inputData, authType, setCurrentUser);
+      //handle unsuccessful auth attempt
+      if (![200, 201].includes(result.statusCode) || result instanceof Error) {
+        throw new Error(
+          result?.message ||
+            result?.error ||
+            "An authentication error occurred."
+        );
+      } else {
+        //handle successful auth attempt
+        const successMessage = `${getTitle(authType)} Successful!`;
+        showFlashMessage(successMessage, "success");
+
+        //reset input fields
         setInputData(defaultInputData);
         if (authType === "edit") {
           navigate(`/users/${result.username}`);
@@ -74,39 +77,38 @@ const AuthPage = ({ authType = "signup" }) => {
       }
     } catch (error) {
       console.error("Error:", error);
-      setError(error.message || "An error occurred. Please try again.");
-    }
-  };
-
-  const getTitle = () => {
-    switch (authType) {
-      case "signup":
-        return "Sign Up";
-      case "login" || "logout":
-        return "Log In";
-      case "edit":
-        return "Edit Profile";
-      default:
-        return "Authentication";
+      showFlashMessage(
+        error.message ||
+          `${getTitle(authType)}error occurred. Please try again.`,
+        "error"
+      );
     }
   };
 
   return (
     <Card className="mt-5">
       <CardTitle className="font-weight-bold text-center mt-3">
-        <h2>{getTitle()}</h2>
-        {error && <Alert color="danger">{error}</Alert>}
+        <h2>{getTitle(authType)}</h2>
+        {flashMessage && (
+          <FlashMessage
+            message={flashMessage.message}
+            type={flashMessage.type}
+            onDismiss={DismissFlashMessage}
+          />
+        )}
       </CardTitle>
       <CardBody>
         <Form onSubmit={handleSubmit}>
           {authType !== "login" && (
             <>
-              <FormGroup row>
+              <FormGroup container-fluid lg={10}>
                 <Label for="firstName" sm={3}>
                   First Name
                 </Label>
                 <Col sm={9}>
                   <Input
+                    // {validInput ? valid: ""}
+                    bsSize="sm"
                     id="firstName"
                     name="firstName"
                     placeholder="First Name"
@@ -117,12 +119,14 @@ const AuthPage = ({ authType = "signup" }) => {
                   />
                 </Col>
               </FormGroup>
-              <FormGroup row>
+              <FormGroup container-fluid lg={10}>
                 <Label for="lastName" sm={3}>
                   Last Name
                 </Label>
                 <Col sm={9}>
                   <Input
+                    // {validInput ? valid: ""}
+                    bsSize="sm"
                     id="lastName"
                     name="lastName"
                     placeholder="Last Name"
@@ -135,12 +139,14 @@ const AuthPage = ({ authType = "signup" }) => {
               </FormGroup>
             </>
           )}
-          <FormGroup row>
+          <FormGroup container-fluid lg={10}>
             <Label for="username" sm={3}>
               Username
             </Label>
             <Col sm={9}>
               <Input
+                // {validInput ? valid: ""}
+                bsSize="sm"
                 id="username"
                 name="username"
                 placeholder="Username"
@@ -152,12 +158,14 @@ const AuthPage = ({ authType = "signup" }) => {
             </Col>
           </FormGroup>
           {authType !== "edit" && (
-            <FormGroup row>
+            <FormGroup container-fluid lg={10}>
               <Label for="password" sm={3}>
                 Password
               </Label>
               <Col sm={9}>
                 <Input
+                  // {validInput ? valid: ""}
+                  bsSize="sm"
                   id="password"
                   name="password"
                   placeholder="Password"
@@ -165,17 +173,20 @@ const AuthPage = ({ authType = "signup" }) => {
                   value={inputData.password}
                   onChange={handleInput}
                   required
+                  autoComplete="current-password"
                 />
               </Col>
             </FormGroup>
           )}
           {authType !== "login" && (
-            <FormGroup row>
+            <FormGroup container-fluid lg={10}>
               <Label for="email" sm={3}>
                 Email
               </Label>
               <Col sm={9}>
                 <Input
+                  // {validInput ? valid: ""}
+                  bsSize="sm"
                   id="email"
                   name="email"
                   placeholder="Email"
@@ -187,10 +198,10 @@ const AuthPage = ({ authType = "signup" }) => {
               </Col>
             </FormGroup>
           )}
-          <FormGroup row>
+          <FormGroup container-fluid lg={10}>
             <Col sm={{ offset: 3, size: 9 }}>
-              <Button color="primary" type="submit">
-                {getTitle()}
+              <Button color="primary" type="submit" onClick={handleSubmit}>
+                {getTitle(authType)}
               </Button>
             </Col>
           </FormGroup>

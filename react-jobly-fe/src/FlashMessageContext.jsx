@@ -1,27 +1,49 @@
-import React, { useState, useContext, createContext } from "react";
+import React, {
+  useState,
+  useContext,
+  createContext,
+  //   useEffect,
+  useMemo,
+  useCallback,
+} from "react";
+// import { useLocation } from "react-router";
+// import { showFlashMessage } from "./helper";
 
-const FlashMessageContext = createContext();
+export const FlashMessageContext = createContext(null);
 
-export const useFlashMessage = () => {
-  const context = useContext(FlashMessageContext);
-  if (!context) {
-    throw new Error("useFlashMessage must be used within a FlashMessageProvider");
-  }
-  return context;
+export const DismissFlashMessage = () => {
+  const [flashMessage, setFlashMessage] = useContext(FlashMessageContext);
+  //   const location = useLocation();
+  flashMessage ? setFlashMessage(null) : null;
+  return null;
 };
 
 export const FlashMessageProvider = ({ children }) => {
   const [flashMessage, setFlashMessage] = useState(null);
 
-  const showFlashMessage = (message, type = "info", duration = 3000) => {
-    setFlashMessage({ message, type });
-    setTimeout(() => {
-      setFlashMessage(null);
-    }, duration);
-  };
+  /*
+  memoized function to show Flash Messages with a timed interval
+  */
+  const showFlashMessage = useCallback(
+    (message, type, messageInterval = 5000) => {
+      //clear previous flash message if existing
+      DismissFlashMessage();
+      //set new flash message
+      setFlashMessage({ message, type });
+      setTimeout(() => DismissFlashMessage(), messageInterval); // Auto-hide after 5 seconds
+
+      showFlashMessage(message, type, setFlashMessage, messageInterval);
+
+      return console.log(`Flash Message Context Updated: ${type}: ${message}`);
+    },
+    []
+  );
+  const contextValue = useMemo(() => {
+    flashMessage, showFlashMessage, DismissFlashMessage;
+  }, [flashMessage, showFlashMessage]);
 
   return (
-    <FlashMessageContext.Provider value={{ flashMessage, showFlashMessage }}>
+    <FlashMessageContext.Provider value={{ contextValue }}>
       {children}
     </FlashMessageContext.Provider>
   );

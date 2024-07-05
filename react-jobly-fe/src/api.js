@@ -59,7 +59,7 @@ class JoblyApi {
 
   static async registerNewUser(userData) {
     let res = await this.request(`/auth/register`, { userData }, "post");
-    return res.company;
+    return res;
   }
   /** Login a user */
 
@@ -79,9 +79,9 @@ class JoblyApi {
   static async editUser(userData) {
     if (!userData || !userData.username || !userData.password)
       throw new Error(`Bad Client Patch Request`, 400);
-    const { id } = userData;
+    const { username } = userData;
     try {
-      let res = await this.request(`/users/${id}`, { userData }, "patch");
+      let res = await this.request(`/users/${username}`, { userData }, "patch");
       return res.user;
     } catch (error) {
       console.error("Error in user patch attempt", error);

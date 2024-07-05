@@ -36,7 +36,7 @@ const UserContextProvider = ({ children }) => {
       }
     };
     checkToken();
-  }, []);
+  }, [currentUser]);
 
   return (
     <UserContext.Provider value={{ currentUser, setCurrentUser }}>
