@@ -80,17 +80,22 @@ const getUserByToken = async ({ token, username }) => {
 const handleAuth = async (userData, authType = "login", setCurrentUserFunc) => {
   //userData = {username || password}
   //setCurrentUserFunc = useContext(UserContext).setCurrentUser
+  console.debug('handleAuth call', authType, userData)
   if (!userData) localStorage.getItem(tokenKey);
   else {
     try {
       const { username } = userData;
       let result =
         {
-          signup: await JoblyApi.registerNewUser(userData),
           login: await JoblyApi.loginUser(userData),
-          edit: await JoblyApi.editUser(userData.username, userData),
+          signup: await JoblyApi.registerNewUser(userData),
+          register: await JoblyApi.registerNewUser(userData),
+          edit: await JoblyApi.editUser(userData),
         }[authType] ||
-        new Error("An authentication error occurred. Bad request", 400);
+        new Error(
+          `An ${authType} authentication error occurred. Bad request`,
+          400
+        );
 
       //handle if API rejects auth attempt or if result=== error
       if (
@@ -101,9 +106,10 @@ const handleAuth = async (userData, authType = "login", setCurrentUserFunc) => {
         throw new Error(result.error, 400);
       else {
         const { token } = result || result.token;
-        //save token to localStorage
+        //save token to localStorage & joblyApi
         updateLocalStorageToken(token, username);
         setCurrentUserFunc({ token, username });
+        JoblyApi.token = token;
       }
     } catch (error) {
       console.error(error);
@@ -143,17 +149,17 @@ returns FlashMessage Object:
     type: 《str》
   }
 */
-const handleCaughtError = (error, origin="") => {
+const handleCaughtError = (error, origin = "") => {
   let errMessage =
     error.message ||
-    `Detail.jsx -> Error retrieving ${origin? + origin : "api call"} `;
+    `Detail.jsx -> Error retrieving ${origin ? +origin : "api call"} `;
   let errTitle = error.status || error.error;
   let errType = [400, 401, 500].includes(error.status) ? "danger" : "warning";
 
   return {
     title: errTitle,
     message: errMessage,
-    type: errType
+    type: errType,
   };
 };
 

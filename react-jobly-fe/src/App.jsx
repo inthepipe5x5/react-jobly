@@ -26,8 +26,8 @@ function App() {
   const user = useContext(UserContext);
   const [currentUser, setCurrentUser] = useState(user);
 
-  console.log(currentUser);
-
+  console.log("AUTH CONTEXT: " + `${currentUser ? `currentUser` : "ANON"}`);
+  console.log("localStorage token: ", localStorage.getItem('JoblyUserToken'))
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -48,7 +48,6 @@ function App() {
           <div className=" min-vw-50 min-vh-50 w-100 d-flex align-items-center">
             <Container
               fluid
-              
               className=" d-flex justify-content-center align-items-center mb-5"
             >
               <AppRoutes />

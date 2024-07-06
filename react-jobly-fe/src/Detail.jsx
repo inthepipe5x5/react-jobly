@@ -3,6 +3,7 @@ import React, { useState, createElement, useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FlashMessageContext } from "./FlashMessageContext";
 import JoblyApi from "./api";
+import ErrorPageContent from "./ErrorContent";
 import NotFound from "./NotFound";
 import JobResult from "./JobResult";
 import CompanyResult from "./CompanyResult";
@@ -30,7 +31,7 @@ const Detail = ({ data }) => {
   const getAllData = async () => {
     try {
       const resp = await JoblyApi.request(`${location.pathname}`);
-      console.log({
+      console.log("DETAIL.jsx",{
         list_data: resp,
       });
       if (![200, 201].includes(resp.status) || resp.data.error)
@@ -48,6 +49,12 @@ const Detail = ({ data }) => {
         error,
         location.pathname
       );
+      setDetailContent({
+        error: error,
+        status: error?.status || error?.statusCode,
+        message: error?.message || "error fetching detail data",
+      });
+
       showFlashMessage(errTitle, errMessage, errType);
     } finally {
       setIsLoading(false);
@@ -62,8 +69,16 @@ const Detail = ({ data }) => {
     users: UserResult,
   }[currentPath];
   //handle if no results found
-  if (flashMessage.message) return createElement(NotFound);
-
+  if (detailContent.error)
+    return +detailContent?.status === 404 ? (
+      createElement(NotFound)
+    ) : (
+      <ErrorPageContent
+        contentType={currentPath || location.pathname}
+        errStatus={detailContent?.status || detailContent.error?.status}
+        message={detailContent?.message || detailContent.error?.message}
+      />
+    );
   if (isLoading) {
     return createElement(LoadingSpinner);
   } else {

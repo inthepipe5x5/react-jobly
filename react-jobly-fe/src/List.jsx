@@ -22,6 +22,7 @@ import UserResult from "./UserResult";
 import CompanyResult from "./CompanyResult";
 import JoblyApi from "./api";
 import NotFound from "./NotFound";
+import ErrorPageContent from "./ErrorContent";
 
 const List = () => {
   const [listContent, setListContent] = useState([]);
@@ -34,7 +35,7 @@ const List = () => {
 
   useEffect(() => {
     //clear any pre-existing content
-    setListContent(listContent => [])
+    setListContent((listContent) => []);
     const getAllData = async () => {
       try {
         const resp = await JoblyApi.request(`${currentPath}`);
@@ -44,6 +45,13 @@ const List = () => {
         setListContent(resp[currentPath] || []);
       } catch (error) {
         const { errTitle, errMessage, errType } = handleCaughtError(error);
+        //set listContent to reflect the error
+        setListContent({
+          error: error,
+          type: currentPath,
+          status: errTitle,
+          message: errMessage,
+        });
         showFlashMessage(errTitle, errMessage, errType);
       } finally {
         setIsLoading(false);
@@ -65,13 +73,21 @@ const List = () => {
       users: UserResult,
     }[currentPath];
 
-    return content.map((item) => (
-      <ListGroupItem key={uuid()}>
-        <Link to={`/${currentPath}/${item[uniqueIdentifier]}`}>
-          {createElement(listItemComponent, { result: item })}
-        </Link>
-      </ListGroupItem>
-    ));
+    return content.error ? (
+      <ErrorPageContent
+      contentType={currentPath || location.pathname}
+        errStatus={content?.status || content.error?.status}
+        message={content?.message || content.error?.message}
+      />
+    ) : (
+      content.map((item) => (
+        <ListGroupItem key={uuid()}>
+          <Link to={`/${currentPath}/${item[uniqueIdentifier]}`}>
+            {createElement(listItemComponent, { result: item })}
+          </Link>
+        </ListGroupItem>
+      ))
+    );
   };
   if ((!isLoading && !listContent) || listContent.length === 0)
     return <NotFound></NotFound>;
@@ -92,8 +108,6 @@ const List = () => {
             </CardText>
             {isLoading ? (
               <LoadingSpinner />
-            ) : listContent.length === 0 ? (
-              <NotFound />
             ) : (
               <ListGroup>{generateContentCards(listContent)}</ListGroup>
             )}

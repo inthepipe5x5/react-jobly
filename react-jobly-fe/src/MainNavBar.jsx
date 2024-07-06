@@ -17,7 +17,7 @@ import { UserContext } from "./UserContextProvider";
 const MainNavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpenState = () => setIsOpen(!isOpen);
-  const { currentUser: user } = useContext(UserContext);
+  const { currentUser: user } = useContext(UserContext) || null;
 
   return (
     <Navbar color="light" light expand="sm" className="mb-4">

@@ -12,7 +12,7 @@ import {
   Col,
   Container,
 } from "reactstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "./UserContextProvider";
 import { FlashMessageContext, useFlashMessage } from "./FlashMessageContext";
 import JoblyApi from "./api";
@@ -21,9 +21,12 @@ import FlashMessage from "./FlashMessage";
 
 const AuthPage = ({ authType = "signup" }) => {
   const navigate = useNavigate();
+  const location = useLocation()
+  authType = authType ? authType : location.pathname 
+  console.log("AUTHPAGE",location.pathname, authType)
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const { flashMessage, showFlashMessage, dismissFlashMessage } =
-    useFlashMessage();
+    useContext(FlashMessageContext);
 
   useEffect(() => {
     if (authType === "logout") {
@@ -56,12 +59,18 @@ const AuthPage = ({ authType = "signup" }) => {
     try {
       //user handleAuth to dynamically set API call function
       const result = await handleAuth(inputData, authType, setCurrentUser);
+      console.log(authType, inputData, result?.status, result?.statusCode, result?.data, result);
       //handle unsuccessful auth attempt
-      if (![200, 201].includes(result.statusCode) || result instanceof Error) {
+      if (
+        ![200, 201].includes(result.statusCode) ||
+        result instanceof Error ||
+        result.data.error
+      ) {
         throw new Error(
           result?.message ||
             result?.error ||
-            "An authentication error occurred."
+            `An ${authType} authentication error occurred.`,
+          result?.status || result?.statusCode || 400
         );
       } else {
         //handle successful auth attempt
@@ -77,7 +86,7 @@ const AuthPage = ({ authType = "signup" }) => {
         }
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("handleSubmit Error:", error?.status, error.message);
       showFlashMessage(
         error.message ||
           `${getTitle(authType)}error occurred. Please try again.`,

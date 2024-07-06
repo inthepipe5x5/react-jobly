@@ -18,7 +18,9 @@ const testToken =
 class JoblyApi {
   // the token for interactive with the API will be stored here.
   constructor(token) {
-    this.token = token ? token : localStorage.getItem('JoblyUserToken') || testToken;
+    this.token = token
+      ? token
+      : localStorage.getItem("JoblyUserToken") || testToken;
   }
 
   static async request(endpoint, data = {}, method = "get") {
@@ -27,7 +29,9 @@ class JoblyApi {
     //there are multiple ways to pass an authorization token, this is how you pass it in the header.
     //this has been provided to show you another way to pass the token. you are only expected to read this code for this project.
     const url = `${BASE_URL}/${endpoint}`;
-    const headers = this.token ? { Authorization: `Bearer ${this.token}` } : null;
+    const headers = this.token
+      ? { Authorization: `Bearer ${this.token}` }
+      : null;
     const params = method === "get" ? data : {};
 
     try {
@@ -58,7 +62,12 @@ class JoblyApi {
   /** register a new user */
 
   static async registerNewUser(userData) {
-    let res = await this.request(`/auth/register`, { userData }, "post");
+    const { username, firstName, lastName, password, email } = userData;
+    let res = await this.request(
+      `auth/register`,
+      { username, firstName, lastName, password, email },
+      "post"
+    );
     return res;
   }
   /** Login a user */
@@ -67,7 +76,9 @@ class JoblyApi {
     if (!userData || !userData.username || !userData.password)
       throw new Error(`Bad Client Login Request`, 400);
     try {
-      let res = await this.request(`/auth/token`, { userData }, "post");
+      const { username, password } = userData;
+
+      let res = await this.request(`auth/token`, { username, password }, "post");
       return res.token;
     } catch (error) {
       console.error("Error in login attempt", error);
@@ -81,7 +92,7 @@ class JoblyApi {
       throw new Error(`Bad Client Patch Request`, 400);
     const { username } = userData;
     try {
-      let res = await this.request(`/users/${username}`, { userData }, "patch");
+      let res = await this.request(`users/${username}`, { userData }, "patch");
       return res.user;
     } catch (error) {
       console.error("Error in user patch attempt", error);
