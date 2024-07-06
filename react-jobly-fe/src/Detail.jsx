@@ -1,28 +1,22 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, createElement, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  CardText,
-  ListGroup,
-  ListGroupItem,
-  Badge,
-} from "reactstrap";
+import React, { useState, createElement, useEffect, useContext } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { FlashMessageContext } from "./FlashMessageContext";
+import JoblyApi from "./api";
 import NotFound from "./NotFound";
 import JobResult from "./JobResult";
 import CompanyResult from "./CompanyResult";
 import UserResult from "./UserResult";
 import LoadingSpinner from "./LoadingSpinner";
-import JoblyApi from "./api";
+import { handleCaughtError } from "./helper";
 
 const Detail = ({ data }) => {
   const [detailContent, setDetailContent] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { flashMessage, showFlashMessage, DismissFlashMessage } =
+    useContext(FlashMessageContext);
   //grab location, currentPath, url params
+  const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname.split("/")[1]; //ie. users,companies,jobs
   const uniqueIdentifier = location.pathname.split("/")[2]; //ie. username, company_handle, job_title
@@ -32,31 +26,35 @@ const Detail = ({ data }) => {
     users: "username",
   }[currentPath];
   //grab data from api using location variables
-  useEffect(() => {
-    const getAllData = async () => {
-      try {
-        const resp = await JoblyApi.request(`${location.pathname}`);
-        console.log({
-          list_data: resp,
-        });
+  // useEffect(() => {
+  const getAllData = async () => {
+    try {
+      const resp = await JoblyApi.request(`${location.pathname}`);
+      console.log({
+        list_data: resp,
+      });
+      if (![200, 201].includes(resp.status) || resp.data.error)
+        throw new Error(resp.data.error, resp.status);
+      else {
         setDetailContent(
-          resp[uniqueIdentifierType][uniqueIdentifier] || resp || []
+          resp[uniqueIdentifierType][uniqueIdentifier] || resp.data || []
         );
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-        if (error.response && error.response.status === 401) {
-          navigate("/login");
-        } else if (error.response && error.response.status === 404) {
-          setError("Not Found");
-        } else {
-          setError("An unexpected error occurred");
-        }
-        setIsLoading(false);
       }
-    };
-    getAllData();
-  }, [currentPath, navigate]);
+    } catch (error) {
+      if (error.statusCode === 401 || error.status === 401) {
+        navigate("/login");
+      }
+      const { errTitle, errMessage, errType } = handleCaughtError(
+        error,
+        location.pathname
+      );
+      showFlashMessage(errTitle, errMessage, errType);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  getAllData();
+  // });
   //dynamically set component based on current path
   const detailItemComponent = {
     companies: CompanyResult,
@@ -64,7 +62,7 @@ const Detail = ({ data }) => {
     users: UserResult,
   }[currentPath];
   //handle if no results found
-  if (error === "Not Found") return createElement(NotFound);
+  if (flashMessage.message) return createElement(NotFound);
 
   if (isLoading) {
     return createElement(LoadingSpinner);

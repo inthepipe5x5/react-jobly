@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, createElement } from "react";
+import React, { useEffect, useState, createElement, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Card,
@@ -11,10 +11,11 @@ import {
   ListGroup,
   ListGroupItem,
   Spinner,
+  Container,
 } from "reactstrap";
 import { v4 as uuid } from "uuid";
-
-import { capitalizeWord } from "./helper";
+import { FlashMessageContext } from "./FlashMessageContext";
+import { capitalizeWord, handleCaughtError } from "./helper";
 import LoadingSpinner from "./LoadingSpinner";
 import JobResult from "./JobResult";
 import UserResult from "./UserResult";
@@ -25,12 +26,15 @@ import NotFound from "./NotFound";
 const List = () => {
   const [listContent, setListContent] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { flashMessage, showFlashMessage, DismissFlashMessage } =
+    useContext(FlashMessageContext);
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname.split("/")[1];
 
   useEffect(() => {
+    //clear any pre-existing content
+    setListContent(listContent => [])
     const getAllData = async () => {
       try {
         const resp = await JoblyApi.request(`${currentPath}`);
@@ -38,21 +42,15 @@ const List = () => {
           list_data: resp,
         });
         setListContent(resp[currentPath] || []);
-        setIsLoading(false);
       } catch (error) {
-        console.log(error);
-        if (error.response && error.response.status === 401) {
-          navigate('/login');
-        } else if (error.response && error.response.status === 404) {
-          setError('Not Found');
-        } else {
-          setError('An unexpected error occurred');
-        }
+        const { errTitle, errMessage, errType } = handleCaughtError(error);
+        showFlashMessage(errTitle, errMessage, errType);
+      } finally {
         setIsLoading(false);
       }
     };
     getAllData();
-  }, [currentPath, navigate]);
+  }, [currentPath, navigate, showFlashMessage]);
 
   const generateContentCards = (content) => {
     const uniqueIdentifier = {
@@ -60,7 +58,7 @@ const List = () => {
       jobs: "id",
       users: "username",
     }[currentPath];
-    
+
     const listItemComponent = {
       companies: CompanyResult,
       jobs: JobResult,
@@ -75,34 +73,34 @@ const List = () => {
       </ListGroupItem>
     ));
   };
-
-  if (error === 'Not Found') {
-    return <NotFound />;
-  }
-
-  return (
-    <section>
-      <Card>
-        <CardBody>
-          <CardHeader className="font-weight-bold text-center">
-            <CardTitle>{capitalizeWord(currentPath)} Directory</CardTitle>
-          </CardHeader>
-          <CardText>
+  if ((!isLoading && !listContent) || listContent.length === 0)
+    return <NotFound></NotFound>;
+  else {
+    return (
+      <Container tag="section" className="col-8" fluid>
+        <Card>
+          <CardBody>
+            <CardHeader tag="h3" className="font-weight-bold text-center">
+              <CardTitle>{capitalizeWord(currentPath)} Directory</CardTitle>
+            </CardHeader>
+            <CardText>
+              {isLoading ? (
+                <Spinner>Loading...</Spinner>
+              ) : (
+                `Found the following ${currentPath}: ${listContent.length}`
+              )}
+            </CardText>
             {isLoading ? (
-              <Spinner>Loading...</Spinner>
-            ) : error ? (
-              <div className="alert alert-danger" role="alert">
-                {error}
-              </div>
+              <LoadingSpinner />
+            ) : listContent.length === 0 ? (
+              <NotFound />
             ) : (
-              `Found the following ${currentPath}: ${listContent.length}`
+              <ListGroup>{generateContentCards(listContent)}</ListGroup>
             )}
-          </CardText>
-          {isLoading ? <LoadingSpinner /> : <ListGroup>{generateContentCards(listContent)}</ListGroup>}
-        </CardBody>
-      </Card>
-    </section>
-  );
-}
-
+          </CardBody>
+        </Card>
+      </Container>
+    );
+  }
+};
 export default List;

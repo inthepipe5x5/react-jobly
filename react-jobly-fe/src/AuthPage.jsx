@@ -10,6 +10,7 @@ import {
   CardBody,
   CardTitle,
   Col,
+  Container,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContextProvider";
@@ -31,13 +32,13 @@ const AuthPage = ({ authType = "signup" }) => {
   }, [authType, currentUser, navigate, setCurrentUser]);
 
   const defaultInputData = ["login", "logout"].includes(authType)
-    ? { username: "", password: "" }
+    ? { username: "test123", password: "test123" }
     : {
-        username: "",
-        password: "",
-        firstName: "",
-        lastName: "",
-        email: "",
+        username: "test123",
+        password: "test123",
+        firstName: "test123",
+        lastName: "test123",
+        email: "test123@test123.com",
       };
 
   const [inputData, setInputData] = useState(defaultInputData);
@@ -52,7 +53,6 @@ const AuthPage = ({ authType = "signup" }) => {
 
   const handleSubmit = async (evt) => {
     evt.preventDefault();
-    dismissFlashMessage();
     try {
       //user handleAuth to dynamically set API call function
       const result = await handleAuth(inputData, authType, setCurrentUser);
@@ -87,135 +87,138 @@ const AuthPage = ({ authType = "signup" }) => {
   };
 
   return (
-    <Card className="mt-5">
-      <CardTitle className="font-weight-bold text-center mt-3">
-        <h2>{getTitle(authType)}</h2>
-        {flashMessage && (
-          <FlashMessage
-            message={flashMessage.message}
-            type={flashMessage.type}
-            onDismiss={dismissFlashMessage}
-          />
-        )}
-      </CardTitle>
-      <CardBody>
-        <Form onSubmit={handleSubmit}>
-          {authType !== "login" && (
-            <>
-              <FormGroup>
-                <Label for="firstName" sm={3}>
-                  First Name
-                </Label>
-                <Col sm={9}>
-                  <Input
-                    bsSize="sm"
-                    id="firstName"
-                    name="firstName"
-                    placeholder="First Name"
-                    type="text"
-                    value={inputData.firstName}
-                    onChange={handleInput}
-                    required
-                  />
-                </Col>
-              </FormGroup>
-              <FormGroup>
-                <Label for="lastName" sm={3}>
-                  Last Name
-                </Label>
-                <Col sm={9}>
-                  <Input
-                    bsSize="sm"
-                    id="lastName"
-                    name="lastName"
-                    placeholder="Last Name"
-                    type="text"
-                    value={inputData.lastName}
-                    onChange={handleInput}
-                    required
-                  />
-                </Col>
-              </FormGroup>
-            </>
+    <Container className="col-8">
+      <Card className="card-container mt-5 mb-5">
+        <CardTitle className="font-weight-bold text-center mt-3">
+          <h2>{getTitle(authType)}</h2>
+          {flashMessage && (
+            <FlashMessage
+              title={FlashMessage.title}
+              message={flashMessage.message}
+              type={flashMessage.type}
+              onDismiss={dismissFlashMessage}
+            />
           )}
-          <FormGroup>
-            <Label for="username" sm={3}>
-              Username
-            </Label>
-            <Col sm={9}>
-              <Input
-                bsSize="sm"
-                id="username"
-                name="username"
-                placeholder="Username"
-                type="text"
-                value={inputData.username}
-                onChange={handleInput}
-                required
-              />
-            </Col>
-          </FormGroup>
-          {authType !== "edit" && (
+        </CardTitle>
+        <CardBody>
+          <Form onSubmit={handleSubmit}>
+            {authType !== "login" && (
+              <>
+                <FormGroup>
+                  <Label for="firstName" sm={3}>
+                    First Name
+                  </Label>
+                  <Col sm={9}>
+                    <Input
+                      bsSize="sm"
+                      id="firstName"
+                      name="firstName"
+                      placeholder="First Name"
+                      type="text"
+                      value={inputData.firstName}
+                      onChange={handleInput}
+                      required
+                    />
+                  </Col>
+                </FormGroup>
+                <FormGroup>
+                  <Label for="lastName" sm={3}>
+                    Last Name
+                  </Label>
+                  <Col sm={9}>
+                    <Input
+                      bsSize="sm"
+                      id="lastName"
+                      name="lastName"
+                      placeholder="Last Name"
+                      type="text"
+                      value={inputData.lastName}
+                      onChange={handleInput}
+                      required
+                    />
+                  </Col>
+                </FormGroup>
+              </>
+            )}
             <FormGroup>
-              <Label for="password" sm={3}>
-                Password
+              <Label for="username" sm={3}>
+                Username
               </Label>
               <Col sm={9}>
                 <Input
                   bsSize="sm"
-                  id="password"
-                  name="password"
-                  placeholder="Password"
-                  type="password"
-                  value={inputData.password}
-                  onChange={handleInput}
-                  required
-                  autoComplete="current-password"
-                />
-              </Col>
-            </FormGroup>
-          )}
-          {authType !== "login" && (
-            <FormGroup>
-              <Label for="email" sm={3}>
-                Email
-              </Label>
-              <Col sm={9}>
-                <Input
-                  bsSize="sm"
-                  id="email"
-                  name="email"
-                  placeholder="Email"
-                  type="email"
-                  value={inputData.email}
+                  id="username"
+                  name="username"
+                  placeholder="Username"
+                  type="text"
+                  value={inputData.username}
                   onChange={handleInput}
                   required
                 />
               </Col>
             </FormGroup>
-          )}
-          <FormGroup>
+            {authType !== "edit" && (
+              <FormGroup>
+                <Label for="password" sm={3}>
+                  Password
+                </Label>
+                <Col sm={9}>
+                  <Input
+                    bsSize="sm"
+                    id="password"
+                    name="password"
+                    placeholder="Password"
+                    type="password"
+                    value={inputData.password}
+                    onChange={handleInput}
+                    required
+                    autoComplete="current-password"
+                  />
+                </Col>
+              </FormGroup>
+            )}
+            {authType !== "login" && (
+              <FormGroup>
+                <Label for="email" sm={3}>
+                  Email
+                </Label>
+                <Col sm={9}>
+                  <Input
+                    bsSize="sm"
+                    id="email"
+                    name="email"
+                    placeholder="Email"
+                    type="email"
+                    value={inputData.email}
+                    onChange={handleInput}
+                    required
+                  />
+                </Col>
+              </FormGroup>
+            )}
+            <FormGroup>
+              <Col sm={{ offset: 3, size: 9 }}>
+                <Button color="primary" type="submit">
+                  {getTitle(authType)}
+                </Button>
+              </Col>
+            </FormGroup>
+          </Form>
+          <Row>
             <Col sm={{ offset: 3, size: 9 }}>
-              <Button color="primary" type="submit">
-                {getTitle(authType)}
+              <Button
+                color="secondary"
+                onClick={() =>
+                  navigate(authType !== "signup" ? "/signup" : "/login")
+                }
+              >
+                {authType !== "signup" ? "Sign up" : "Login"}
               </Button>
             </Col>
-          </FormGroup>
-        </Form>
-        <Row>
-          <Col sm={{ offset: 3, size: 9 }}>
-            <Button
-              color="secondary"
-              onClick={() =>
-                navigate(authType !== "signup" ? "/signup" : "/login")
-              }
-            >
-              {authType !== "signup" ? "Sign up" : "Login"}
-            </Button>
-          </Col>
-        </Row>
-      </CardBody>
-    </Card>
+          </Row>
+        </CardBody>
+      </Card>
+    </Container>
   );
 };
 

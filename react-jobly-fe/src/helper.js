@@ -93,7 +93,11 @@ const handleAuth = async (userData, authType = "login", setCurrentUserFunc) => {
         new Error("An authentication error occurred. Bad request", 400);
 
       //handle if API rejects auth attempt or if result=== error
-      if (!result.error || ![200, 201].includes(result.statusCode))
+      if (
+        result.data.error ||
+        result.error ||
+        ![200, 201].includes(result.status)
+      )
         throw new Error(result.error, 400);
       else {
         const { token } = result || result.token;
@@ -129,6 +133,30 @@ const getTitle = (authPageType) => {
   }
 };
 
+/*
+Helper function to handle caught errors in API calls and turn into FlashMessages
+console.error(error origin, error)
+returns FlashMessage Object: 
+  {
+    title: 《str》
+    message: 《str》
+    type: 《str》
+  }
+*/
+const handleCaughtError = (error, origin="") => {
+  let errMessage =
+    error.message ||
+    `Detail.jsx -> Error retrieving ${origin? + origin : "api call"} `;
+  let errTitle = error.status || error.error;
+  let errType = [400, 401, 500].includes(error.status) ? "danger" : "warning";
+
+  return {
+    title: errTitle,
+    message: errMessage,
+    type: errType
+  };
+};
+
 export {
   capitalizeWord,
   formatSalary,
@@ -137,4 +165,5 @@ export {
   handleAuth,
   handleLogout,
   getUserByToken,
+  handleCaughtError,
 };

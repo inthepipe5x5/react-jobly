@@ -17,7 +17,7 @@ const NotFound = () => {
       <Col sm="10" md="8">
         <Card className="text-center">
           <CardBody>
-            <CardTitle className="font-weight-bold">
+            <CardTitle tag="h1" className="font-weight-bold">
               404 - Page Not Found
             </CardTitle>
             <p>The page you are looking for does not exist.</p>

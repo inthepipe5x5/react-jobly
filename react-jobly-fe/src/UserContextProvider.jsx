@@ -20,7 +20,7 @@ const defaultUserContext = {
 };
 
 const UserContextProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(defaultUserContext);
+  const [currentUser, setCurrentUser] = useState();
 
   useEffect(() => {
     const checkToken = async () => {

@@ -38,6 +38,7 @@ function App() {
         <MainNavBar user={currentUser} />
         {flashMessage && (
           <FlashMessage
+            title={flashMessage.title}
             message={flashMessage.message}
             type={flashMessage.type}
             onDismiss={() => DismissFlashMessage(showFlashMessage)}
@@ -47,6 +48,7 @@ function App() {
           <div className=" min-vw-50 min-vh-50 w-100 d-flex align-items-center">
             <Container
               fluid
+              
               className=" d-flex justify-content-center align-items-center mb-5"
             >
               <AppRoutes />

@@ -8,6 +8,7 @@ import CompanyResult from "./CompanyResult";
 import JobResult from "./JobResult";
 import UserResult from "./UserResult";
 import JoblyApi from "./api";
+import { capitalizeWord } from "./helper";
 
 const Result = ({ resultType = "company", cantFind = NotFound }) => {
   const [result, setResult] = useState(null);
@@ -37,7 +38,8 @@ const Result = ({ resultType = "company", cantFind = NotFound }) => {
         setIsLoading(false);
       }
     };
-  });
+    fetchResult();
+  }, [resultType, cantFind, username, companyName, jobName, navigate]);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -53,15 +55,21 @@ const Result = ({ resultType = "company", cantFind = NotFound }) => {
     user: UserResult,
   }[resultType.toLowerCase()];
 
-  if (!ResultComponent) {
-    navigate(cantFind);
-    return null;
-  }
-
   return (
-    <section>
-      <ResultComponent result={result} />
-    </section>
+    <div className="card-container mb-5">
+      <div className="container">
+        <h5 className="display-4 mb-4 font-weight-bold">{`${capitalizeWord(
+          resultType
+        )}`}</h5>
+        {!ResultComponent ? (
+          () => {
+            navigate(cantFind);
+          }
+        ) : (
+          <ResultComponent result={result} />
+        )}
+      </div>
+    </div>
   );
 };
 
