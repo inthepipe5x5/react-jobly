@@ -78,7 +78,11 @@ class JoblyApi {
     try {
       const { username, password } = userData;
 
-      let res = await this.request(`auth/token`, { username, password }, "post");
+      let res = await this.request(
+        `auth/token`,
+        { username, password },
+        "post"
+      );
       return res.token;
     } catch (error) {
       console.error("Error in login attempt", error);
@@ -97,6 +101,20 @@ class JoblyApi {
     } catch (error) {
       console.error("Error in user patch attempt", error);
       return new Error(error, 400);
+    }
+  }
+
+  static async getUser(username) {
+    try {
+      if (!username)
+        throw new Error(`Bad get user request: username= ${username}`);
+      const res = await this.request(`users/${username}`)
+      console.debug(`getUser api result = ${[res?.data.data , res?.user , res]}`)
+      return res?.data || res?.user || res 
+    } catch (error) {
+      console.error(`API call: getUser ERR ${error}`);
+      const res = { status: error.status, message: error.message };
+      return res
     }
   }
 }

@@ -78,31 +78,38 @@ const getUserByToken = async ({ token, username }) => {
 };
 
 const handleAuth = async (userData, authType = "login", setCurrentUserFunc) => {
-  console.debug('handleAuth call', authType, userData);
+  console.debug("handleAuth call", authType, userData);
   if (!userData) localStorage.getItem(tokenKey);
   else {
     try {
       let result;
       switch (authType) {
-        case 'login':
+        case "login":
           result = await JoblyApi.loginUser(userData);
           break;
-        case 'signup':
-        case 'register':
+        case "signup":
+        case "register":
           result = await JoblyApi.registerNewUser(userData);
           break;
-        case 'edit':
+        case "edit":
           result = await JoblyApi.editUser(userData);
           break;
         default:
-          throw new Error(`An ${authType} authentication error occurred. Bad request`, 400);
+          throw new Error(
+            `An ${authType} authentication error occurred. Bad request`,
+            400
+          );
       }
 
-      if (result.data?.error || result.error || ![200, 201].includes(result.status)) {
+      if (
+        result.data?.error ||
+        result.error ||
+        ![200, 201].includes(result.status)
+      ) {
         throw new Error(result.error, 400);
       } else {
         const { token } = result || result.token;
-        const {username} = userData
+        const { username } = userData;
         updateLocalStorageToken(token, username);
         setCurrentUserFunc({ token, username });
         JoblyApi.token = token;
@@ -114,14 +121,23 @@ const handleAuth = async (userData, authType = "login", setCurrentUserFunc) => {
   }
 };
 
+const getUserByUsername = async ({ username }) => {
+  try {
+    const res = await JoblyApi.getUser(username);
+  } catch (error) {
+    console.error(`getUserByUsername function error: ${error}`);
+  }
+};
 
-const handleLogout = (setCurrentUserFunc) => {
+const createNewJoblyAPI = (token) => {
+  return;
+};
+
+const removeLocalStorageTokenAfterLogout = (key = tokenKey) => {
   //setCurrentUserFunc is from: //const { currentUser, setCurrentUser } = useContext(UserContext);
 
   //remove user token from local storage
-  localStorage.removeItem(tokenKey);
-  //remove user token from context
-  setCurrentUserFunc(null);
+  localStorage.removeItem(key);
 };
 const getTitle = (authPageType) => {
   switch (authPageType) {
@@ -166,7 +182,7 @@ export {
   /*validateNewJobFormData,*/
   getTitle,
   handleAuth,
-  handleLogout,
+  removeLocalStorageTokenAfterLogout,
   getUserByToken,
   handleCaughtError,
 };

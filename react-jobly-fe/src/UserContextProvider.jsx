@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { createContext, useState, useEffect } from "react";
+import React, { userContext, createContext, useState, useEffect } from "react";
 import JoblyApi from "./api.js";
 import { getUserByToken } from "./helper.js";
 /* This is a React context called `UserContext` using `React.createContext()`. 
@@ -11,35 +11,71 @@ Intended use:
 - providing user authentication context (user vs anon user) to React components
 
 */
-
-const UserContext = createContext();
 const defaultUserContext = {
   username: "testuser",
   password: "password",
   token: JoblyApi.token,
 };
 
+const UserContext = createContext({
+  currentUser: { token, username },
+  loginUser: () => {},
+  logoutUser: () => {},
+  apiInstance: new JoblyApi(),
+});
+
+export const useUserContext = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error(
+      "useUserContext must be used within a FlashMessageProvider"
+    );
+  }
+  return context;
+};
+
 const UserContextProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState();
-
-  useEffect(() => {
-    const checkToken = async () => {
-      const localToken = localStorage.getItem("JoblyUserToken");
-      if (localToken) {
-        try {
-          let user = await getUserByToken(JSON.parse(localToken));
-          user = !(user instanceof Error || user.error) ? user : null;
-          setCurrentUser(user);
-        } catch (error) {
-          console.error("Error fetching user by token:", error);
-        }
+  const [currentUser, setCurrentUser] = useState({
+    token: null,
+    username: null,
+  });
+  
+  const checkToken = async () => {
+    const localToken = localStorage.getItem("JoblyUserToken");
+    if (localToken) {
+      try {
+        let user = await getUserByToken(JSON.parse(localToken));
+        user = !(user instanceof Error || user.error) ? user : null;
+        setCurrentUser(user);
+      } catch (error) {
+        console.error("Error fetching user by token:", error);
       }
-    };
-    checkToken();
-  }, [currentUser]);
+    }
+  };
+  checkToken();
+  const loginUser = useCallback(
+    (token, username) => {
+      //update provider state
+      setCurrentUser({ token, username });
+      //update local storage
+      updateLocalStorageToken(token);
+      apiInstance.token = token;
+    },
+    [apiInstance]
+  );
 
+  const logoutUser = useCallback(() => {
+    setCurrentUser({ token: null, username: null });
+    apiInstance.token = null;
+    removeLocalStorageTokenAfterLogout();
+  }, [apiInstance]);
+
+  const contextValue = useMemo(
+    () => ({ currentUser, loginUser, logoutUser }),
+    [currentUser, loginUser, logoutUser]
+  );
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser }}>
+    <UserContext.Provider value={{ contextValue }}>
       {children}
     </UserContext.Provider>
   );
