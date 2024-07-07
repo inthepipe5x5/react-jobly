@@ -78,35 +78,31 @@ const getUserByToken = async ({ token, username }) => {
 };
 
 const handleAuth = async (userData, authType = "login", setCurrentUserFunc) => {
-  //userData = {username || password}
-  //setCurrentUserFunc = useContext(UserContext).setCurrentUser
-  console.debug('handleAuth call', authType, userData)
+  console.debug('handleAuth call', authType, userData);
   if (!userData) localStorage.getItem(tokenKey);
   else {
     try {
-      const { username } = userData;
-      let result =
-        {
-          login: await JoblyApi.loginUser(userData),
-          signup: await JoblyApi.registerNewUser(userData),
-          register: await JoblyApi.registerNewUser(userData),
-          edit: await JoblyApi.editUser(userData),
-        }[authType] ||
-        new Error(
-          `An ${authType} authentication error occurred. Bad request`,
-          400
-        );
+      let result;
+      switch (authType) {
+        case 'login':
+          result = await JoblyApi.loginUser(userData);
+          break;
+        case 'signup':
+        case 'register':
+          result = await JoblyApi.registerNewUser(userData);
+          break;
+        case 'edit':
+          result = await JoblyApi.editUser(userData);
+          break;
+        default:
+          throw new Error(`An ${authType} authentication error occurred. Bad request`, 400);
+      }
 
-      //handle if API rejects auth attempt or if result=== error
-      if (
-        result.data.error ||
-        result.error ||
-        ![200, 201].includes(result.status)
-      )
+      if (result.data?.error || result.error || ![200, 201].includes(result.status)) {
         throw new Error(result.error, 400);
-      else {
+      } else {
         const { token } = result || result.token;
-        //save token to localStorage & joblyApi
+        const {username} = userData
         updateLocalStorageToken(token, username);
         setCurrentUserFunc({ token, username });
         JoblyApi.token = token;
@@ -117,6 +113,7 @@ const handleAuth = async (userData, authType = "login", setCurrentUserFunc) => {
     }
   }
 };
+
 
 const handleLogout = (setCurrentUserFunc) => {
   //setCurrentUserFunc is from: //const { currentUser, setCurrentUser } = useContext(UserContext);
