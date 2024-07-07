@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { Card, CardBody, CardTitle, Col, Container, Row, Button } from "reactstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "./UserContextProvider";
-import { FlashMessageContext, useFlashMessage } from "./FlashMessageContext";
+import { useFlashMessage } from "./FlashMessageContext";
 import { handleAuth, handleLogout, getTitle } from "./helper";
 import FlashMessage from "./FlashMessage";
 import LoginForm from "./LoginForm";
@@ -16,8 +16,8 @@ const AuthPage = () => {
     location.pathname.replace("/", "") || "login"
   );
   console.log("AUTHPAGE", location.pathname, authType);
-  const { currentUser, setCurrentUser } = useContext(UserContext) || null;
-  const { flashMessage, showFlashMessage, dismissFlashMessage } = useContext(FlashMessageContext);
+  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { flashMessage, showFlashMessage, dismissFlashMessage } = useFlashMessage();
 
   useEffect(() => {
     if (authType === "logout") {
@@ -61,7 +61,7 @@ const AuthPage = () => {
           <h2>{getTitle(authType)}</h2>
           {flashMessage && (
             <FlashMessage
-              title={FlashMessage.title}
+              title={flashMessage.title}
               message={flashMessage.message}
               type={flashMessage.type}
               onDismiss={dismissFlashMessage}
@@ -75,7 +75,7 @@ const AuthPage = () => {
             <EditUserForm currentUser={currentUser} onSubmit={handleAuthSubmit} />
           )}
           <Row>
-            <Col sm={{ offset: 3, size: 9 }}>
+            <Col>
               <Button
                 color="secondary"
                 onClick={() => setAuthType(authType !== "signup" ? "signup" : "login")}

@@ -27,7 +27,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState(user);
 
   console.log("AUTH CONTEXT: " + `${currentUser ? `currentUser` : "ANON"}`);
-  console.log("localStorage token: ", localStorage.getItem('JoblyUserToken'))
+  console.log("localStorage token: ", localStorage.getItem("JoblyUserToken"));
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -36,14 +36,6 @@ function App() {
     <div className="App">
       <UserContextProvider>
         <MainNavBar user={currentUser} />
-        {flashMessage && (
-          <FlashMessage
-            title={flashMessage.title}
-            message={flashMessage.message}
-            type={flashMessage.type}
-            onDismiss={() => DismissFlashMessage(showFlashMessage)}
-          />
-        )}
         <div className="hero-wrapper bg-composed-wrapper bg-midnight-bloom min-vh-100">
           <div className=" min-vw-50 min-vh-50 w-100 d-flex align-items-center">
             <Container

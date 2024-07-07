@@ -58,7 +58,7 @@ const LoginForm = ({ onSubmit }) => {
         </Col>
       </FormGroup>
       <FormGroup>
-        <Col sm={{ offset: 3, size: 9 }}>
+        <Col>
           <Button color="primary" type="submit">
             Login
           </Button>
