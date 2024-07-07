@@ -108,11 +108,9 @@ const handleAuth = async (userData, authType = "login", setCurrentUserFunc) => {
       ) {
         throw new Error(result.error, 400);
       } else {
-        const { token } = result || result.token;
+        const { username, token } = result || result?.data || result.token;
         const { username } = userData;
-        updateLocalStorageToken(token, username);
-        setCurrentUserFunc({ token, username });
-        JoblyApi.token = token;
+        return { token, username };
       }
     } catch (error) {
       console.error(error);
@@ -183,6 +181,7 @@ export {
   getTitle,
   handleAuth,
   removeLocalStorageTokenAfterLogout,
+  createNewJoblyAPI,
   getUserByToken,
   handleCaughtError,
 };

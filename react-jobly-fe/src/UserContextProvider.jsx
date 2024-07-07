@@ -2,7 +2,8 @@
 /* eslint-disable react/prop-types */
 import React, { userContext, createContext, useState, useEffect } from "react";
 import JoblyApi from "./api.js";
-import { getUserByToken } from "./helper.js";
+import { createNewJoblyAPI, getUserByToken } from "./helper.js";
+import { useFlashMessage } from "./FlashMessageContext.jsx";
 /* This is a React context called `UserContext` using `React.createContext()`. 
 It also defines a component called `UserProvider` that takes in `children` as a prop. 
 Within the `UserProvider` component, it uses the `useState` hook to create a state variable `currentUser`
@@ -24,7 +25,7 @@ const UserContext = createContext({
   apiInstance: new JoblyApi(),
 });
 
-export const useUserContext = () => {
+const useUserContext = () => {
   const context = useContext(UserContext);
   if (!context) {
     throw new Error(
@@ -39,7 +40,7 @@ const UserContextProvider = ({ children }) => {
     token: null,
     username: null,
   });
-  
+  const { showFlashMessage } = useFlashMessage();
   const checkToken = async () => {
     const localToken = localStorage.getItem("JoblyUserToken");
     if (localToken) {
@@ -56,10 +57,14 @@ const UserContextProvider = ({ children }) => {
   const loginUser = useCallback(
     (token, username) => {
       //update provider state
-      setCurrentUser({ token, username });
+      setCurrentUser((currentUser) => {
+        token, username;
+      });
       //update local storage
       updateLocalStorageToken(token);
-      apiInstance.token = token;
+      //update api instance
+      apiInstance = createNewJoblyAPI(token);
+      showFlashMessage(`Welcome back, ${username}!`, "success");
     },
     [apiInstance]
   );
@@ -68,6 +73,7 @@ const UserContextProvider = ({ children }) => {
     setCurrentUser({ token: null, username: null });
     apiInstance.token = null;
     removeLocalStorageTokenAfterLogout();
+    showFlashMessage("Successfully logged out", "success");
   }, [apiInstance]);
 
   const contextValue = useMemo(
@@ -81,4 +87,4 @@ const UserContextProvider = ({ children }) => {
   );
 };
 
-export { UserContextProvider, UserContext };
+export { UserContextProvider, UserContext, useUserContext };
