@@ -20,7 +20,7 @@ class JoblyApi {
   constructor(token) {
     this.token = token
       ? token
-      : localStorage.getItem("JoblyUserToken") || testToken;
+      : localStorage.getItem("JoblyUserToken") || /* REMOVE test token in prod*/testToken;
   }
 
   static async request(endpoint, data = {}, method = "get") {

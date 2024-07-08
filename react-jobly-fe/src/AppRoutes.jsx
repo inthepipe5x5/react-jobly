@@ -45,6 +45,7 @@ const AppRoutes = () => {
         element={<AuthPage authType="edit" />}
       />
       <Route path="users/:username" element={<Result resultType="user" />} />
+      <Route path="profile" element={<Result resultType="user" />} />
       <Route path="users" element={<List />} />
       <Route path="jobs/:jobName" element={<Result resultType="job" />} />
       <Route path="jobs" element={<List />} />

@@ -174,6 +174,19 @@ const handleCaughtError = (error, origin = "") => {
   };
 };
 
+  const checkToken = async () => {
+    const localToken = localStorage.getItem("JoblyUserToken");
+    if (localToken) {
+      try {
+        let user = await getUserByToken(JSON.parse(localToken));
+        user = !(user instanceof Error || user.error) ? user : null;
+        setCurrentUser(user);
+      } catch (error) {
+        console.error("Error fetching user by token:", error);
+      }
+    }
+  };
+
 export {
   capitalizeWord,
   formatSalary,
@@ -184,4 +197,5 @@ export {
   createNewJoblyAPI,
   getUserByToken,
   handleCaughtError,
+  checkToken,
 };

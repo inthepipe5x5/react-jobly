@@ -9,15 +9,16 @@ import {
   Nav,
   NavItem,
   NavLink as BSNavLink,
+  Button,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import "./MainNavBar.css";
-import { UserContext } from "./UserContextProvider";
+import { useUserContext } from "./useUserContext";
 
 const MainNavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpenState = () => setIsOpen(!isOpen);
-  const { currentUser: user } = useContext(UserContext) || null;
+  const { currentUser: user, logoutUser } = useUserContext();
 
   return (
     <Navbar color="light" light expand="sm" className="mb-4">
@@ -57,9 +58,13 @@ const MainNavBar = () => {
                 </BSNavLink>
               </NavItem>
               <NavItem>
-                <BSNavLink tag={Link} to="/logout">
+                <Button
+                  onClick={() => {
+                    logoutUser();
+                  }}
+                >
                   Logout
-                </BSNavLink>
+                </Button>
               </NavItem>
             </>
           ) : (

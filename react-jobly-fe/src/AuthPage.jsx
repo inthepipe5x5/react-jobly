@@ -1,9 +1,17 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Card, CardBody, CardTitle, Col, Container, Row, Button } from "reactstrap";
+import {
+  Card,
+  CardBody,
+  CardTitle,
+  Col,
+  Container,
+  Row,
+  Button,
+} from "reactstrap";
 import { useNavigate, useLocation } from "react-router-dom";
-import { UserContext } from "./UserContextProvider";
+import { useUserContext } from "./useUserContext";
 import { useFlashMessage } from "./FlashMessageContext";
-import { handleAuth, handleLogout, getTitle } from "./helper";
+import { handleAuth, getTitle } from "./helper";
 import FlashMessage from "./FlashMessage";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
@@ -16,23 +24,59 @@ const AuthPage = () => {
     location.pathname.replace("/", "") || "login"
   );
   console.log("AUTHPAGE", location.pathname, authType);
-  const { currentUser, setCurrentUser } = useContext(UserContext);
-  const { flashMessage, showFlashMessage, dismissFlashMessage } = useFlashMessage();
+  const { currentUser, loginUser, logoutUser } = useUserContext();
+  const { flashMessage, showFlashMessage, dismissFlashMessage } =
+    useFlashMessage();
 
-  useEffect(() => {
-    if (authType === "logout") {
-      currentUser ? handleLogout(setCurrentUser) : navigate("/login");
-    }
-  }, [authType, currentUser, navigate, setCurrentUser]);
+  //set formBody based on authType
+  let formBody;
+  switch (authType) {
+    case "logout":
+      currentUser
+        ? logoutUser()
+        : () => {
+            showFlashMessage("You must log in first", "warning");
+            navigate("/login");
+          };
+      break;
+    case "login":
+      formBody = <LoginForm onSubmit={handleAuthSubmit} />;
+      break;
+    case "signup":
+      formBody = <SignUpForm onSubmit={handleAuthSubmit} />;
+      break;
+    case "edit":
+      formBody = (
+        <EditUserForm currentUser={currentUser} onSubmit={handleAuthSubmit} />
+      );
+      break;
+    default:
+      formBody = <LoginForm onSubmit={handleAuthSubmit} />;
+
+      break;
+  }
 
   const handleAuthSubmit = async (inputData, authType) => {
     try {
       const result = await handleAuth(inputData, authType, setCurrentUser);
-      console.log(authType, inputData, result?.status, result?.statusCode, result?.data, result);
+      console.log(
+        authType,
+        inputData,
+        result?.status,
+        result?.statusCode,
+        result?.data,
+        result
+      );
 
-      if (!result || result instanceof Error || ![200, 201].includes(result.statusCode)) {
+      if (
+        !result ||
+        result instanceof Error ||
+        ![200, 201].includes(result.status)
+      ) {
         throw new Error(
-          result?.message || result?.error || `An ${authType} authentication error occurred.`,
+          result?.message ||
+            result?.error ||
+            `An ${authType} authentication error occurred.`,
           result?.status || result?.statusCode || 400
         );
       } else {
@@ -48,7 +92,8 @@ const AuthPage = () => {
     } catch (error) {
       console.error("handleSubmit Error:", error?.status, error.message);
       showFlashMessage(
-        error.message || `${getTitle(authType)} error occurred. Please try again.`,
+        error.message ||
+          `${getTitle(authType)} error occurred. Please try again.`,
         "error"
       );
     }
@@ -69,16 +114,14 @@ const AuthPage = () => {
           )}
         </CardTitle>
         <CardBody>
-          {authType === "login" && <LoginForm onSubmit={handleAuthSubmit} />}
-          {authType === "signup" && <SignUpForm onSubmit={handleAuthSubmit} />}
-          {authType === "edit" && (
-            <EditUserForm currentUser={currentUser} onSubmit={handleAuthSubmit} />
-          )}
+          {formBody}
           <Row>
             <Col>
               <Button
                 color="secondary"
-                onClick={() => setAuthType(authType !== "signup" ? "signup" : "login")}
+                onClick={() =>
+                  setAuthType(authType !== "signup" ? "signup" : "login")
+                }
               >
                 {authType !== "signup" ? "Sign up" : "Login"}
               </Button>
