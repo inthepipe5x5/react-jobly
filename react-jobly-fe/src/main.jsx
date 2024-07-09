@@ -8,9 +8,9 @@ import { FlashMessageProvider } from "./FlashMessageContext";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <FlashMessageProvider>
+      {/* <FlashMessageProvider> */}
         <App />
-      </FlashMessageProvider>
+      {/* </FlashMessageProvider> */}
     </BrowserRouter>
   </React.StrictMode>
 );

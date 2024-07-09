@@ -188,7 +188,7 @@ const checkToken = async () => {
     try {
       let user = await getUserByToken(JSON.parse(localToken));
       user = !(user instanceof Error || user.error) ? user : null;
-      setCurrentUser(user);
+      return user
     } catch (error) {
       console.error("Error fetching user by token:", error);
     }

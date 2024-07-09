@@ -1,6 +1,4 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   Collapse,
   Navbar,
@@ -18,10 +16,9 @@ import { useUserContext } from "./useUserContext";
 const MainNavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpenState = () => setIsOpen(!isOpen);
-  const { currentUser: user, logoutUser } = useUserContext();
-  const { currentUser } = useUserContext();
+  const { currentUser, logoutUser } = useUserContext();
 
-  console.log("AUTH CONTEXT: " + `${currentUser ? currentUser : "ANON"}`);
+  console.log("AUTH CONTEXT: " + `${currentUser ? currentUser.username : "ANON"}`);
   return (
     <Navbar color="light" light expand="sm" className="mb-4">
       <NavbarBrand tag={Link} to="/">
@@ -52,19 +49,15 @@ const MainNavBar = () => {
           </NavItem>
         </Nav>
         <Nav className="ms-auto" navbar>
-          {user ? (
+          {currentUser && currentUser.username ? (
             <>
               <NavItem>
-                <BSNavLink tag={Link} to={`/users/${user.username}`}>
-                  {user.username}
+                <BSNavLink tag={Link} to={`/users/${currentUser.username}`}>
+                  {currentUser.username}
                 </BSNavLink>
               </NavItem>
               <NavItem>
-                <Button
-                  onClick={() => {
-                    logoutUser();
-                  }}
-                >
+                <Button onClick={logoutUser}>
                   Logout
                 </Button>
               </NavItem>

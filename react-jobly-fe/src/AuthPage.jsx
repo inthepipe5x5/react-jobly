@@ -10,9 +10,9 @@ import {
 } from "reactstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useUserContext } from "./useUserContext";
-import { useFlashMessage } from "./FlashMessageContext";
+// import { useFlashMessage } from "./FlashMessageContext";
 import { handleAuth, getTitle, getArticle, capitalizeWord } from "./helper";
-import FlashMessage from "./FlashMessage";
+// import FlashMessage from "./FlashMessage";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
 import EditUserForm from "./EditUserForm";
@@ -26,8 +26,8 @@ const AuthPage = () => {
   console.log("AUTHPAGE", location.pathname, authType);
   //retrieve contexts
   const { currentUser, loginUser, logoutUser } = useUserContext();
-  const { flashMessage, showFlashMessage, dismissFlashMessage } =
-    useFlashMessage();
+  // const { flashMessage, showFlashMessage, dismissFlashMessage } =
+  //   useFlashMessage();
 
   const handleAuthSubmit = async (inputData, authType) => {
     try {
@@ -43,7 +43,7 @@ const AuthPage = () => {
           result?.message ||
             result?.data ||
             result?.error ||
-            result`${capitalizeWord(
+            result || `${capitalizeWord(
               getArticle(authType)
             )} ${authType} authentication error occurred.`,
           result?.status || result?.statusCode || 400
@@ -53,7 +53,7 @@ const AuthPage = () => {
         const { token } = result.data || result;
         loginUser({ username, token });
         const successMessage = `${getTitle(authType)} Successful!`;
-        showFlashMessage(successMessage, "success");
+        // showFlashMessage(result.status || "success", successMessage, "success");
 
         if (authType === "edit") {
           navigate(`/users/${result.username}`);
@@ -63,11 +63,11 @@ const AuthPage = () => {
       }
     } catch (error) {
       console.error("handleAuthSubmit Error:", error);
-      showFlashMessage(
-        error ||
-          `${getTitle(authType)} error occurred. Please try again. ${error}`,
-        "error"
-      );
+      // showFlashMessage(
+      //   error ||
+      //     `${getTitle(authType)} error occurred. Please try again. ${error}`,
+      //   "error"
+      // );
     }
   };
 
@@ -78,7 +78,7 @@ const AuthPage = () => {
       currentUser
         ? logoutUser()
         : () => {
-            showFlashMessage("You must log in first", "warning");
+            // showFlashMessage("Logout error", "You must log in first", "warning");
             navigate("/login");
           };
       break;
@@ -104,14 +104,14 @@ const AuthPage = () => {
       <Card className="card-container mt-5 mb-5">
         <CardTitle className="font-weight-bold text-center mt-3">
           <h2>{getTitle(authType)}</h2>
-          {flashMessage && (
+          {/* {flashMessage && (
             <FlashMessage
               title={flashMessage.title}
               message={flashMessage.message}
               type={flashMessage.type}
               onDismiss={dismissFlashMessage}
             />
-          )}
+          )} */}
         </CardTitle>
         <CardBody>
           {formBody}

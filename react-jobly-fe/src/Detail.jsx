@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, createElement, useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FlashMessageContext } from "./FlashMessageContext";
+// import { FlashMessageContext } from "./FlashMessageContext";
 import JoblyApi from "./api";
 import ErrorPageContent from "./ErrorContent";
 import NotFound from "./NotFound";
@@ -14,8 +14,8 @@ import { handleCaughtError } from "./helper";
 const Detail = ({ data }) => {
   const [detailContent, setDetailContent] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { flashMessage, showFlashMessage, DismissFlashMessage } =
-    useContext(FlashMessageContext);
+  // const { flashMessage, showFlashMessage, DismissFlashMessage } =
+  //   useContext(FlashMessageContext);
   //grab location, currentPath, url params
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,7 +55,7 @@ const Detail = ({ data }) => {
         message: error?.message || "error fetching detail data",
       });
 
-      showFlashMessage(errTitle, errMessage, errType);
+      // showFlashMessage(errTitle, errMessage, errType);
     } finally {
       setIsLoading(false);
     }

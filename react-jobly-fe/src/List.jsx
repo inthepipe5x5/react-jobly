@@ -14,7 +14,7 @@ import {
   Container,
 } from "reactstrap";
 import { v4 as uuid } from "uuid";
-import { FlashMessageContext } from "./FlashMessageContext";
+// import { FlashMessageContext } from "./FlashMessageContext";
 import { capitalizeWord, handleCaughtError } from "./helper";
 import LoadingSpinner from "./LoadingSpinner";
 import JobResult from "./JobResult";
@@ -27,8 +27,8 @@ import ErrorPageContent from "./ErrorContent";
 const List = () => {
   const [listContent, setListContent] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { flashMessage, showFlashMessage, DismissFlashMessage } =
-    useContext(FlashMessageContext);
+  // const { flashMessage, showFlashMessage, DismissFlashMessage } =
+    // useContext(FlashMessageContext);
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname.split("/")[1];
@@ -52,13 +52,13 @@ const List = () => {
           status: errTitle,
           message: errMessage,
         });
-        showFlashMessage(errTitle, errMessage, errType);
+        // showFlashMessage(errTitle, errMessage, errType);
       } finally {
         setIsLoading(false);
       }
     };
     getAllData();
-  }, [currentPath, navigate, showFlashMessage]);
+  }, [currentPath, navigate, /*showFlashMessage*/]);
 
   const generateContentCards = (content) => {
     const uniqueIdentifier = {
