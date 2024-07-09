@@ -11,6 +11,10 @@ import AuthPage from "./AuthPage";
 import NotFound from "./NotFound";
 import SubmitNew from "./SubmitNew";
 
+import LoginForm from "./LoginForm";
+import SignUpForm from "./SignUpForm";
+import EditUserForm from "./EditUserForm";
+
 /**
  * React Routes for Jobly App:
  * Routes
@@ -28,11 +32,11 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />}></Route>
-      <Route path="signup" element={<AuthPage authType="signup" />}></Route>
-      <Route path="login" element={<AuthPage authType="login" />}></Route>
+      <Route path="signup" element={<AuthPage formBody={SignUpForm} />}></Route>
+      <Route path="login" element={<AuthPage formBody={LoginForm} />}></Route>
       <Route path="logout" element={<>
         <Alert color="success">Log Out Successful!</Alert> 
-        <AuthPage authType="logout" />
+        <AuthPage />
         </>
       }></Route>
       <Route
@@ -42,7 +46,7 @@ const AppRoutes = () => {
       <Route path="companies" element={<List />} />
       <Route
         path="users/:username/edit"
-        element={<AuthPage authType="edit" />}
+        element={<AuthPage formBody={EditUserForm} />}
       />
       <Route path="users/:username" element={<Result resultType="user" />} />
       <Route path="profile" element={<Result resultType="user" />} />

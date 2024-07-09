@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, createElement } from "react";
 import {
   Card,
   CardBody,
@@ -13,11 +13,9 @@ import { useUserContext } from "./useUserContext";
 // import { useFlashMessage } from "./FlashMessageContext";
 import { handleAuth, getTitle, getArticle, capitalizeWord } from "./helper";
 // import FlashMessage from "./FlashMessage";
-import LoginForm from "./LoginForm";
-import SignUpForm from "./SignUpForm";
-import EditUserForm from "./EditUserForm";
 
-const AuthPage = () => {
+
+const AuthPage = ({formBody}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [authType, setAuthType] = useState(
@@ -29,74 +27,79 @@ const AuthPage = () => {
   // const { flashMessage, showFlashMessage, dismissFlashMessage } =
   //   useFlashMessage();
 
-  const handleAuthSubmit = async (inputData, authType) => {
-    try {
-      const result = await handleAuth(inputData, authType);
-      console.log(authType, inputData, "=>", result);
+  const handleAuthSubmit = (inputData, authType) => {
+    // try {
+      const result = handleAuth(inputData, authType)
+        .then((res) => {
+          console.log(authType, inputData, "=>", res);
+          loginUser(result.token, inputData.username);
+          const successMessage = `${getTitle(authType)} Successful!`;
+          console.debug(successMessage);
+          return res
+        })
+        .catch((err) => console.error("handleAuthSubmit Error:", err))
+        .finally(()=>{
+          if (localStorage.getItem('JoblyUserToken')) {
+            if (authType === "edit") {
+              return navigate(`/users/${result.username}`);
+            } else {
+              return navigate("/");
+            }
+          } else {
+            return navigate(`/${authType}`)
+          }
+        })
 
-      if (
-        !result ||
-        result instanceof Error ||
-        (+result.status !== 201 && +result.status !== 200)
-      ) {
-        throw new Error(
-          result?.message ||
-            result?.data ||
-            result?.error ||
-            result || `${capitalizeWord(
-              getArticle(authType)
-            )} ${authType} authentication error occurred.`,
-          result?.status || result?.statusCode || 400
-        );
-      } else {
-        const { username } = result.data || result || inputData;
-        const { token } = result.data || result;
-        loginUser({ username, token });
-        const successMessage = `${getTitle(authType)} Successful!`;
-        // showFlashMessage(result.status || "success", successMessage, "success");
+    //   if (result.token) {
+    //     // const { username } = inputData;
+    //     // const { token } = result;
+    //     // showFlashMessage(result.status || "success", successMessage, "success");
 
-        if (authType === "edit") {
-          navigate(`/users/${result.username}`);
-        } else {
-          navigate("/");
-        }
-      }
-    } catch (error) {
-      console.error("handleAuthSubmit Error:", error);
-      // showFlashMessage(
-      //   error ||
-      //     `${getTitle(authType)} error occurred. Please try again. ${error}`,
-      //   "error"
-      // );
-    }
-  };
+    //   } else {
+    //     throw new Error(
+    //       `${capitalizeWord(
+    //         getArticle(authType)
+    //       )} ${authType} authentication error occurred. Server response: ${result}`,
+    //       400
+    //     );
+    //   }
+    // } catch (error) {
+    //   console.error("handleAuthSubmit Error:", error);
+    //   // showFlashMessage(
+    //   //   error ||
+    //   //     `${getTitle(authType)} error occurred. Please try again. ${error}`,
+    //   //   "error"
+    //   // );
+  //   }
+  // };
 
-  //set formBody based on authType
-  let formBody;
-  switch (authType) {
-    case "logout":
-      currentUser
-        ? logoutUser()
-        : () => {
-            // showFlashMessage("Logout error", "You must log in first", "warning");
-            navigate("/login");
-          };
-      break;
-    case "login":
-      formBody = <LoginForm onSubmit={handleAuthSubmit} />;
-      break;
-    case "signup":
-      formBody = <SignUpForm onSubmit={handleAuthSubmit} />;
-      break;
-    case "edit":
-      formBody = (
-        <EditUserForm currentUser={currentUser} onSubmit={handleAuthSubmit} />
-      );
-      break;
-    default:
-      formBody = <LoginForm onSubmit={handleAuthSubmit} />;
+  // //set formBody based on authType
+  // let formBody;
+  
+  // switch (authType) {
+  //   case "logout":
+  //     currentUser
+  //       ? logoutUser()
+  //       : () => {
+  //           // showFlashMessage("Logout error", "You must log in first", "warning");
+  //           navigate("/login");
+  //         };
+  //     break;
+  //   case "login":
+  //     formBody = <LoginForm onSubmit={handleAuthSubmit} />;
+  //     break;
+  //   case "signup":
+  //     formBody = <SignUpForm onSubmit={handleAuthSubmit} />;
+  //     break;
+  //   case "edit":
+  //     formBody = (
+  //       <EditUserForm currentUser={currentUser} onSubmit={handleAuthSubmit} />
+  //     );
+  //     break;
+  //   default:
+  //     formBody = <LoginForm onSubmit={handleAuthSubmit} />;
 
-      break;
+  //     break;
   }
 
   return (
@@ -114,7 +117,7 @@ const AuthPage = () => {
           )} */}
         </CardTitle>
         <CardBody>
-          {formBody}
+          {authType === 'logout' ? logoutUser() : createElement(formBody, {onSubmit: handleAuthSubmit})}
           <Row>
             <Col>
               <Button

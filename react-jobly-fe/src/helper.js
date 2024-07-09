@@ -90,40 +90,45 @@ const getUserByToken = async ({ token, username }) => {
 };
 
 const handleAuth = async (userData, authType = "login") => {
-  if (!userData) localStorage.getItem(tokenKey);
-  else {
-    try {
-      let result;
-      switch (authType) {
-        case "login":
-          result = await JoblyApi.loginUser(userData);
-          break;
-        case "signup":
-        case "register":
-          result = await JoblyApi.registerNewUser(userData);
-          break;
-        case "edit":
-          result = await JoblyApi.editUser(userData);
-          break;
-        default:
-          throw new Error(
-            `A ${authType} authentication error occurred. Bad request`,
-            400
-          );
-      }
-      console.debug("handleAuth call", authType, userData, "=>", result.keys);
+  // if (!userData) localStorage.getItem(tokenKey);
+  // else {
+  try {
+    let BASE_URL = "auth/";
+    let subpath = { signup: "register", login: "token" }[authType];
 
-      if ([200, 201].includes(result.status)) {
-        const { username } = userData;
-        const { token } = result || result.data;
-        return { token, username };
-      } else {
-        throw new Error(result.error, 400);
-      }
-    } catch (error) {
-      console.error("handleAuth", error);
-      return error;
+    const result = await JoblyApi.request(BASE_URL + subpath, userData, "post");
+    //     let authFunc;
+    //     switch (authType) {
+    //       case "login":
+    //         authFunc = JoblyApi.loginUser;
+    //         break;
+    //       case "signup":
+    //       case "register":
+    //         authFunc = JoblyApi.registerNewUser;
+    //         break;
+    //       case "edit":
+    //         authFunc = JoblyApi.editUser;
+    //         break;
+    //       default:
+    //         throw new Error(
+    //           `A ${authType} authentication error occurred. Bad request`,
+    //           400
+    //         );
+    //     }
+    // const result = await authFunc(userData);
+    console.debug("handleAuth call", authType, userData, "=>", result);
+
+    // const { username } = userData;
+    // const { token } = result;
+    if (result.token) {
+      return { token: result.token, username: userData.username };
+    } else {
+      throw new Error(result.error, 400);
     }
+  } catch (error) {
+    console.error("handleAuth", error);
+    return error;
+    // }
   }
 };
 
@@ -188,7 +193,7 @@ const checkToken = async () => {
     try {
       let user = await getUserByToken(JSON.parse(localToken));
       user = !(user instanceof Error || user.error) ? user : null;
-      return user
+      return user;
     } catch (error) {
       console.error("Error fetching user by token:", error);
     }

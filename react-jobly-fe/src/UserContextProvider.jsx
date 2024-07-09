@@ -6,6 +6,7 @@ import {
   retrieveStoredPrevUser,
 } from "./helper.js";
 import { useFlashMessage } from "./FlashMessageContext.jsx";
+import LoginForm from "./LoginForm.jsx";
 
 const UserContext = createContext({
   currentUser: null,
@@ -21,6 +22,7 @@ const UserContextProvider = ({ children }) => {
     setCurrentUser({ token, username });
     updateLocalStorageToken(token);
     // showFlashMessage("Login Success", `Welcome back, ${username}!`, "success");
+    return LoginForm;
   }, [/*showFlashMessage*/]);
 
   const logoutUser = useCallback(() => {
