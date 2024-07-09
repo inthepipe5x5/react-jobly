@@ -11,7 +11,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import { useUserContext } from "./useUserContext";
 import { useFlashMessage } from "./FlashMessageContext";
-import { handleAuth, getTitle } from "./helper";
+import { handleAuth, getTitle, getArticle, capitalizeWord } from "./helper";
 import FlashMessage from "./FlashMessage";
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
@@ -24,9 +24,52 @@ const AuthPage = () => {
     location.pathname.replace("/", "") || "login"
   );
   console.log("AUTHPAGE", location.pathname, authType);
+  //retrieve contexts
   const { currentUser, loginUser, logoutUser } = useUserContext();
   const { flashMessage, showFlashMessage, dismissFlashMessage } =
     useFlashMessage();
+
+  const handleAuthSubmit = async (inputData, authType) => {
+    try {
+      const result = await handleAuth(inputData, authType);
+      console.log(authType, inputData, "=>", result);
+
+      if (
+        !result ||
+        result instanceof Error ||
+        (+result.status !== 201 && +result.status !== 200)
+      ) {
+        throw new Error(
+          result?.message ||
+            result?.data ||
+            result?.error ||
+            result`${capitalizeWord(
+              getArticle(authType)
+            )} ${authType} authentication error occurred.`,
+          result?.status || result?.statusCode || 400
+        );
+      } else {
+        const { username } = result.data || result || inputData;
+        const { token } = result.data || result;
+        loginUser({ username, token });
+        const successMessage = `${getTitle(authType)} Successful!`;
+        showFlashMessage(successMessage, "success");
+
+        if (authType === "edit") {
+          navigate(`/users/${result.username}`);
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (error) {
+      console.error("handleAuthSubmit Error:", error);
+      showFlashMessage(
+        error ||
+          `${getTitle(authType)} error occurred. Please try again. ${error}`,
+        "error"
+      );
+    }
+  };
 
   //set formBody based on authType
   let formBody;
@@ -55,49 +98,6 @@ const AuthPage = () => {
 
       break;
   }
-
-  const handleAuthSubmit = async (inputData, authType) => {
-    try {
-      const result = await handleAuth(inputData, authType, setCurrentUser);
-      console.log(
-        authType,
-        inputData,
-        result?.status,
-        result?.statusCode,
-        result?.data,
-        result
-      );
-
-      if (
-        !result ||
-        result instanceof Error ||
-        ![200, 201].includes(result.status)
-      ) {
-        throw new Error(
-          result?.message ||
-            result?.error ||
-            `An ${authType} authentication error occurred.`,
-          result?.status || result?.statusCode || 400
-        );
-      } else {
-        const successMessage = `${getTitle(authType)} Successful!`;
-        showFlashMessage(successMessage, "success");
-
-        if (authType === "edit") {
-          navigate(`/users/${result.username}`);
-        } else {
-          navigate("/");
-        }
-      }
-    } catch (error) {
-      console.error("handleSubmit Error:", error?.status, error.message);
-      showFlashMessage(
-        error.message ||
-          `${getTitle(authType)} error occurred. Please try again.`,
-        "error"
-      );
-    }
-  };
 
   return (
     <Container className="col-8">

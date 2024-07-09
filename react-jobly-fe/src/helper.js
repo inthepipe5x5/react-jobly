@@ -58,6 +58,18 @@ const updateLocalStorageToken = (token, username) => {
   return true;
 };
 
+const retrieveStoredPrevUser = () => {
+  const user = localStorage.getItem("JoblyUserToken");
+  console.log(
+    `${
+      user
+        ? "found previous user token in storage: " + user
+        : "no token found in storage, initiated with anon user context"
+    }`
+  );
+  return user;
+};
+
 const getUserByToken = async ({ token, username }) => {
   try {
     const api = new JoblyApi(token);
@@ -77,8 +89,7 @@ const getUserByToken = async ({ token, username }) => {
   }
 };
 
-const handleAuth = async (userData, authType = "login", setCurrentUserFunc) => {
-  console.debug("handleAuth call", authType, userData);
+const handleAuth = async (userData, authType = "login") => {
   if (!userData) localStorage.getItem(tokenKey);
   else {
     try {
@@ -96,24 +107,21 @@ const handleAuth = async (userData, authType = "login", setCurrentUserFunc) => {
           break;
         default:
           throw new Error(
-            `An ${authType} authentication error occurred. Bad request`,
+            `A ${authType} authentication error occurred. Bad request`,
             400
           );
       }
+      console.debug("handleAuth call", authType, userData, "=>", result.keys);
 
-      if (
-        result.data?.error ||
-        result.error ||
-        ![200, 201].includes(result.status)
-      ) {
-        throw new Error(result.error, 400);
-      } else {
-        const { username, token } = result || result?.data || result.token;
+      if ([200, 201].includes(result.status)) {
         const { username } = userData;
+        const { token } = result || result.data;
         return { token, username };
+      } else {
+        throw new Error(result.error, 400);
       }
     } catch (error) {
-      console.error(error);
+      console.error("handleAuth", error);
       return error;
     }
   }
@@ -128,7 +136,7 @@ const getUserByUsername = async ({ username }) => {
 };
 
 const createNewJoblyAPI = (token) => {
-  return;
+  return new JoblyApi(token);
 };
 
 const removeLocalStorageTokenAfterLogout = (key = tokenKey) => {
@@ -174,18 +182,40 @@ const handleCaughtError = (error, origin = "") => {
   };
 };
 
-  const checkToken = async () => {
-    const localToken = localStorage.getItem("JoblyUserToken");
-    if (localToken) {
-      try {
-        let user = await getUserByToken(JSON.parse(localToken));
-        user = !(user instanceof Error || user.error) ? user : null;
-        setCurrentUser(user);
-      } catch (error) {
-        console.error("Error fetching user by token:", error);
-      }
+const checkToken = async () => {
+  const localToken = localStorage.getItem("JoblyUserToken");
+  if (localToken) {
+    try {
+      let user = await getUserByToken(JSON.parse(localToken));
+      user = !(user instanceof Error || user.error) ? user : null;
+      setCurrentUser(user);
+    } catch (error) {
+      console.error("Error fetching user by token:", error);
     }
-  };
+  }
+};
+
+function getArticle(followingWord) {
+  // Convert the word to lowercase for case-insensitive comparison
+  const word = followingWord.toLowerCase().trim();
+
+  // List of vowels
+  const vowels = ["a", "e", "i", "o", "u"];
+
+  // Check if the word starts with a vowel
+  if (vowels.includes(word[0])) {
+    return "an";
+  }
+
+  // Special case for words starting with 'h' where the 'h' is silent
+  const silentHWords = ["hour", "honest", "honour", "heir"];
+  if (silentHWords.includes(word)) {
+    return "an";
+  }
+
+  // For all other cases, return "a"
+  return "a";
+}
 
 export {
   capitalizeWord,
@@ -193,9 +223,12 @@ export {
   /*validateNewJobFormData,*/
   getTitle,
   handleAuth,
+  retrieveStoredPrevUser,
+  updateLocalStorageToken,
   removeLocalStorageTokenAfterLogout,
   createNewJoblyAPI,
   getUserByToken,
   handleCaughtError,
   checkToken,
+  getArticle,
 };

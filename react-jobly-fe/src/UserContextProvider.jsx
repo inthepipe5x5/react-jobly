@@ -3,10 +3,11 @@
 import React, { useState, useMemo, useCallback, createContext } from "react";
 import JoblyApi from "./api.js";
 import {
-  createNewJoblyAPI,
-  getUserByToken,
+  // getUserByToken,
   updateLocalStorageToken,
   removeLocalStorageTokenAfterLogout,
+  retrieveStoredPrevUser,
+  getUserByToken,
 } from "./helper.js";
 import { useFlashMessage } from "./FlashMessageContext.jsx";
 import { useUserContext } from "./useUserContext.jsx";
@@ -25,7 +26,7 @@ const defaultUserContext = {
 };
 
 const UserContext = createContext({
-  currentUser: null,
+  currentUser: retrieveStoredPrevUser() || { token: JoblyApi.token }, //retrieve token from LS or null
   loginUser: () => {},
   logoutUser: () => {},
 });
@@ -70,4 +71,4 @@ const UserContextProvider = ({ children }) => {
   );
 };
 
-export { UserContextProvider };
+export { UserContext, UserContextProvider };

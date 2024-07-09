@@ -21,7 +21,7 @@ export const FlashMessageProvider = ({ children }) => {
     setFlashMessage(null);
   }, []);
 
-  const showFlashMessage = useCallback((message, type, interval = 5000) => {
+  const showFlashMessage = useCallback((message, type, interval = 50000) => {
     setFlashMessage({ message, type });
     setTimeout(() => dismissFlashMessage(), interval);
   }, [dismissFlashMessage]);

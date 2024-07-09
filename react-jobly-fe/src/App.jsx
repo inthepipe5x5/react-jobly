@@ -21,12 +21,7 @@ import FlashMessage from "./FlashMessage";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
-  const { flashMessage, showFlashMessage, DismissFlashMessage } =
-    useContext(FlashMessageContext);
-  const user = useContext(UserContext);
-  const [currentUser, setCurrentUser] = useState(user);
-
-  console.log("AUTH CONTEXT: " + `${currentUser ? `currentUser` : "ANON"}`);
+  
   console.log("localStorage token: ", localStorage.getItem("JoblyUserToken"));
   if (isLoading) {
     return <LoadingSpinner />;
@@ -35,7 +30,7 @@ function App() {
   return (
     <div className="App">
       <UserContextProvider>
-        <MainNavBar user={currentUser} />
+        <MainNavBar />
         <div className="hero-wrapper bg-composed-wrapper bg-midnight-bloom min-vh-100">
           <div className=" min-vw-50 min-vh-50 w-100 d-flex align-items-center">
             <Container
