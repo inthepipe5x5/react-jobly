@@ -28,7 +28,7 @@ const List = () => {
   const [listContent, setListContent] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   // const { flashMessage, showFlashMessage, DismissFlashMessage } =
-    // useContext(FlashMessageContext);
+  // useContext(FlashMessageContext);
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname.split("/")[1];
@@ -42,7 +42,7 @@ const List = () => {
         console.log({
           list_data: resp,
         });
-        setListContent(resp[currentPath] || []);
+        setListContent(resp["data"][currentPath] || []);
       } catch (error) {
         const { errTitle, errMessage, errType } = handleCaughtError(error);
         //set listContent to reflect the error
@@ -58,7 +58,7 @@ const List = () => {
       }
     };
     getAllData();
-  }, [currentPath, navigate, /*showFlashMessage*/]);
+  }, [currentPath, navigate /*showFlashMessage*/]);
 
   const generateContentCards = (content) => {
     const uniqueIdentifier = {
@@ -75,7 +75,7 @@ const List = () => {
 
     return content.error ? (
       <ErrorPageContent
-      contentType={currentPath || location.pathname}
+        contentType={currentPath || location.pathname}
         errStatus={content?.status || content.error?.status}
         message={content?.message || content.error?.message}
       />
@@ -89,32 +89,23 @@ const List = () => {
       ))
     );
   };
-  if ((!isLoading && !listContent) || listContent.length === 0)
-    return <NotFound></NotFound>;
-  else {
-    return (
-      <Container tag="section" className="col-8" fluid>
-        <Card>
-          <CardBody>
-            <CardHeader tag="h3" className="font-weight-bold text-center">
-              <CardTitle>{capitalizeWord(currentPath)} Directory</CardTitle>
-            </CardHeader>
-            <CardText>
-              {isLoading ? (
-                <Spinner>Loading...</Spinner>
-              ) : (
-                `Found the following ${currentPath}: ${listContent.length}`
-              )}
-            </CardText>
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : (
-              <ListGroup>{generateContentCards(listContent)}</ListGroup>
-            )}
-          </CardBody>
-        </Card>
-      </Container>
-    );
-  }
+
+  if (isLoading) return <LoadingSpinner />;
+
+  if (listContent.length === 0) return <NotFound></NotFound>;
+
+  return (
+    <Container tag="section" className="col-8" fluid>
+      <Card>
+        <CardBody>
+          <CardHeader tag="h3" className="font-weight-bold text-center">
+            <CardTitle>{capitalizeWord(currentPath)} Directory</CardTitle>
+          </CardHeader>
+          <CardText>{`${currentPath} Results: ${listContent.length}`}</CardText>
+            <ListGroup>{generateContentCards(listContent)}</ListGroup>
+        </CardBody>
+      </Card>
+    </Container>
+  );
 };
 export default List;
