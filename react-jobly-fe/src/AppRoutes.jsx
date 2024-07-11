@@ -32,8 +32,8 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />}></Route>
-      <Route path="signup" element={<AuthPage formBody={SignUpForm} />}></Route>
-      <Route path="login" element={<AuthPage formBody={LoginForm} />}></Route>
+      <Route path="signup" element={<AuthPage ChildAuthForm={SignUpForm} />}></Route>
+      <Route path="login" element={<AuthPage ChildAuthForm={LoginForm} />}></Route>
       <Route path="logout" element={<>
         <Alert color="success">Log Out Successful!</Alert> 
         <AuthPage />
@@ -46,7 +46,7 @@ const AppRoutes = () => {
       <Route path="companies" element={<List />} />
       <Route
         path="users/:username/edit"
-        element={<AuthPage formBody={EditUserForm} />}
+        element={<AuthPage ChildAuthForm={EditUserForm} />}
       />
       <Route path="users/:username" element={<Result resultType="user" />} />
       <Route path="profile" element={<Result resultType="user" />} />

@@ -16,11 +16,13 @@ const UserContext = createContext({
 
 const UserContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(retrieveStoredPrevUser() || { token: null, username: null });
-  const { showFlashMessage } = useFlashMessage();
+  // const { showFlashMessage } = useFlashMessage();
 
   const loginUser = useCallback((token, username) => {
-    setCurrentUser({ token, username });
+    //save token to local storage first
     updateLocalStorageToken(token);
+    //set current user and cause re-rendering
+    setCurrentUser({ token, username });
     // showFlashMessage("Login Success", `Welcome back, ${username}!`, "success");
     return LoginForm;
   }, [/*showFlashMessage*/]);

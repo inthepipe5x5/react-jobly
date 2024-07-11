@@ -15,7 +15,7 @@ import { handleAuth, getTitle, getArticle, capitalizeWord } from "./helper";
 // import FlashMessage from "./FlashMessage";
 
 
-const AuthPage = ({formBody}) => {
+const AuthPage = ({ChildAuthForm}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [authType, setAuthType] = useState(
@@ -73,8 +73,8 @@ const AuthPage = ({formBody}) => {
   //   }
   // };
 
-  // //set formBody based on authType
-  // let formBody;
+  // //set ChildAuthForm based on authType
+  // let ChildAuthForm;
   
   // switch (authType) {
   //   case "logout":
@@ -86,18 +86,18 @@ const AuthPage = ({formBody}) => {
   //         };
   //     break;
   //   case "login":
-  //     formBody = <LoginForm onSubmit={handleAuthSubmit} />;
+  //     ChildAuthForm = <LoginForm onSubmit={handleAuthSubmit} />;
   //     break;
   //   case "signup":
-  //     formBody = <SignUpForm onSubmit={handleAuthSubmit} />;
+  //     ChildAuthForm = <SignUpForm onSubmit={handleAuthSubmit} />;
   //     break;
   //   case "edit":
-  //     formBody = (
+  //     ChildAuthForm = (
   //       <EditUserForm currentUser={currentUser} onSubmit={handleAuthSubmit} />
   //     );
   //     break;
   //   default:
-  //     formBody = <LoginForm onSubmit={handleAuthSubmit} />;
+  //     ChildAuthForm = <LoginForm onSubmit={handleAuthSubmit} />;
 
   //     break;
   }
@@ -117,7 +117,7 @@ const AuthPage = ({formBody}) => {
           )} */}
         </CardTitle>
         <CardBody>
-          {authType === 'logout' ? logoutUser() : createElement(formBody, {onSubmit: handleAuthSubmit})}
+          {authType === 'logout' ? logoutUser() : createElement(ChildAuthForm, {onSubmit: handleAuthSubmit})}
           <Row>
             <Col>
               <Button
