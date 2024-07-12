@@ -18,7 +18,7 @@ const MainNavBar = () => {
   const toggleOpenState = () => setIsOpen(!isOpen);
   const { currentUser, logoutUser } = useUserContext();
 
-  console.log("AUTH CONTEXT: " + `${currentUser ? currentUser.username : "ANON"}`);
+  console.log("AUTH CONTEXT: " + `${currentUser.username ? currentUser.username : "ANON"}`);
   return (
     <Navbar color="light" light expand="sm" className="mb-4">
       <NavbarBrand tag={Link} to="/">

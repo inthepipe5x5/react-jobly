@@ -14,8 +14,7 @@ import { useUserContext } from "./useUserContext";
 import { handleAuth, getTitle, getArticle, capitalizeWord } from "./helper";
 // import FlashMessage from "./FlashMessage";
 
-
-const AuthPage = ({ChildAuthForm}) => {
+const AuthPage = ({ ChildAuthForm }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [authType, setAuthType] = useState(
@@ -29,78 +28,31 @@ const AuthPage = ({ChildAuthForm}) => {
 
   const handleAuthSubmit = (inputData, authType) => {
     // try {
-      const result = handleAuth(inputData, authType)
-        .then((res) => {
-          console.log(authType, inputData, "=>", res);
-          loginUser(result.token, inputData.username);
+    const result = handleAuth(inputData, authType)
+      .then((res) => {
+        console.log(authType, inputData, "=>", res);
+        if (res.token) {
+          loginUser(res.token, res.username || inputData.username);
           const successMessage = `${getTitle(authType)} Successful!`;
           console.debug(successMessage);
-          return res
-        })
-        .catch((err) => console.error("handleAuthSubmit Error:", err))
-        .finally(()=>{
-          if (localStorage.getItem('JoblyUserToken')) {
-            if (authType === "edit") {
-              return navigate(`/users/${result.username}`);
-            } else {
-              return navigate("/");
-            }
+          return res;
+        } else {
+          throw new Error(`handleAuthError: res.token=${res.token}`);
+        }
+      })
+      .catch((err) => console.error("handleAuthSubmit Error:", err))
+      .finally(() => {
+        if (localStorage.getItem("JoblyUserToken")) {
+          if (authType === "edit") {
+            return navigate(`/users/${result.username}`);
           } else {
-            return navigate(`/${authType}`)
+            return navigate("/");
           }
-        })
-
-    //   if (result.token) {
-    //     // const { username } = inputData;
-    //     // const { token } = result;
-    //     // showFlashMessage(result.status || "success", successMessage, "success");
-
-    //   } else {
-    //     throw new Error(
-    //       `${capitalizeWord(
-    //         getArticle(authType)
-    //       )} ${authType} authentication error occurred. Server response: ${result}`,
-    //       400
-    //     );
-    //   }
-    // } catch (error) {
-    //   console.error("handleAuthSubmit Error:", error);
-    //   // showFlashMessage(
-    //   //   error ||
-    //   //     `${getTitle(authType)} error occurred. Please try again. ${error}`,
-    //   //   "error"
-    //   // );
-  //   }
-  // };
-
-  // //set ChildAuthForm based on authType
-  // let ChildAuthForm;
-  
-  // switch (authType) {
-  //   case "logout":
-  //     currentUser
-  //       ? logoutUser()
-  //       : () => {
-  //           // showFlashMessage("Logout error", "You must log in first", "warning");
-  //           navigate("/login");
-  //         };
-  //     break;
-  //   case "login":
-  //     ChildAuthForm = <LoginForm onSubmit={handleAuthSubmit} />;
-  //     break;
-  //   case "signup":
-  //     ChildAuthForm = <SignUpForm onSubmit={handleAuthSubmit} />;
-  //     break;
-  //   case "edit":
-  //     ChildAuthForm = (
-  //       <EditUserForm currentUser={currentUser} onSubmit={handleAuthSubmit} />
-  //     );
-  //     break;
-  //   default:
-  //     ChildAuthForm = <LoginForm onSubmit={handleAuthSubmit} />;
-
-  //     break;
-  }
+        } else {
+          return navigate(`/${authType}`);
+        }
+      });
+  };
 
   return (
     <Container className="col-8">
@@ -117,7 +69,9 @@ const AuthPage = ({ChildAuthForm}) => {
           )} */}
         </CardTitle>
         <CardBody>
-          {authType === 'logout' ? logoutUser() : createElement(ChildAuthForm, {onSubmit: handleAuthSubmit})}
+          {authType === "logout"
+            ? logoutUser()
+            : createElement(ChildAuthForm, { onSubmit: handleAuthSubmit })}
           <Row>
             <Col>
               <Button

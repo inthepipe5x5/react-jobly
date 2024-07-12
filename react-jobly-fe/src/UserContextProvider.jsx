@@ -9,22 +9,27 @@ import { useFlashMessage } from "./FlashMessageContext.jsx";
 import LoginForm from "./LoginForm.jsx";
 
 const UserContext = createContext({
-  currentUser: null,
+  currentUser: retrieveStoredPrevUser(),
   loginUser: () => {},
   logoutUser: () => {},
 });
 
 const UserContextProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(retrieveStoredPrevUser() || { token: null, username: null });
+  const [currentUser, setCurrentUser] = useState(retrieveStoredPrevUser());
   // const { showFlashMessage } = useFlashMessage();
 
   const loginUser = useCallback((token, username) => {
-    //save token to local storage first
-    updateLocalStorageToken(token);
+    //handle falsy token OR username values
+    if (!token || !username) return;
+    let initApiToken = JoblyApi.token
+    //save token to local storage & joblyApi first
+    updateLocalStorageToken(token, username);
+    JoblyApi.token = token
+    console.log('api token updated ? =>', JoblyApi.token === initApiToken)
     //set current user and cause re-rendering
     setCurrentUser({ token, username });
     // showFlashMessage("Login Success", `Welcome back, ${username}!`, "success");
-    return LoginForm;
+    // return LoginForm;
   }, [/*showFlashMessage*/]);
 
   const logoutUser = useCallback(() => {

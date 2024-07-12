@@ -55,8 +55,6 @@ class JoblyApi {
         { username, password },
         "post"
       );
-      JoblyApi.token = res.token; // Update the static token
-      localStorage.setItem("JoblyUserToken", res.token);
       return res.token;
     } catch (error) {
       console.error("Error in login attempt", error);

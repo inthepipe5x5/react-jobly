@@ -49,7 +49,7 @@ const formatSalary = (salary) => {
 
 const tokenKey = "JoblyUserToken";
 
-const updateLocalStorageToken = (token, username) => {
+const updateLocalStorageToken = ({ token, username }) => {
   const localToken = localStorage.setItem(
     tokenKey,
     JSON.stringify({ token, username })
@@ -59,21 +59,31 @@ const updateLocalStorageToken = (token, username) => {
 };
 
 const retrieveStoredPrevUser = () => {
-  const user = localStorage.getItem("JoblyUserToken");
+  //init user as empty object
+  const user = { token: null, username: null };
+  let prevUser = localStorage.getItem("JoblyUserToken");
+  if (prevUser) {
+    prevUser = JSON.parse(prevUser);
+    const { token, username } = prevUser;
+    user.token = token;
+    user.username = username;
+  }
+  
   console.log(
     `${
-      user
-        ? "found previous user token in storage: " + user
+      user.token
+        ? "found previous user token in storage: " + user.username
         : "no token found in storage, initiated with anon user context"
     }`
   );
+  //return user if found, else return template currentUser object with null property values
   return user;
 };
 
 const getUserByToken = async ({ token, username }) => {
   try {
     const api = new JoblyApi(token);
-    const user = await api.requests(`/${username}`);
+    const user = await api.requests(`/users/${username}`);
 
     if (user instanceof Error || user.error) {
       // The user is an instance of Error
@@ -97,31 +107,15 @@ const handleAuth = async (userData, authType = "login") => {
     let subpath = { signup: "register", login: "token" }[authType];
 
     const result = await JoblyApi.request(BASE_URL + subpath, userData, "post");
-    //     let authFunc;
-    //     switch (authType) {
-    //       case "login":
-    //         authFunc = JoblyApi.loginUser;
-    //         break;
-    //       case "signup":
-    //       case "register":
-    //         authFunc = JoblyApi.registerNewUser;
-    //         break;
-    //       case "edit":
-    //         authFunc = JoblyApi.editUser;
-    //         break;
-    //       default:
-    //         throw new Error(
-    //           `A ${authType} authentication error occurred. Bad request`,
-    //           400
-    //         );
-    //     }
-    // const result = await authFunc(userData);
     console.debug("handleAuth call", authType, userData, "=>", result);
 
-    // const { username } = userData;
-    // const { token } = result;
-    if (result.token) {
-      return { token: result.token, username: userData.username };
+    if (
+      result.statusText === "OK" ||
+      result.data.token ||
+      `${result.status}`[0] === 2
+    ) {
+      console.debug(`handleAuth OUTPUT: ${result.token}`);
+      return { token: result.data.token, username: userData.username };
     } else {
       throw new Error(result.error, 400);
     }
@@ -132,7 +126,7 @@ const handleAuth = async (userData, authType = "login") => {
   }
 };
 
-const getUserByUsername = async ({ username }) => {
+const getUserByUsername = async (username) => {
   try {
     const res = await JoblyApi.getUser(username);
   } catch (error) {

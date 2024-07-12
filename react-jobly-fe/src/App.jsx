@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Tooltip,
   ButtonToolbar,
@@ -21,7 +21,6 @@ import FlashMessage from "./FlashMessage";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
-  
   console.log("localStorage token: ", localStorage.getItem("JoblyUserToken"));
   if (isLoading) {
     return <LoadingSpinner />;
