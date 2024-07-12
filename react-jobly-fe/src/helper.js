@@ -115,7 +115,7 @@ const handleAuth = async (userData, authType = "login") => {
       result.data.token ||
       `${result.status}`[0] === 2
     ) {
-      console.debug(`handleAuth OUTPUT: ${result.token}`);
+      console.debug(`handleAuth OUTPUT: ${result.data.token}`);
       return { token: result.data.token, username: userData.username };
     } else {
       throw new Error(result.error, 400);
