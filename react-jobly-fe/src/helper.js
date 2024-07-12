@@ -222,9 +222,9 @@ const checkAuthStatus = (userObj) => {
   //else returns true
 
   if (!userObj) return false;
-  if (userObj.values().some((val) => !val)) return false;
-
-  return true;
+  const { token, username } = userObj;
+  if (token && username) return true;
+  return false;
 };
 export {
   capitalizeWord,

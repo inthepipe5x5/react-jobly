@@ -1,14 +1,15 @@
 import React from "react";
-import { useNavigate } from "react-router";
+import { Navigate } from "react-router";
 import { useUserContext } from "./useUserContext";
+import { checkAuthStatus } from "./helper";
 
-
-const ProtectedRoute = ({ permission=false, redirectPath = '/login', children }) => {
+const ProtectedRoute = ({ redirectPath = "/login", children }) => {
   const { currentUser } = useUserContext();
-  const navigate = useNavigate();
-  if (!permission || !currentUser.token) {
-    console.error('wrong permissions')
-    return navigate(redirectPath);
+  const permission = checkAuthStatus(currentUser);
+
+  if (!permission) {
+    console.error("wrong permissions");
+    return <Navigate to={redirectPath} />;
   }
 
   return children;

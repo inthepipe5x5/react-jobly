@@ -1,6 +1,4 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-import { React, useEffect, useState } from "react";
+import { React } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Alert } from "reactstrap";
 
@@ -16,7 +14,6 @@ import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
 import EditUserForm from "./EditUserForm";
 import { useUserContext } from "./useUserContext";
-import { checkAuthStatus } from "./helper";
 
 /**
  * React Routes for Jobly App:
@@ -33,18 +30,12 @@ import { checkAuthStatus } from "./helper";
 
 const AppRoutes = () => {
   const { currentUser } = useUserContext();
-  const [authorized, setAuthorized] = useState(checkAuthStatus(currentUser));
+
   return (
     <Routes>
-      <Route path="/" element={<Home />}></Route>
-      <Route
-        path="signup"
-        element={<AuthPage ChildAuthForm={SignUpForm} />}
-      ></Route>
-      <Route
-        path="login"
-        element={<AuthPage ChildAuthForm={LoginForm} />}
-      ></Route>
+      <Route path="/" element={<Home />} />
+      <Route path="signup" element={<AuthPage ChildAuthForm={SignUpForm} />} />
+      <Route path="login" element={<AuthPage ChildAuthForm={LoginForm} />} />
       <Route
         path="logout"
         element={
@@ -53,43 +44,81 @@ const AppRoutes = () => {
             <AuthPage />
           </>
         }
-      ></Route>
-      <ProtectedRoute permission={authorized}>
-        <Route
-          path="companies/:companyName"
-          element={<Result resultType="company" />}
-        />
-      </ProtectedRoute>
-      <ProtectedRoute permission={authorized}>
-        {" "}
-        <Route
-          path="users/:username/edit"
-          element={<AuthPage ChildAuthForm={EditUserForm} />}
-        />
-      </ProtectedRoute>
-      <ProtectedRoute permission={authorized}>
-        <Route path="companies" element={<List />} />
-      </ProtectedRoute>
-      <ProtectedRoute permission={authorized}>
-        <Route path="users/:username" element={<Result resultType="user" />} />
-      </ProtectedRoute>
-      <ProtectedRoute permission={authorized}>
-        <Route path="profile" element={<Result resultType="user" />} />
-      </ProtectedRoute>
-      <ProtectedRoute permission={authorized}>
-        <Route path="users" element={<List />} />
-      </ProtectedRoute>
-      <ProtectedRoute permission={authorized}>
-        <Route path="jobs/:jobName" element={<Result resultType="job" />} />
-      </ProtectedRoute>
-      <ProtectedRoute permission={authorized}>
-        <Route path="jobs" element={<List />} />
-      </ProtectedRoute>
-      <ProtectedRoute permission={authorized}>
-        <Route path="jobs/new" element={<SubmitNew type="job" />} />
-      </ProtectedRoute>
-      <Route path="/NotFound" element={NotFound}></Route>
-      <Route path="*" element={NotFound}></Route>
+      />
+      <Route
+        path="companies/:companyName"
+        element={
+          <ProtectedRoute>
+            <Result resultType="company" />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="users/:username/edit"
+        element={
+          <ProtectedRoute>
+            <AuthPage ChildAuthForm={EditUserForm} />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="companies"
+        element={
+          <ProtectedRoute>
+            <List />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="users/:username"
+        element={
+          <ProtectedRoute>
+            <Result resultType="user" />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="profile"
+        element={
+          <ProtectedRoute>
+            <Result resultType="user" />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="users"
+        element={
+          <ProtectedRoute>
+            <List />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="jobs/:jobName"
+        element={
+          <ProtectedRoute>
+            <Result resultType="job" />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="jobs"
+        element={
+          <ProtectedRoute>
+            <List />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="jobs/new"
+        element={
+          <ProtectedRoute>
+            <SubmitNew type="job" />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/NotFound" element={<NotFound />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
