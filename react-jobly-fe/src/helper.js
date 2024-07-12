@@ -69,7 +69,7 @@ const retrieveStoredPrevUser = () => {
     user.token = token;
     user.username = username;
   }
-  
+
   console.log(
     `${
       user.token
@@ -80,7 +80,6 @@ const retrieveStoredPrevUser = () => {
   //return user if found, else return template currentUser object with null property values
   return user;
 };
-
 
 const getUserByToken = async ({ token, username }) => {
   try {
@@ -131,6 +130,7 @@ const handleAuth = async (userData, authType = "login") => {
 const getUserByUsername = async (username) => {
   try {
     const res = await JoblyApi.getUser(username);
+    return res.data;
   } catch (error) {
     console.error(`getUserByUsername function error: ${error}`);
   }
@@ -217,7 +217,15 @@ function getArticle(followingWord) {
   // For all other cases, return "a"
   return "a";
 }
+const checkAuthStatus = (userObj) => {
+  //takes userObject (ie. currentUser object) and returns true if .token or .username values are true
+  //else returns true
 
+  if (!userObj) return false;
+  if (userObj.values().some((val) => !val)) return false;
+
+  return true;
+};
 export {
   capitalizeWord,
   formatSalary,
@@ -229,6 +237,8 @@ export {
   removeLocalStorageTokenAfterLogout,
   createNewJoblyAPI,
   getUserByToken,
+  getUserByUsername,
+  checkAuthStatus,
   handleCaughtError,
   checkToken,
   getArticle,

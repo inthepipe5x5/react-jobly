@@ -2,8 +2,9 @@
 /* eslint-disable no-unused-vars */
 import { React, useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import {Alert} from "reactstrap"
+import { Alert } from "reactstrap";
 
+import ProtectedRoute from "./ProtectedRoute";
 import Home from "./Home";
 import List from "./List";
 import Result from "./Result";
@@ -15,6 +16,7 @@ import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
 import EditUserForm from "./EditUserForm";
 import { useUserContext } from "./useUserContext";
+import { checkAuthStatus } from "./helper";
 
 /**
  * React Routes for Jobly App:
@@ -30,31 +32,62 @@ import { useUserContext } from "./useUserContext";
  */
 
 const AppRoutes = () => {
+  const { currentUser } = useUserContext();
+  const [authorized, setAuthorized] = useState(checkAuthStatus(currentUser));
   return (
     <Routes>
       <Route path="/" element={<Home />}></Route>
-      <Route path="signup" element={<AuthPage ChildAuthForm={SignUpForm} />}></Route>
-      <Route path="login" element={<AuthPage ChildAuthForm={LoginForm} />}></Route>
-      <Route path="logout" element={<>
-        <Alert color="success">Log Out Successful!</Alert> 
-        <AuthPage />
-        </>
-      }></Route>
       <Route
-        path="companies/:companyName"
-        element={<Result resultType="company" />}
-      />
-      <Route path="companies" element={<List />} />
+        path="signup"
+        element={<AuthPage ChildAuthForm={SignUpForm} />}
+      ></Route>
       <Route
-        path="users/:username/edit"
-        element={<AuthPage ChildAuthForm={EditUserForm} />}
-      />
-      <Route path="users/:username" element={<Result resultType="user" />} />
-      <Route path="profile" element={<Result resultType="user" />} />
-      <Route path="users" element={<List />} />
-      <Route path="jobs/:jobName" element={<Result resultType="job" />} />
-      <Route path="jobs" element={<List />} />
-      <Route path="jobs/new" element={<SubmitNew type="job" />} />
+        path="login"
+        element={<AuthPage ChildAuthForm={LoginForm} />}
+      ></Route>
+      <Route
+        path="logout"
+        element={
+          <>
+            <Alert color="success">Log Out Successful!</Alert>
+            <AuthPage />
+          </>
+        }
+      ></Route>
+      <ProtectedRoute permission={authorized}>
+        <Route
+          path="companies/:companyName"
+          element={<Result resultType="company" />}
+        />
+      </ProtectedRoute>
+      <ProtectedRoute permission={authorized}>
+        {" "}
+        <Route
+          path="users/:username/edit"
+          element={<AuthPage ChildAuthForm={EditUserForm} />}
+        />
+      </ProtectedRoute>
+      <ProtectedRoute permission={authorized}>
+        <Route path="companies" element={<List />} />
+      </ProtectedRoute>
+      <ProtectedRoute permission={authorized}>
+        <Route path="users/:username" element={<Result resultType="user" />} />
+      </ProtectedRoute>
+      <ProtectedRoute permission={authorized}>
+        <Route path="profile" element={<Result resultType="user" />} />
+      </ProtectedRoute>
+      <ProtectedRoute permission={authorized}>
+        <Route path="users" element={<List />} />
+      </ProtectedRoute>
+      <ProtectedRoute permission={authorized}>
+        <Route path="jobs/:jobName" element={<Result resultType="job" />} />
+      </ProtectedRoute>
+      <ProtectedRoute permission={authorized}>
+        <Route path="jobs" element={<List />} />
+      </ProtectedRoute>
+      <ProtectedRoute permission={authorized}>
+        <Route path="jobs/new" element={<SubmitNew type="job" />} />
+      </ProtectedRoute>
       <Route path="/NotFound" element={NotFound}></Route>
       <Route path="*" element={NotFound}></Route>
     </Routes>
