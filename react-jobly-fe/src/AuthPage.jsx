@@ -25,33 +25,30 @@ const AuthPage = ({ ChildAuthForm }) => {
   const { currentUser, loginUser, logoutUser } = useUserContext();
   // const { flashMessage, showFlashMessage, dismissFlashMessage } =
   //   useFlashMessage();
+  const handleLogout = () => {
+    logoutUser();
+    navigate("/login");
+  };
 
-  const handleAuthSubmit = (inputData, authType) => {
-    // try {
-    const result = handleAuth(inputData, authType)
-      .then((res) => {
-        console.log(authType, inputData, "=>", res);
-        if (res.token) {
-          loginUser(res.token, res.username || inputData.username);
-          const successMessage = `${getTitle(authType)} Successful!`;
-          console.debug(successMessage);
-          return res;
+  const handleAuthSubmit = async (inputData, authType) => {
+    try {
+      const result = await handleAuth(inputData, authType);
+      console.log(authType, inputData, "=>", result);
+      if (result.token) {
+        loginUser(result.token, result.username || inputData.username);
+        const successMessage = `${getTitle(authType)} Successful!`;
+        console.debug(successMessage);
+        if (authType === "edit") {
+          return navigate(`/users/${result.username}`);
         } else {
-          throw new Error(`handleAuthError: res.token=${res.token}`);
+          return navigate("/");
         }
-      })
-      .catch((err) => console.error("handleAuthSubmit Error:", err))
-      .finally(() => {
-        if (localStorage.getItem("JoblyUserToken")) {
-          if (authType === "edit") {
-            return navigate(`/users/${result.username}`);
-          } else {
-            return navigate("/");
-          }
-        } else {
-          return navigate(`/${authType}`);
-        }
-      });
+      } else {
+        throw new Error(`handleAuthError: res.token=${result.token}`);
+      }
+    } catch (err) {
+      console.error("handleAuthSubmit Error:", err);
+    }
   };
 
   return (
@@ -70,7 +67,7 @@ const AuthPage = ({ ChildAuthForm }) => {
         </CardTitle>
         <CardBody>
           {authType === "logout"
-            ? logoutUser()
+            ? handleLogout()
             : createElement(ChildAuthForm, { onSubmit: handleAuthSubmit })}
           <Row>
             <Col>

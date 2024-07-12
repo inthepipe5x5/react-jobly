@@ -9,7 +9,7 @@ import {
   NavLink as BSNavLink,
   Button,
 } from "reactstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./MainNavBar.css";
 import { useUserContext } from "./useUserContext";
 
@@ -17,8 +17,14 @@ const MainNavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpenState = () => setIsOpen(!isOpen);
   const { currentUser, logoutUser } = useUserContext();
-
-  console.log("AUTH CONTEXT: " + `${currentUser.username ? currentUser.username : "ANON"}`);
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logoutUser();
+    navigate("/login");
+  };
+  console.log(
+    "AUTH CONTEXT: " + `${currentUser.username ? currentUser.username : "ANON"}`
+  );
   return (
     <Navbar color="light" light expand="sm" className="mb-4">
       <NavbarBrand tag={Link} to="/">
@@ -57,9 +63,7 @@ const MainNavBar = () => {
                 </BSNavLink>
               </NavItem>
               <NavItem>
-                <Button onClick={logoutUser}>
-                  Logout
-                </Button>
+                <Button onClick={handleLogout}>Logout</Button>
               </NavItem>
             </>
           ) : (

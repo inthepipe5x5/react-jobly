@@ -46,22 +46,23 @@ const formatSalary = (salary) => {
 
 //   return true;
 // };
-
 const tokenKey = "JoblyUserToken";
 
 const updateLocalStorageToken = ({ token, username }) => {
-  const localToken = localStorage.setItem(
-    tokenKey,
-    JSON.stringify({ token, username })
-  );
-  console.log(`{${localToken} successfully saved to local storage.}`);
+  if (!token || !username) {
+    console.error("Invalid token or username");
+    return false;
+  }
+  const user = { token, username };
+  localStorage.setItem(tokenKey, JSON.stringify(user));
+  console.log(`{${username} successfully saved to local storage.}`);
   return true;
 };
 
 const retrieveStoredPrevUser = () => {
   //init user as empty object
   const user = { token: null, username: null };
-  let prevUser = localStorage.getItem("JoblyUserToken");
+  let prevUser = localStorage.getItem(tokenKey);
   if (prevUser) {
     prevUser = JSON.parse(prevUser);
     const { token, username } = prevUser;
@@ -79,6 +80,7 @@ const retrieveStoredPrevUser = () => {
   //return user if found, else return template currentUser object with null property values
   return user;
 };
+
 
 const getUserByToken = async ({ token, username }) => {
   try {
