@@ -68,6 +68,7 @@ const retrieveStoredPrevUser = () => {
     const { token, username } = prevUser;
     user.token = token;
     user.username = username;
+    JoblyApi.token = token;
   }
 
   console.log(
@@ -226,7 +227,16 @@ const checkAuthStatus = (userObj) => {
   if (token && username) return true;
   return false;
 };
+const removeFalsyObjValues = (obj) => {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_, value]) => 
+      value !== false && value !== null && value !== undefined && value !== '' && value !== 0 && !Number.isNaN(value) && value.length !== 0
+    )
+  );
+}
+
 export {
+  removeFalsyObjValues,
   capitalizeWord,
   formatSalary,
   /*validateNewJobFormData,*/

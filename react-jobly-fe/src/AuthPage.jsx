@@ -69,18 +69,22 @@ const AuthPage = ({ ChildAuthForm }) => {
           {authType === "logout"
             ? handleLogout()
             : createElement(ChildAuthForm, { onSubmit: handleAuthSubmit })}
-          <Row>
-            <Col>
-              <Button
-                color="secondary"
-                onClick={() =>
-                  setAuthType(authType !== "signup" ? "signup" : "login")
-                }
-              >
-                {authType !== "signup" ? "Sign up" : "Login"}
-              </Button>
-            </Col>
-          </Row>
+          {authType !== "edit" ? (
+            <Row>
+              <Col>
+                <Button
+                  color="secondary"
+                  onClick={() =>
+                    setAuthType(authType !== "signup" ? "signup" : "login")
+                  }
+                >
+                  {authType !== "signup" ? "Sign up" : "Login"}
+                </Button>
+              </Col>
+            </Row>
+          ) : (
+            ""
+          )}
         </CardBody>
       </Card>
     </Container>

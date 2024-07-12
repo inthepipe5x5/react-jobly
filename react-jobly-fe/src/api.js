@@ -5,7 +5,7 @@ const BASE_URL = "http://localhost:3001";
 class JoblyApi {
   static token;
   static async request(endpoint, data = {}, method = "get") {
-    console.debug("API Call:", endpoint, data, method);
+    console.debug("API Call:", endpoint, data, method, this.token);
 
     const url = `${BASE_URL}/${endpoint}`;
     const headers = JoblyApi.token
@@ -62,13 +62,11 @@ class JoblyApi {
     }
   }
 
-  static async editUser(userData) {
-    if (!userData || !userData.username || !userData.password)
-      throw new Error(`Bad Client Patch Request`, 400);
-    const { username } = userData;
+  static async editUser(username, userData) {
+    if (!userData|| username === undefined || !username) throw new Error(`Bad Client Patch Request`, 400);
     try {
-      let res = await this.request(`users/${username}`, { userData }, "patch");
-      return res.user;
+      let res = await this.request(`users/${username}`, userData, "patch");
+      return res?.user || res;
     } catch (error) {
       console.error("Error in user patch attempt", error);
       return new Error(error, 400);
@@ -80,8 +78,8 @@ class JoblyApi {
       if (!username)
         throw new Error(`Bad get user request: username= ${username}`);
       const res = await this.request(`users/${username}`);
-      console.debug(`getUser api result = ${[res?.data.data, res?.user, res]}`);
-      return res?.data || res?.user || res;
+      console.debug(`getUser api result = ${res.data.user}`);
+      return res.data.user;
     } catch (error) {
       console.error(`API call: getUser ERR ${error}`);
       const res = { status: error.status, message: error.message };
@@ -90,10 +88,9 @@ class JoblyApi {
   }
 }
 // for now, put token ("testuser" / "password" on class)
-JoblyApi.token =
-  localStorage.getItem("JoblyUserToken") ||
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
-    "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
-    "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc"; /* REMOVE test token in prod*/
+JoblyApi.token = localStorage.getItem("JoblyUserToken");
+// ||"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
+//   "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
+//   "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc"; /* REMOVE test token in prod*/
 
 export default JoblyApi;

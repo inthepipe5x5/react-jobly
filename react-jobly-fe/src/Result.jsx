@@ -9,10 +9,12 @@ import JobResult from "./JobResult";
 import UserResult from "./UserResult";
 import JoblyApi from "./api";
 import { capitalizeWord } from "./helper";
+import { useUserContext } from "./useUserContext";
 
 const Result = ({ resultType = "company", cantFind = NotFound }) => {
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { currentUser } = useUserContext();
   const { companyName, jobName, username } = useParams();
   const navigate = useNavigate();
 
@@ -48,6 +50,9 @@ const Result = ({ resultType = "company", cantFind = NotFound }) => {
   if (!result) {
     return null;
   }
+
+  if (username && username === currentUser.username)
+    return navigate("/profile");
 
   const ResultComponent = {
     company: CompanyResult,

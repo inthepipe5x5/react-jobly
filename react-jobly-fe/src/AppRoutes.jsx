@@ -5,11 +5,11 @@ import { Alert } from "reactstrap";
 import ProtectedRoute from "./ProtectedRoute";
 import Home from "./Home";
 import List from "./List";
+import UserResult from "./UserResult";
 import Result from "./Result";
 import AuthPage from "./AuthPage";
 import NotFound from "./NotFound";
 import SubmitNew from "./SubmitNew";
-
 import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
 import EditUserForm from "./EditUserForm";
@@ -81,7 +81,7 @@ const AppRoutes = () => {
         path="profile"
         element={
           <ProtectedRoute>
-            <Result resultType="user" />
+            <UserResult />
           </ProtectedRoute>
         }
       />

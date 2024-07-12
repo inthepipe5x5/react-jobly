@@ -31,7 +31,7 @@ function App() {
       <UserContextProvider>
         <MainNavBar />
         <div className="hero-wrapper bg-composed-wrapper bg-midnight-bloom min-vh-100">
-          <div className=" min-vw-50 min-vh-50 w-200 d-flex align-items-center">
+          <div className="min-vw-50 min-vh-50 w-200 d-flex align-items-center">
             <Container
               fluid
               className=" d-flex justify-content-center align-items-center mb-5"

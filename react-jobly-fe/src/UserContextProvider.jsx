@@ -1,41 +1,71 @@
-import React, { useState, useMemo, useCallback, createContext } from "react";
+import React, { useState, useMemo, useCallback, createContext, useEffect } from "react";
 import JoblyApi from "./api.js";
 import useLocalStorage from "./useLocalStorage.jsx";
+import { retrieveStoredPrevUser } from "./helper.js";
 
 const UserContext = createContext({
-  currentUser: { token: null, username: null },
+  currentUser: retrieveStoredPrevUser(),
   loginUser: () => {},
   logoutUser: () => {},
+  fetchUserDetails: () => {},
 });
 
 const UserContextProvider = ({ children }) => {
   const [localUserToken, setLocalUserToken] = useLocalStorage();
   const [currentUser, setCurrentUser] = useState(localUserToken);
+  const [userDetails, setUserDetails] = useState(null);
 
-  const loginUser = useCallback((token, username) => {
-    if (!token || !username) return;
-    const user = { token, username };
-    setLocalUserToken(user);
-    JoblyApi.token = token;
-    setCurrentUser(user);
-  }, [setLocalUserToken]);
+  const loginUser = useCallback(
+    (token, username) => {
+      if (!token || !username) return;
+      const user = { token, username };
+      setLocalUserToken(user);
+      JoblyApi.token = token;
+      setCurrentUser(user);
+    },
+    [setLocalUserToken]
+  );
 
   const logoutUser = useCallback(() => {
     setLocalUserToken(undefined); // Clear localStorage
     JoblyApi.token = null;
     setCurrentUser({ token: null, username: null });
+    setUserDetails(null);
   }, [setLocalUserToken]);
 
-  const contextValue = useMemo(() => ({
-    currentUser,
-    loginUser,
-    logoutUser,
-  }), [currentUser, loginUser, logoutUser]);
+  const fetchUserDetails = useCallback(async () => {
+    if (!currentUser || !currentUser.username) return null;
+    const { username } = currentUser;
+    try {
+      const response = await JoblyApi.getUser(username);
+      setUserDetails(response);
+      console.debug('user details fetched', response);
+      return response;
+    } catch (err) {
+      console.error("Failed to fetch user details", err);
+      return null;
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchUserDetails();
+    }
+  }, [currentUser, fetchUserDetails]);
+
+  const contextValue = useMemo(
+    () => ({
+      currentUser,
+      userDetails,
+      loginUser,
+      logoutUser,
+      fetchUserDetails,
+    }),
+    [currentUser, userDetails, loginUser, logoutUser, fetchUserDetails]
+  );
 
   return (
-    <UserContext.Provider value={contextValue}>
-      {children}
-    </UserContext.Provider>
+    <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
   );
 };
 
