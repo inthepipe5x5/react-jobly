@@ -23,26 +23,33 @@ import CompanyResult from "./CompanyResult";
 import JoblyApi from "./api";
 import NotFound from "./NotFound";
 import ErrorPageContent from "./ErrorContent";
+import { useUserContext } from "./useUserContext";
 
 const List = () => {
   const [listContent, setListContent] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { userDetails } = useUserContext();
   // const { flashMessage, showFlashMessage, DismissFlashMessage } =
   // useContext(FlashMessageContext);
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname.split("/")[1];
-
   useEffect(() => {
     //clear any pre-existing content
     setListContent((listContent) => []);
     const getAllData = async () => {
       try {
         const resp = await JoblyApi.request(`${currentPath}`);
-        console.log({
-          list_data: resp,
-        });
-        setListContent(resp["data"][currentPath] || []);
+        const listData =
+          userDetails.applications.length === 0
+            ? resp["data"][currentPath]
+            : resp["data"][currentPath].map(
+                (listItem) =>
+                  (listItem = userDetails.applications.includes(listItem.id)
+                    ? (listItem.applied = true)
+                    : listItem.applied=false)
+              );
+        setListContent(listData || []);
       } catch (error) {
         const { errTitle, errMessage, errType } = handleCaughtError(error);
         //set listContent to reflect the error
@@ -102,7 +109,7 @@ const List = () => {
             <CardTitle>{capitalizeWord(currentPath)} Directory</CardTitle>
           </CardHeader>
           <CardText>{`${currentPath} Results: ${listContent.length}`}</CardText>
-            <ListGroup>{generateContentCards(listContent)}</ListGroup>
+          <ListGroup>{generateContentCards(listContent)}</ListGroup>
         </CardBody>
       </Card>
     </Container>

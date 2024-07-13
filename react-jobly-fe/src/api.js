@@ -63,7 +63,8 @@ class JoblyApi {
   }
 
   static async editUser(username, userData) {
-    if (!userData|| username === undefined || !username) throw new Error(`Bad Client Patch Request`, 400);
+    if (!userData || username === undefined || !username)
+      throw new Error(`Bad Client Patch Request`, 400);
     try {
       let res = await this.request(`users/${username}`, userData, "patch");
       return res?.user || res;
@@ -84,6 +85,19 @@ class JoblyApi {
       console.error(`API call: getUser ERR ${error}`);
       const res = { status: error.status, message: error.message };
       return res;
+    }
+  }
+
+  static async newJobApp(username, jobId) {
+    try {
+      const newJobApp = this.request(
+        `users/${username}/jobs/${jobId}`,
+        { username, id: jobId },
+        "post"
+      );
+      return newJobApp.applied
+    } catch (error) {
+      console.error('Job app error', error)
     }
   }
 }

@@ -14,6 +14,7 @@ const UserContextProvider = ({ children }) => {
   const [localUserToken, setLocalUserToken] = useLocalStorage();
   const [currentUser, setCurrentUser] = useState(localUserToken);
   const [userDetails, setUserDetails] = useState(null);
+  const [jobApps, setJobApps] = useState(userDetails.applications || []);
 
   const loginUser = useCallback(
     (token, username) => {
@@ -38,14 +39,18 @@ const UserContextProvider = ({ children }) => {
     const { username } = currentUser;
     try {
       const response = await JoblyApi.getUser(username);
+      const jobs = await (await JoblyApi.request(`jobs`)).data.jobs
+      const currentApps = userDetails.applications.length > 0 ? jobs.filter(job => userDetails.applications.includes(job.id)) : [];
+
       setUserDetails(response);
+      setJobApps(currentApps)
       console.debug('user details fetched', response);
       return response;
     } catch (err) {
       console.error("Failed to fetch user details", err);
       return null;
     }
-  }, [currentUser]);
+  }, [currentUser, userDetails.applications]);
 
   useEffect(() => {
     if (currentUser) {
@@ -57,6 +62,7 @@ const UserContextProvider = ({ children }) => {
     () => ({
       currentUser,
       userDetails,
+      jobApps,
       loginUser,
       logoutUser,
       fetchUserDetails,

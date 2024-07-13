@@ -18,7 +18,7 @@ const Detail = ({ data }) => {
   //   useContext(FlashMessageContext);
   //grab location, currentPath, url params
   const navigate = useNavigate();
-  const location = useLocation();
+  const location = useLocation();fc
   const currentPath = location.pathname.split("/")[1]; //ie. users,companies,jobs
   const uniqueIdentifier = location.pathname.split("/")[2]; //ie. username, company_handle, job_title
   const uniqueIdentifierType = {

@@ -1,20 +1,10 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
-import {
-  Tooltip,
-  ButtonToolbar,
-  Container,
-  Row,
-  Col,
-  Button,
-  Badge,
-} from "reactstrap";
-import { Link } from "react-router-dom";
-import JoblyApi from "./api";
+import React, { useState, Suspense } from "react";
+import { Container } from "reactstrap";
 import AppRoutes from "./AppRoutes";
 import MainNavBar from "./MainNavBar";
 import LoadingSpinner from "./LoadingSpinner";
-import { UserContext, UserContextProvider } from "./UserContextProvider";
+import { UserContextProvider } from "./UserContextProvider";
 import "./App.css";
 import { FlashMessageContext } from "./FlashMessageContext";
 import FlashMessage from "./FlashMessage";
@@ -36,7 +26,15 @@ function App() {
               fluid
               className=" d-flex justify-content-center align-items-center mb-5"
             >
-              <AppRoutes />
+              <Suspense
+                fallback={
+                  <>
+                    <LoadingSpinner></LoadingSpinner>
+                  </>
+                }
+              >
+                <AppRoutes />
+              </Suspense>
             </Container>
           </div>
         </div>
