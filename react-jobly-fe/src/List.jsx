@@ -64,26 +64,25 @@ const List = () => {
       users: UserResult,
     }[currentPath];
 
-    return content.error ? (
-      <ErrorPageContent
-        contentType={currentPath || location.pathname}
-        errStatus={content.status}
-        message={content.message}
-      />
-    ) : (
-      content.map((item) => (
-        <ListGroupItem key={uuid()}>
-          <Link to={`/${currentPath}/${item[uniqueIdentifier]}`}>
-            {createElement(listItemComponent, { result: item, detailed: false })}
-          </Link>
-        </ListGroupItem>
-      ))
-    );
+    return content.map((item) => (
+      <ListGroupItem key={uuid()}>
+        <Link to={`/${currentPath}/${item[uniqueIdentifier]}`}>
+          {createElement(listItemComponent, { result: item, detailed: false })}
+        </Link>
+      </ListGroupItem>
+    ));
   };
 
   if (isLoading) return <LoadingSpinner />;
 
-  if (listContent.length === 0) return <NotFound />;
+  if (!isLoading && listContent.error)
+    return (
+      <ErrorPageContent
+        contentType={currentPath || location.pathname}
+        errStatus={listContent.status}
+        message={listContent.message}
+      />
+    );
 
   return (
     <Container tag="section" className="col-8" fluid>
@@ -92,7 +91,9 @@ const List = () => {
           <CardHeader tag="h3" className="font-weight-bold text-center">
             <CardTitle>{capitalizeWord(currentPath)} Directory</CardTitle>
           </CardHeader>
-          <CardText>{`${capitalizeWord(currentPath)} Results: ${listContent.length}`}</CardText>
+          <CardText>{`${capitalizeWord(currentPath)} Results: ${
+            listContent.length
+          }`}</CardText>
           <ListGroup>{generateContentCards(listContent)}</ListGroup>
         </CardBody>
       </Card>

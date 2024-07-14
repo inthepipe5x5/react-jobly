@@ -14,20 +14,20 @@ import {
 } from "reactstrap";
 import { useUserContext } from "./useUserContext";
 import JoblyApi from "./api";
+import { Navigate } from "react-router";
 
 const JobResult = ({ result, detailed = false }) => {
-  const [application, setApplication] = useState(result.applied || false);
   const { currentUser, userDetails, fetchUserDetails } = useUserContext();
-  if (!result) return null;
   const { id, title, salary, equity, companyName } = result;
+  const { applications } = userDetails || fetchUserDetails();
 
   const handleJobApp = async () => {
     const { username } = currentUser || userDetails;
     const app = await JoblyApi.newJobApp(username, id);
     if (app) {
-      setApplication(true);
       fetchUserDetails();
     }
+    return <Navigate to="/jobs" />;
   };
 
   const detailedOnly = (
@@ -49,11 +49,11 @@ const JobResult = ({ result, detailed = false }) => {
         </CardSubtitle>
         {detailed ? createElement(detailedOnly) : ""}
         <CardText className="mt-3">
-          <Badge color="primary" pill>
-            Job ID: {id} {application ? "✅" : "📃"}
+          <Badge color={applications.includes(id) ? "success" : "primary"} pill>
+            Job ID: {id} {applications.includes(id) ? "✅" : "📃"}
           </Badge>
         </CardText>
-        {application ? (
+        {applications.includes(id) ? (
           <Button color="secondary" disabled>
             Apply
           </Button>
