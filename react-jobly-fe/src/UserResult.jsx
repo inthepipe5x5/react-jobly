@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Container,
   Row,
   Col,
   Card,
@@ -14,24 +13,17 @@ import {
   ListGroupItem,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { v4 as uuid } from "uuid";
 import { useUserContext } from "./useUserContext";
 import "./UserResult.css";
 import LoadingSpinner from "./LoadingSpinner";
 import { capitalizeWord } from "./helper";
-import JoblyApi from "./api";
 
 const UserResult = () => {
-  const { userDetails } = useUserContext();
+  const { userDetails, jobApps } = useUserContext();
   if (!userDetails) return <LoadingSpinner></LoadingSpinner>;
 
-  const {
-    username,
-    firstName,
-    lastName,
-    email,
-    is_admin,
-    applications = [],
-  } = userDetails;
+  const { username, firstName, lastName, email, isAdmin = [] } = userDetails;
 
   return (
     // <section className="vw-100 vh-100" style={{ backgroundColor: "#f4f5f7" }}>
@@ -58,7 +50,7 @@ const UserResult = () => {
                 {capitalizeWord(firstName)} {capitalizeWord(lastName)}
               </CardTitle>
               <CardSubtitle className="mb-2 text-muted">
-                {is_admin ? "Admin 🔐" : "Job Seeker ✔"}
+                {isAdmin ? "Admin 🔐" : "Job Seeker ✔"}
               </CardSubtitle>
               <Button color="success" tag={Link} to={`/users/${username}/edit`}>
                 Edit Profile
@@ -81,12 +73,16 @@ const UserResult = () => {
 
                 <CardTitle tag="h6">Job Applications</CardTitle>
                 <hr className="mt-0 mb-4" />
-                {applications.length > 0 ? (
+                {jobApps.length > 0 ? (
                   <ListGroup className="pt-1">
-                    {applications.map((app, index) => (
-                      <ListGroupItem key={index}>
-                        <Link to={`/jobs/${app.jobId}`}>
-                          Applied for {app.jobTitle} at {app.companyName}
+                    {jobApps.map((job) => (
+                      <ListGroupItem key={uuid()}>
+                        <Link to={`/jobs/${job.id}`}>
+                          Applied for {job.title} at {job.companyName}
+                          <span className="badge rounded-pill text-bg-primary">
+                            ID: {job.id}
+                          </span>
+    
                         </Link>
                       </ListGroupItem>
                     ))}

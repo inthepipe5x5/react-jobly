@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useCallback, createContext, useEffect } from "react";
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  createContext,
+  useEffect,
+} from "react";
 import JoblyApi from "./api.js";
 import useLocalStorage from "./useLocalStorage.jsx";
 import { retrieveStoredPrevUser } from "./helper.js";
@@ -14,7 +20,7 @@ const UserContextProvider = ({ children }) => {
   const [localUserToken, setLocalUserToken] = useLocalStorage();
   const [currentUser, setCurrentUser] = useState(localUserToken);
   const [userDetails, setUserDetails] = useState(null);
-  const [jobApps, setJobApps] = useState(userDetails.applications || []);
+  const [jobApps, setJobApps] = useState([]);
 
   const loginUser = useCallback(
     (token, username) => {
@@ -30,8 +36,11 @@ const UserContextProvider = ({ children }) => {
   const logoutUser = useCallback(() => {
     setLocalUserToken(undefined); // Clear localStorage
     JoblyApi.token = null;
+    //reset stored currentUser & userDetails
     setCurrentUser({ token: null, username: null });
     setUserDetails(null);
+    //result job apps
+    setJobApps([]);
   }, [setLocalUserToken]);
 
   const fetchUserDetails = useCallback(async () => {
@@ -39,18 +48,21 @@ const UserContextProvider = ({ children }) => {
     const { username } = currentUser;
     try {
       const response = await JoblyApi.getUser(username);
-      const jobs = await (await JoblyApi.request(`jobs`)).data.jobs
-      const currentApps = userDetails.applications.length > 0 ? jobs.filter(job => userDetails.applications.includes(job.id)) : [];
+      const jobs = await (await JoblyApi.request(`jobs`)).data.jobs;
+      const currentApps =
+        response.applications.length > 0
+          ? jobs.filter((job) => response.applications.includes(job.id))
+          : [];
 
       setUserDetails(response);
-      setJobApps(currentApps)
-      console.debug('user details fetched', response);
+      setJobApps(currentApps);
+      console.debug("user details fetched", response);
       return response;
     } catch (err) {
       console.error("Failed to fetch user details", err);
       return null;
     }
-  }, [currentUser, userDetails.applications]);
+  }, [currentUser]);
 
   useEffect(() => {
     if (currentUser) {
@@ -67,7 +79,7 @@ const UserContextProvider = ({ children }) => {
       logoutUser,
       fetchUserDetails,
     }),
-    [currentUser, userDetails, loginUser, logoutUser, fetchUserDetails]
+    [currentUser, userDetails, loginUser, logoutUser, fetchUserDetails, jobApps]
   );
 
   return (

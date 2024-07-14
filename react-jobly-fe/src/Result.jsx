@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createElement } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingSpinner from "./LoadingSpinner";
 import NotFound from "./NotFound";
@@ -48,11 +48,13 @@ const Result = ({ resultType = "company", cantFind = NotFound }) => {
   }
 
   if (!result) {
-    return null;
+    return <NotFound />;
   }
 
-  if (username && username === currentUser.username)
-    return navigate("/profile");
+  if (username && username === currentUser.username) {
+    navigate("/profile");
+    return null;
+  }
 
   const ResultComponent = {
     company: CompanyResult,
@@ -66,12 +68,13 @@ const Result = ({ resultType = "company", cantFind = NotFound }) => {
         <h5 className="display-4 mb-4 font-weight-bold">{`${capitalizeWord(
           resultType
         )}`}</h5>
-        {!ResultComponent ? (
-          () => {
-            navigate(cantFind);
-          }
+        {ResultComponent ? (
+          createElement(ResultComponent, {
+            result: result,
+            detailed: false,
+          })
         ) : (
-          <ResultComponent result={result} />
+          <NotFound />
         )}
       </div>
     </div>

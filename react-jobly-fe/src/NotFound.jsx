@@ -9,7 +9,7 @@ const NotFound = () => {
 
   // Handler for the button click event
   const handleGoHome = () => {
-    navigate.push("/"); // Navigate to the home page
+    navigate("/"); // Navigate to the home page
   };
 
   return (

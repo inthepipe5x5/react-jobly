@@ -5,7 +5,7 @@ const BASE_URL = "http://localhost:3001";
 class JoblyApi {
   static token;
   static async request(endpoint, data = {}, method = "get") {
-    console.debug("API Call:", endpoint, data, method, this.token);
+    console.debug("API Call:", endpoint, data, method);
 
     const url = `${BASE_URL}/${endpoint}`;
     const headers = JoblyApi.token

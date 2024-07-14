@@ -19,8 +19,7 @@ const JobResult = ({ result, detailed = false }) => {
   const [application, setApplication] = useState(result.applied || false);
   const { currentUser, userDetails, fetchUserDetails } = useUserContext();
   if (!result) return null;
-
-  const { id, title, salary, equity, company_handle } = result;
+  const { id, title, salary, equity, companyName } = result;
 
   const handleJobApp = async () => {
     const { username } = currentUser || userDetails;
@@ -46,7 +45,7 @@ const JobResult = ({ result, detailed = false }) => {
       <CardBody>
         <CardTitle tag="h3">{title} </CardTitle>
         <CardSubtitle tag="h6" className="mb-2 text-muted">
-          {company_handle ? company_handle : "Unknown Company"}
+          {companyName ? companyName : "Unknown Company"}
         </CardSubtitle>
         {detailed ? createElement(detailedOnly) : ""}
         <CardText className="mt-3">

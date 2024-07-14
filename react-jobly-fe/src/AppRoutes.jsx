@@ -49,7 +49,7 @@ const AppRoutes = () => {
         path="companies/:companyName"
         element={
           <ProtectedRoute>
-            <Result resultType="company" />
+            <Result resultType="company" detailed/>
           </ProtectedRoute>
         }
       />
@@ -73,7 +73,7 @@ const AppRoutes = () => {
         path="users/:username"
         element={
           <ProtectedRoute>
-            <Result resultType="user" />
+            <Result resultType="user" detailed/>
           </ProtectedRoute>
         }
       />
@@ -97,7 +97,7 @@ const AppRoutes = () => {
         path="jobs/:jobName"
         element={
           <ProtectedRoute>
-            <Result resultType="job" />
+            <Result resultType="job" detailed/>
           </ProtectedRoute>
         }
       />
