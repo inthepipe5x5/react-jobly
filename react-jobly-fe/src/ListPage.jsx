@@ -23,7 +23,7 @@ import NotFound from "./NotFound";
 import ErrorPageContent from "./ErrorContent";
 import { useUserContext } from "./useUserContext";
 
-const List = () => {
+const ListPage = () => {
   const [listContent, setListContent] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
@@ -101,4 +101,4 @@ const List = () => {
   );
 };
 
-export default List;
+export default ListPage;

@@ -4,7 +4,7 @@ import { Alert } from "reactstrap";
 
 import ProtectedRoute from "./ProtectedRoute";
 import Home from "./Home";
-import List from "./List";
+import ListPage from "./ListPage";
 import UserResult from "./UserResult";
 import Result from "./Result";
 import AuthPage from "./AuthPage";
@@ -19,9 +19,9 @@ import { useUserContext } from "./useUserContext";
  * React Routes for Jobly App:
  * Routes
  * - Homepage — just a simple welcome message
- * - /companies  List all companies
+ * - /companies  ListPage all companies
  * - /companies/apple  View details of this company
- * - /jobs  List all jobs
+ * - /jobs  ListPage all jobs
  * - /login  Login/signup
  * - /signup  Signup form
  * - /profile  Edit profile page
@@ -65,7 +65,7 @@ const AppRoutes = () => {
         path="companies"
         element={
           <ProtectedRoute>
-            <List />
+            <ListPage />
           </ProtectedRoute>
         }
       />
@@ -89,7 +89,7 @@ const AppRoutes = () => {
         path="users"
         element={
           <ProtectedRoute>
-            <List />
+            <ListPage />
           </ProtectedRoute>
         }
       />
@@ -105,7 +105,7 @@ const AppRoutes = () => {
         path="jobs"
         element={
           <ProtectedRoute>
-            <List />
+            <ListPage />
           </ProtectedRoute>
         }
       />
