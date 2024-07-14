@@ -40,7 +40,6 @@ const EditUserForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const cleanedData = removeFalsyObjValues(formData);
-    console.debug('edit data', cleanedData)
     const {username} = currentUser
     try {
       await JoblyApi.editUser(username, cleanedData);

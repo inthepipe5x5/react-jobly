@@ -56,7 +56,6 @@ const UserContextProvider = ({ children }) => {
 
       setUserDetails(response);
       setJobApps(currentApps);
-      console.debug("user details fetched", response);
       return response;
     } catch (err) {
       console.error("Failed to fetch user details", err);

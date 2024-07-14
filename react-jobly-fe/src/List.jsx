@@ -37,7 +37,6 @@ const List = () => {
         const resp = await JoblyApi.request(`${currentPath}`);
         const listData = resp.data[currentPath];
         setListContent(listData || []);
-        console.debug("List.jsx =>", listData);
       } catch (error) {
         const { errTitle, errMessage } = handleCaughtError(error);
         setListContent({
@@ -68,7 +67,6 @@ const List = () => {
     return content.map((item) => (
       <ListGroupItem key={uuid()}>
         <Link to={`/${currentPath}/${item[uniqueIdentifier]}`}>
-          {console.debug("List.jsx item=>", item instanceof Object)}
           {createElement(listItemComponent, { result: item, detailed: false })}
         </Link>
       </ListGroupItem>

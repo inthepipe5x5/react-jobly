@@ -109,14 +109,12 @@ const handleAuth = async (userData, authType = "login") => {
     let subpath = { signup: "register", login: "token" }[authType];
 
     const result = await JoblyApi.request(BASE_URL + subpath, userData, "post");
-    console.debug("handleAuth call", authType, userData, "=>", result);
 
     if (
       result.statusText === "OK" ||
       result.data.token ||
       `${result.status}`[0] === 2
     ) {
-      console.debug(`handleAuth OUTPUT: ${result.data.token}`);
       return { token: result.data.token, username: userData.username };
     } else {
       throw new Error(result.error, 400);

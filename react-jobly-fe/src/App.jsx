@@ -11,32 +11,32 @@ import FlashMessage from "./FlashMessage";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
-  
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
   return (
     <div className="App">
-        <MainNavBar />
-        <div className="hero-wrapper bg-composed-wrapper bg-midnight-bloom min-vh-100">
-          <div className="min-vw-50 min-vh-50 w-200 d-flex align-items-center">
-            <Container
-              fluid
-              className=" d-flex justify-content-center align-items-center mb-5"
+      <MainNavBar />
+      <div className="hero-wrapper bg-composed-wrapper bg-midnight-bloom min-vh-100">
+        <div className="min-vw-50 min-vh-50 w-200 d-flex align-items-center">
+          <Container
+            fluid
+            className=" d-flex justify-content-center align-items-center mb-5"
+          >
+            <Suspense
+              fallback={
+                <>
+                  <LoadingSpinner></LoadingSpinner>
+                </>
+              }
             >
-              <Suspense
-                fallback={
-                  <>
-                    <LoadingSpinner></LoadingSpinner>
-                  </>
-                }
-              >
-                <AppRoutes />
-              </Suspense>
-            </Container>
-          </div>
+              <AppRoutes />
+            </Suspense>
+          </Container>
         </div>
+      </div>
     </div>
   );
 }
