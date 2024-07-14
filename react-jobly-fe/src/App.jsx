@@ -11,14 +11,13 @@ import FlashMessage from "./FlashMessage";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
-  console.log("localStorage token: ", localStorage.getItem("JoblyUserToken"));
+  
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
   return (
     <div className="App">
-      <UserContextProvider>
         <MainNavBar />
         <div className="hero-wrapper bg-composed-wrapper bg-midnight-bloom min-vh-100">
           <div className="min-vw-50 min-vh-50 w-200 d-flex align-items-center">
@@ -38,7 +37,6 @@ function App() {
             </Container>
           </div>
         </div>
-      </UserContextProvider>
     </div>
   );
 }

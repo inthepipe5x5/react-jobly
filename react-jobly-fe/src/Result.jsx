@@ -48,7 +48,7 @@ const Result = (resultType = "company", cantFind = NotFound) => {
       }
     };
     fetchResult();
-  }, [resultType, cantFind, username, companyName, jobName, navigate]);
+  }, [resultType, cantFind, username, companyName, jobName, navigate, location.pathname]);
 
   if (isLoading) {
     return <LoadingSpinner />;

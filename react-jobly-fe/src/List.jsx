@@ -37,6 +37,7 @@ const List = () => {
         const resp = await JoblyApi.request(`${currentPath}`);
         const listData = resp.data[currentPath];
         setListContent(listData || []);
+        console.debug("List.jsx =>",listData)
       } catch (error) {
         const { errTitle, errMessage } = handleCaughtError(error);
         setListContent({

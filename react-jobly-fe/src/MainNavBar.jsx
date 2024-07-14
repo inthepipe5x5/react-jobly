@@ -22,9 +22,6 @@ const MainNavBar = () => {
     logoutUser();
     navigate("/login");
   };
-  console.log(
-    "AUTH CONTEXT: " + `${currentUser.username ? currentUser.username : "ANON"}`
-  );
   return (
     <Navbar color="light" light expand="sm" className="mb-4">
       <NavbarBrand tag={Link} to="/">
