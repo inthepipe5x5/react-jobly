@@ -19,7 +19,7 @@ import "./UserResult.css";
 import LoadingSpinner from "./LoadingSpinner";
 import { capitalizeWord } from "./helper";
 
-const UserResult = () => {
+const UserResult = (user) => {
   const { userDetails, jobApps } = useUserContext();
   if (!userDetails) return <LoadingSpinner></LoadingSpinner>;
 
@@ -82,7 +82,6 @@ const UserResult = () => {
                           <span className="badge rounded-pill text-bg-primary">
                             ID: {job.id}
                           </span>
-    
                         </Link>
                       </ListGroupItem>
                     ))}

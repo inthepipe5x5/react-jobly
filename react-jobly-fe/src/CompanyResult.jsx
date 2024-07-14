@@ -13,7 +13,7 @@ import {
   ListGroupItem,
 } from "reactstrap";
 
-const CompanyResult = (result, detailed = false) => {
+const CompanyResult = ({result, detailed = false}) => {
   const { handle, name, numEmployees, description, logoUrl } = result;
   return (
     <Card className="my-3">
