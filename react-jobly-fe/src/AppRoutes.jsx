@@ -6,7 +6,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Home from "./Home";
 import ListPage from "./ListPage";
 import UserResult from "./UserResult";
-import Result from "./Result";
+import ResultPage from "./ResultPage";
 import AuthPage from "./AuthPage";
 import NotFound from "./NotFound";
 import SubmitNew from "./SubmitNew";
@@ -49,7 +49,7 @@ const AppRoutes = () => {
         path="companies/:companyName"
         element={
           <ProtectedRoute>
-            <Result resultType="company" detailed/>
+            <ResultPage resultType="company" detailed/>
           </ProtectedRoute>
         }
       />
@@ -73,7 +73,7 @@ const AppRoutes = () => {
         path="users/:username"
         element={
           <ProtectedRoute>
-            <Result resultType="user" detailed/>
+            <ResultPage resultType="user" detailed/>
           </ProtectedRoute>
         }
       />
@@ -97,7 +97,7 @@ const AppRoutes = () => {
         path="jobs/:jobName"
         element={
           <ProtectedRoute>
-            <Result resultType="job" detailed/>
+            <ResultPage resultType="job" detailed/>
           </ProtectedRoute>
         }
       />

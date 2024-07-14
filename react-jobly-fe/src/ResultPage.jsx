@@ -11,7 +11,7 @@ import JoblyApi from "./api";
 import { capitalizeWord } from "./helper";
 import { useUserContext } from "./useUserContext";
 
-const Result = (resultType = "company", cantFind = NotFound) => {
+const ResultPage = (resultType = "company", cantFind = NotFound) => {
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { currentUser } = useUserContext();
@@ -88,4 +88,4 @@ const Result = (resultType = "company", cantFind = NotFound) => {
   );
 };
 
-export default Result;
+export default ResultPage;
