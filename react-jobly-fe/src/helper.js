@@ -171,7 +171,7 @@ returns FlashMessage Object:
 const handleCaughtError = (error, origin = "") => {
   let errMessage =
     error.message ||
-    `Detail.jsx -> Error retrieving ${origin ? +origin : "api call"} `;
+    `Error with ${origin ? +origin : "api call"} `;
   let errTitle = error.status || error.error;
   let errType = [400, 401, 500].includes(error.status) ? "danger" : "warning";
 

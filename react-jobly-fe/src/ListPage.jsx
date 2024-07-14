@@ -3,6 +3,7 @@
 import React, { useEffect, useState, createElement } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
+  Badge,
   Card,
   CardBody,
   CardTitle,
@@ -84,6 +85,8 @@ const ListPage = () => {
       />
     );
 
+  const foundCountBadgeColor = listContent.length > 0 ? "success" : "secondary";
+
   return (
     <Container tag="section" className="col-8" fluid>
       <Card>
@@ -91,9 +94,13 @@ const ListPage = () => {
           <CardHeader tag="h3" className="font-weight-bold text-center">
             <CardTitle>{capitalizeWord(currentPath)} Directory</CardTitle>
           </CardHeader>
-          <CardText>{`${capitalizeWord(currentPath)} Results: ${
-            listContent.length
-          }`}</CardText>
+          <CardText>
+            {`${capitalizeWord(currentPath)} found:`}
+            {" "}
+            <Badge pill color={foundCountBadgeColor}>
+              {listContent.length}
+            </Badge>
+          </CardText>
           <ListGroup>{generateContentCards(listContent)}</ListGroup>
         </CardBody>
       </Card>

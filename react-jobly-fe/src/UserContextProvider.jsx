@@ -21,7 +21,6 @@ const UserContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(localUserToken);
   const [userDetails, setUserDetails] = useState(null);
   const [jobApps, setJobApps] = useState([]);
-
   const loginUser = useCallback(
     (token, username) => {
       if (!token || !username) return;
@@ -41,6 +40,7 @@ const UserContextProvider = ({ children }) => {
     setUserDetails(null);
     //result job apps
     setJobApps([]);
+    
   }, [setLocalUserToken]);
 
   const fetchUserDetails = useCallback(async () => {

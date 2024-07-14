@@ -54,7 +54,7 @@ const ResultPage = (resultType = "company", cantFind = NotFound) => {
     return <LoadingSpinner />;
   }
 
-  if (!result) {
+  if (!result && !isLoading) {
     return <NotFound />;
   }
 

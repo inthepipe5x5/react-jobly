@@ -10,23 +10,28 @@ import {
 } from "reactstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useUserContext } from "./useUserContext";
-// import { useFlashMessage } from "./FlashMessageContext";
-import { handleAuth, getTitle, getArticle, capitalizeWord } from "./helper";
-// import FlashMessage from "./FlashMessage";
+import { useFlashMessage } from "./FlashMessageContext";
+import {
+  handleAuth,
+  getTitle,
+  getArticle,
+  capitalizeWord,
+  handleCaughtError,
+} from "./helper";
+import FlashMessage from "./FlashMessage";
 
 const AuthPage = ({ ChildAuthForm }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [authType, setAuthType] = useState(
-    location.pathname.replace("/", "") || "login"
+    location.pathname.split("/")[1] || "login"
   );
-  console.log("AUTHPAGE", location.pathname, authType);
-  //retrieve contexts
   const { currentUser, loginUser, logoutUser } = useUserContext();
-  // const { flashMessage, showFlashMessage, dismissFlashMessage } =
-  //   useFlashMessage();
+  const { flashMessage, showFlashMessage, dismissFlashMessage } =
+    useFlashMessage();
   const handleLogout = () => {
     logoutUser();
+    showFlashMessage("Logout successful", "Hope to see you again!", "success");
     navigate("/login");
   };
 
@@ -36,18 +41,26 @@ const AuthPage = ({ ChildAuthForm }) => {
       console.log(authType, inputData, "=>", result);
       if (result.token) {
         loginUser(result.token, result.username || inputData.username);
-        const successMessage = `${getTitle(authType)} Successful!`;
-        console.debug(successMessage);
+        const successMessage = `Welcome ${inputData.username}`;
+        showFlashMessage(`${authType} successful!`, successMessage, "success");
         if (authType === "edit") {
           return navigate(`/users/${result.username}`);
         } else {
           return navigate("/");
         }
       } else {
-        throw new Error(`handleAuthError: res.token=${result.token}`);
+        let newErr = handleCaughtError(result, `${location.pathname}`);
+        console.debug(newErr);
+        showFlashMessage(newErr.title, newErr.message, "danger");
+        throw new Error(newErr);
       }
     } catch (err) {
       console.error("handleAuthSubmit Error:", err);
+      if (!flashMessage) {
+        const fm =
+          authType === "login" ? "Invalid credentials" : "Sorry, try again.";
+        showFlashMessage("Auth Error", fm, "danger");
+      }
     }
   };
 
@@ -56,14 +69,6 @@ const AuthPage = ({ ChildAuthForm }) => {
       <Card className="card-container mt-5 mb-5">
         <CardTitle className="font-weight-bold text-center mt-3">
           <h2>{getTitle(authType)}</h2>
-          {/* {flashMessage && (
-            <FlashMessage
-              title={flashMessage.title}
-              message={flashMessage.message}
-              type={flashMessage.type}
-              onDismiss={dismissFlashMessage}
-            />
-          )} */}
         </CardTitle>
         <CardBody>
           {authType === "logout"
@@ -74,9 +79,10 @@ const AuthPage = ({ ChildAuthForm }) => {
               <Col>
                 <Button
                   color="secondary"
-                  onClick={() =>
-                    setAuthType(authType !== "signup" ? "signup" : "login")
-                  }
+                  onClick={() => {
+                    navigate(`/${authType}`);
+                    setAuthType(authType !== "signup" ? "signup" : "login");
+                  }}
                 >
                   {authType !== "signup" ? "Sign up" : "Login"}
                 </Button>

@@ -10,9 +10,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <UserContextProvider>
       <BrowserRouter>
-        {/* <FlashMessageProvider> */}
-        <App />
-        {/* </FlashMessageProvider> */}
+        <FlashMessageProvider>
+          <App />
+        </FlashMessageProvider>
       </BrowserRouter>
     </UserContextProvider>
   </React.StrictMode>

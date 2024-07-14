@@ -12,14 +12,16 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import "./MainNavBar.css";
 import { useUserContext } from "./useUserContext";
-
+import { useFlashMessage } from "./FlashMessageContext";
 const MainNavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleOpenState = () => setIsOpen(!isOpen);
   const { currentUser, logoutUser } = useUserContext();
+  const { showFlashMessage } = useFlashMessage();
   const navigate = useNavigate();
   const handleLogout = () => {
     logoutUser();
+    showFlashMessage("Logout successful", "Hope to see you again soon!", "success")
     navigate("/login");
   };
   return (
@@ -55,7 +57,7 @@ const MainNavBar = () => {
           {currentUser && currentUser.username ? (
             <>
               <NavItem>
-                <BSNavLink tag={Link} to={`/users/${currentUser.username}`}>
+                <BSNavLink tag={Link} to={`/profile`}>
                   {currentUser.username}
                 </BSNavLink>
               </NavItem>

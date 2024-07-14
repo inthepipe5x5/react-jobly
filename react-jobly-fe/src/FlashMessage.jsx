@@ -16,8 +16,8 @@ const FlashMessage = ({ title, message, type = "danger", onDismiss }) => {
 
   return (
     <Toast isOpen={visible}>
-      <ToastHeader toggle={onAcknowledge}>
-        {type} {title}
+      <ToastHeader toggle={onAcknowledge} icon={type}>
+        {title}
       </ToastHeader>
       <ToastBody>{message}</ToastBody>
     </Toast>

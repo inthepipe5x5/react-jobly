@@ -6,12 +6,13 @@ import MainNavBar from "./MainNavBar";
 import LoadingSpinner from "./LoadingSpinner";
 import { UserContextProvider } from "./UserContextProvider";
 import "./App.css";
-import { FlashMessageContext } from "./FlashMessageContext";
+import { useFlashMessage } from "./FlashMessageContext";
 import FlashMessage from "./FlashMessage";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
-
+  const { flashMessage, showFlashMessage, dismissFlashMessage } =
+    useFlashMessage();
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -25,13 +26,21 @@ function App() {
             fluid
             className=" d-flex justify-content-center align-items-center mb-5"
           >
+            {flashMessage && (
+              <FlashMessage
+                title={flashMessage.title}
+                message={flashMessage.message}
+                type={flashMessage.type}
+                onDismiss={dismissFlashMessage}
+              />
+            )}
             <Suspense
               fallback={
                 <>
                   <LoadingSpinner></LoadingSpinner>
                 </>
               }
-            >
+              >
               <AppRoutes />
             </Suspense>
           </Container>
