@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, createElement } from "react";
+import React, { useState, useEffect, createElement } from "react";
 import {
   Card,
   CardBody,
@@ -14,8 +14,6 @@ import { useFlashMessage } from "./FlashMessageContext";
 import {
   handleAuth,
   getTitle,
-  getArticle,
-  capitalizeWord,
   handleCaughtError,
 } from "./helper";
 import FlashMessage from "./FlashMessage";
@@ -27,8 +25,13 @@ const AuthPage = ({ ChildAuthForm }) => {
     location.pathname.split("/")[1] || "login"
   );
   const { currentUser, loginUser, logoutUser } = useUserContext();
-  const { flashMessage, showFlashMessage, dismissFlashMessage } =
-    useFlashMessage();
+  const { flashMessage, showFlashMessage, dismissFlashMessage } = useFlashMessage();
+
+  //useEffect to sync authType to location changes
+  useEffect(() => {
+    setAuthType(location.pathname.split("/")[1] || "login");
+  }, [location]);
+
   const handleLogout = () => {
     logoutUser();
     showFlashMessage("Logout successful", "Hope to see you again!", "success");
@@ -57,11 +60,16 @@ const AuthPage = ({ ChildAuthForm }) => {
     } catch (err) {
       console.error("handleAuthSubmit Error:", err);
       if (!flashMessage) {
-        const fm =
-          authType === "login" ? "Invalid credentials" : "Sorry, try again.";
+        const fm = authType === "login" ? "Invalid credentials" : "Sorry, try again.";
         showFlashMessage("Auth Error", fm, "danger");
       }
     }
+  };
+
+  const toggleAuthType = () => {
+    const newAuthType = authType === "signup" ? "login" : "signup";
+    navigate(`/${newAuthType}`);
+    setAuthType(newAuthType);
   };
 
   return (
@@ -77,14 +85,8 @@ const AuthPage = ({ ChildAuthForm }) => {
           {authType !== "edit" ? (
             <Row>
               <Col>
-                <Button
-                  color="secondary"
-                  onClick={() => {
-                    navigate(`/${authType}`);
-                    setAuthType(authType !== "signup" ? "signup" : "login");
-                  }}
-                >
-                  {authType !== "signup" ? "Sign up" : "Login"}
+                <Button color="secondary" onClick={toggleAuthType}>
+                  {authType === "signup" ? "Login" : "Sign up"}
                 </Button>
               </Col>
             </Row>
