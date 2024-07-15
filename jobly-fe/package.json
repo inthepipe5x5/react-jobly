@@ -8,6 +8,7 @@
     "start-be": "cd ../backend && nodemon server.js",
     "dev": "vite",
     "build": "vite build",
+    "start": "vite --port $PORT",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "install-bun": "curl -fsSL https://bun.sh/install | bash"
@@ -42,7 +43,7 @@
     "vite": "^5.2.10",
     "vite-plugin-pwa": "^0.20.0",
     "workbox-window": "^7.1.0"
-  }, 
+  },
   "overrides": {
     "sharp": "0.32.6",
     "sharp-ico": "0.1.5"
