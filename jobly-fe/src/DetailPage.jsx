@@ -9,7 +9,7 @@ import UserResult from "./UserResult";
 import LoadingSpinner from "./LoadingSpinner";
 import { handleCaughtError } from "./helper";
 
-const Detail = () => {
+const DetailPage = () => {
   const [detailContent, setDetailContent] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -83,4 +83,4 @@ const Detail = () => {
   }) : null;
 };
 
-export default Detail;
+export default DetailPage;

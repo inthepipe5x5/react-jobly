@@ -14,7 +14,7 @@ import LoginForm from "./LoginForm";
 import SignUpForm from "./SignUpForm";
 import EditUserForm from "./EditUserForm";
 import { useUserContext } from "./useUserContext";
-import Detail from "./Detail";
+import DetailPage from "./DetailPage";
 
 const AppRoutes = () => {
   const { currentUser } = useUserContext();
@@ -37,7 +37,7 @@ const AppRoutes = () => {
         path="companies/:companyName"
         element={
           <ProtectedRoute>
-            <Detail />
+            <DetailPage />
           </ProtectedRoute>
         }
       />
@@ -85,7 +85,7 @@ const AppRoutes = () => {
         path="jobs/:jobName"
         element={
           <ProtectedRoute>
-            <Detail />
+            <DetailPage />
           </ProtectedRoute>
         }
       />
