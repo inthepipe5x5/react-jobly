@@ -54,9 +54,9 @@ const ResultPage = (resultType = "company", cantFind = NotFound) => {
     return <LoadingSpinner />;
   }
 
-  if (!result && !isLoading) {
-    return <NotFound />;
-  }
+  // if (!result && !isLoading) {
+  //   return <NotFound />;
+  // }
 
   if (username && username === currentUser.username) {
     navigate("/profile");

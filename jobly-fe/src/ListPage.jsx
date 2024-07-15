@@ -76,7 +76,7 @@ const ListPage = () => {
 
   if (isLoading) return <LoadingSpinner />;
 
-  if (!isLoading && listContent.error)
+  if (!isLoading && listContent.error && listContent.length === 0)
     return (
       <ErrorPageContent
         contentType={currentPath || location.pathname}

@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 import { createElement } from "react";
 import {
+  Button,
   Badge,
   Card,
   CardBody,
@@ -12,9 +13,13 @@ import {
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
+import { useNavigate, Link } from "react-router-dom";
+import { v4 as uuid } from "uuid";
+import JobResult from "./JobResult";
 
-const CompanyResult = ({result, detailed = false}) => {
-  const { handle, name, numEmployees, description, logoUrl } = result;
+const CompanyResult = ({ result, detailed = false }) => {
+  const { handle, name, numEmployees, description, logoUrl, jobs } = result;
+  const navigate = useNavigate();
   return (
     <Card className="my-3">
       <CardBody>
@@ -29,6 +34,14 @@ const CompanyResult = ({result, detailed = false}) => {
               <ListGroupItem>
                 Number of Employees: <Badge>{numEmployees || "❓"}</Badge>
               </ListGroupItem>
+              <hr></hr>
+              {jobs.map((job) => (
+                <Link key={uuid()} to={`/jobs/${job.title}`}>
+                  <ListGroupItem key={uuid()}>
+                    {createElement(JobResult, { result: job, detailed: true })}
+                  </ListGroupItem>
+                </Link>
+              ))}
             </ListGroup>
             {logoUrl && (
               <CardImg top>
@@ -40,6 +53,14 @@ const CompanyResult = ({result, detailed = false}) => {
                 />
               </CardImg>
             )}
+            <Button
+              color="info"
+              onClick={() => {
+                navigate("/companies");
+              }}
+            >
+              Go back to Companies
+            </Button>
           </>
         )}
       </CardBody>
