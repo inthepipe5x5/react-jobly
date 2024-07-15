@@ -11,7 +11,10 @@
     "start": "vite --port $PORT",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "install-bun": "curl -fsSL https://bun.sh/install | bash"
+    "install-bun": "curl -fsSL https://bun.sh/install | bash",
+    "preinstall": "npm install -g node-gyp@latest",
+    "postinstall": "npm rebuild sharp",
+    "install": "node-pre-gyp install --fallback-to-build"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^6.4.6",
@@ -19,6 +22,7 @@
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "jest": "^29.7.0",
+    "node-pre-gyp": "^0.17.0",
     "pwa": "^1.9.7",
     "react": "^18.3.1",
     "react-dom": "^18.2.0",
@@ -43,5 +47,10 @@
     "vite": "^5.2.10",
     "vite-plugin-pwa": "^0.20.0",
     "workbox-window": "^7.1.0"
+  },
+  "engines": {
+    "node": "20.x",
+    "npm": "9.x",
+    "python": "3.9"
   }
 }
