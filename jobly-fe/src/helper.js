@@ -149,9 +149,19 @@ const getTitle = (authPageType) => {
   switch (authPageType) {
     case "signup":
       return "Sign Up";
+    case "register":
+      return "Sign Up";
+    case "registration":
+      return "Sign Up";
     case "login":
       return "Log In";
+    case "signin":
+      return "Log In";
     case "edit":
+      return "Edit Profile";
+    case "user":
+      return "Edit Profile";
+    case "users":
       return "Edit Profile";
     default:
       return "Authentication";
