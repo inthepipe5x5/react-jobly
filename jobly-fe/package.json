@@ -4,11 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start-fe": "bunx --bun vite",
+    "start-fe": "vite",
     "start-be": "cd ../backend && nodemon server.js",
     "dev": "vite",
     "build": "vite build",
-    "start": "vite --port $PORT",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
