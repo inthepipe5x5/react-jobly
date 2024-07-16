@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createElement } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import JoblyApi from "./api";
-import ErrorPageContent from "./ErrorContent";
+import ErrorContentCard from "./ErrorContent";
 import NotFound from "./NotFound";
 import JobResult from "./JobResult";
 import CompanyResult from "./CompanyResult";
@@ -69,7 +69,7 @@ const DetailPage = () => {
     return detailContent.status === 404 ? (
       <NotFound />
     ) : (
-      <ErrorPageContent
+      <ErrorContentCard
         contentType={currentPath}
         errStatus={detailContent.status}
         message={detailContent.message}

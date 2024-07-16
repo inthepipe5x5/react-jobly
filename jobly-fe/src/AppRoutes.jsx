@@ -61,7 +61,7 @@ const AppRoutes = () => {
         path="users/:username"
         element={
           <ProtectedRoute>
-            <ResultPage resultType="user" detailed />
+            <ResultPage resultType="user" detailed requireAdmin/>
           </ProtectedRoute>
         }
       />
@@ -76,7 +76,7 @@ const AppRoutes = () => {
       <Route
         path="users"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute requireAdmin>
             <ListPage />
           </ProtectedRoute>
         }

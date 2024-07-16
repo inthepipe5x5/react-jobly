@@ -11,7 +11,7 @@ import {
 } from "reactstrap";
 import { capitalizeWord } from "./helper";
 
-const ErrorPageContent = ({
+const ErrorContentCard = ({
   contentType = "company",
   errStatus = 404,
   message,
@@ -42,6 +42,8 @@ const ErrorPageContent = ({
             <CardTitle tag="h1" className="font-weight-bold">
               {errStatus === 404
                 ? `${errStatus} - Page Not Found`
+                : errStatus === 401
+                ? `${errStatus} - Unauthorized`
                 : `${errStatus} - Error ${message ? message : ""}`}
             </CardTitle>
             <p>{contentMessageHeader}</p>
@@ -69,4 +71,4 @@ const ErrorPageContent = ({
   );
 };
 
-export default ErrorPageContent;
+export default ErrorContentCard;

@@ -21,7 +21,7 @@ import UserResult from "./UserResult";
 import CompanyResult from "./CompanyResult";
 import JoblyApi from "./api";
 import NotFound from "./NotFound";
-import ErrorPageContent from "./ErrorContent";
+import ErrorContentCard from "./ErrorContent";
 import { useUserContext } from "./useUserContext";
 
 const ListPage = () => {
@@ -36,13 +36,22 @@ const ListPage = () => {
     const getAllData = async () => {
       try {
         const resp = await JoblyApi.request(`${currentPath}`);
+        if (
+          resp.error ||
+          resp?.statusText !== "ok" ||
+          `${resp.status}`[0] !== 2
+        ) {
+          const err = new Error(resp.error || resp.data.error.message);
+          err.status = resp.status || resp.statusText || 404;
+          throw err
+        }
         const listData = resp.data[currentPath];
         setListContent(listData || []);
       } catch (error) {
         const { errTitle, errMessage } = handleCaughtError(error);
         setListContent({
           error: true,
-          status: errTitle,
+          status: error.status || errTitle,
           message: errMessage,
         });
       } finally {
@@ -65,6 +74,15 @@ const ListPage = () => {
       users: UserResult,
     }[currentPath];
 
+    if (!isLoading && content.error) {
+      return (
+        <ErrorContentCard
+          contentType={currentPath || location.pathname}
+          errStatus={content.status}
+          message={listContent.message}
+        />
+      );
+    }
     return content.map((item) => (
       <ListGroupItem key={uuid()}>
         <Link to={`/${currentPath}/${item[uniqueIdentifier]}`}>
@@ -76,15 +94,6 @@ const ListPage = () => {
 
   if (isLoading) return <LoadingSpinner />;
 
-  if (!isLoading && listContent.error && listContent.length === 0)
-    return (
-      <ErrorPageContent
-        contentType={currentPath || location.pathname}
-        errStatus={listContent.status}
-        message={listContent.message}
-      />
-    );
-
   const foundCountBadgeColor = listContent.length > 0 ? "success" : "secondary";
 
   return (
@@ -95,8 +104,7 @@ const ListPage = () => {
             <CardTitle>{capitalizeWord(currentPath)} Directory</CardTitle>
           </CardHeader>
           <CardText>
-            {`${capitalizeWord(currentPath)} found:`}
-            {" "}
+            {`${capitalizeWord(currentPath)} found:`}{" "}
             <Badge pill color={foundCountBadgeColor}>
               {listContent.length}
             </Badge>
