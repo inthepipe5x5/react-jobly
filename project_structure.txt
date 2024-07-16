@@ -1,34 +1,102 @@
 .
-├── api.js
-├── backend
-│   ├── Procfile
-│   ├── app.js
-│   ├── app.test.js
-│   ├── bun.lockb
-│   ├── config.js
-│   ├── config.test.js
-│   ├── db.js
-│   ├── expressError.js
-│   ├── helpers
-│   ├── jobly-schema.sql
-│   ├── jobly-seed.sql
-│   ├── jobly.sql
-│   ├── middleware
-│   ├── models
-│   ├── node_modules
-│   ├── package.json
-│   ├── routes
-│   ├── schemas
-│   └── server.js
+├── jobly-be
+│   ├── app.js
+│   ├── app.test.js
+│   ├── config.js
+│   ├── config.test.js
+│   ├── db.js
+│   ├── expressError.js
+│   ├── helpers
+│   │   ├── sql.js
+│   │   ├── sql.test.js
+│   │   ├── tokens.js
+│   │   └── tokens.test.js
+│   ├── jobly-schema.sql
+│   ├── jobly-seed.sql
+│   ├── jobly.sql
+│   ├── middleware
+│   │   ├── auth.js
+│   │   └── auth.test.js
+│   ├── models
+│   │   ├── _testCommon.js
+│   │   ├── company.js
+│   │   ├── company.test.js
+│   │   ├── job.js
+│   │   ├── job.test.js
+│   │   ├── user.js
+│   │   └── user.test.js
+│   ├── package.json
+│   ├── routes
+│   │   ├── _testCommon.js
+│   │   ├── auth.js
+│   │   ├── auth.test.js
+│   │   ├── companies.js
+│   │   ├── companies.test.js
+│   │   ├── jobs.js
+│   │   ├── jobs.test.js
+│   │   ├── users.js
+│   │   └── users.test.js
+│   ├── schemas
+│   │   ├── companyNew.json
+│   │   ├── companySearch.json
+│   │   ├── companyUpdate.json
+│   │   ├── jobNew.json
+│   │   ├── jobSearch.json
+│   │   ├── jobUpdate.json
+│   │   ├── userAuth.json
+│   │   ├── userNew.json
+│   │   ├── userRegister.json
+│   │   └── userUpdate.json
+│   └── server.js
+├── jobly-fe
+│   ├── README.md
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   │   └── vite.svg
+│   ├── src
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── AppRoutes.jsx
+│   │   ├── AuthPage.jsx
+│   │   ├── CompanyResult.jsx
+│   │   ├── DetailPage.jsx
+│   │   ├── EditUserForm.jsx
+│   │   ├── ErrorContentCard.jsx
+│   │   ├── FilterNavBar.jsx
+│   │   ├── FlashMessage.jsx
+│   │   ├── FlashMessageContext.jsx
+│   │   ├── Home.css
+│   │   ├── Home.jsx
+│   │   ├── JobResult.jsx
+│   │   ├── ListPage.jsx
+│   │   ├── LoadingSpinner.jsx
+│   │   ├── LoginForm.jsx
+│   │   ├── MainNavBar.css
+│   │   ├── MainNavBar.jsx
+│   │   ├── NotFound.jsx
+│   │   ├── ProtectedRoute.jsx
+│   │   ├── ResultPage.jsx
+│   │   ├── SignUpForm.jsx
+│   │   ├── SubmitNew.jsx
+│   │   ├── UserContextProvider.jsx
+│   │   ├── UserResult.css
+│   │   ├── UserResult.jsx
+│   │   ├── __tests__
+│   │   │   ├── App.test.jsx
+│   │   │   └── UserContextProvider.test.jsx
+│   │   ├── api.js
+│   │   ├── assets
+│   │   │   ├── react.svg
+│   │   │   └── teamwork.png
+│   │   ├── helper.js
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   ├── useLocalStorage.jsx
+│   │   └── useUserContext.jsx
+│   └── vite.config.js
+├── package.json
 ├── project_structure.txt
-└── react-jobly-fe
-    ├── README.md
-    ├── bun.lockb
-    ├── index.html
-    ├── node_modules
-    ├── package.json
-    ├── public
-    ├── src
-    └── vite.config.js
-
-11 directories, 20 files
+├── pwa-assets.config.js
+└── pwa.js
