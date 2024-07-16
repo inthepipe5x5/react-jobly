@@ -2,7 +2,7 @@ import React from "react";
 import { Navigate, useParams } from "react-router";
 import { useUserContext } from "./useUserContext";
 import { checkAuthStatus } from "./helper";
-import ErrorContentCard from "./ErrorContent";
+import ErrorContentCard from "./ErrorContentCard";
 
 const ProtectedRoute = ({
   requireAdmin = false,

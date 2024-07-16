@@ -21,7 +21,7 @@ import UserResult from "./UserResult";
 import CompanyResult from "./CompanyResult";
 import JoblyApi from "./api";
 import NotFound from "./NotFound";
-import ErrorContentCard from "./ErrorContent";
+import ErrorContentCard from "./ErrorContentCard";
 import { useUserContext } from "./useUserContext";
 
 const ListPage = () => {

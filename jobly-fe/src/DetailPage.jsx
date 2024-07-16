@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createElement } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import JoblyApi from "./api";
-import ErrorContentCard from "./ErrorContent";
+import ErrorContentCard from "./ErrorContentCard";
 import NotFound from "./NotFound";
 import JobResult from "./JobResult";
 import CompanyResult from "./CompanyResult";
