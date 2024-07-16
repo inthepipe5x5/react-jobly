@@ -18,6 +18,7 @@ import { useUserContext } from "./useUserContext";
 import "./UserResult.css";
 import LoadingSpinner from "./LoadingSpinner";
 import { capitalizeWord } from "./helper";
+import teamworkImg from "./assets/teamwork.png";
 
 const UserResult = (user) => {
   const { userDetails, jobApps } = useUserContext();
@@ -41,7 +42,7 @@ const UserResult = (user) => {
               }}
             >
               <CardImg
-                src="./react-jobly-fe/src/assets/teamwork.png"
+                src={teamworkImg}
                 alt="Person icons created by Freepik - Flaticon"
                 className="my-5 user-icon"
                 style={{ width: "80px" }}
