@@ -7,14 +7,10 @@
     "start-fe": "bunx --bun vite",
     "start-be": "cd ../backend && nodemon server.js",
     "dev": "vite",
-    "build": "vite build --force",
+    "build": "vite build",
     "start": "vite --port $PORT",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "install-bun": "curl -fsSL https://bun.sh/install | bash",
-    "preinstall": "npm install -g node-gyp@latest",
-    "postinstall": "npm rebuild sharp",
-    "install": "node-pre-gyp install --fallback-to-build"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^6.4.6",
