@@ -16,7 +16,6 @@ import {
   getTitle,
   handleCaughtError,
 } from "./helper";
-import FlashMessage from "./FlashMessage";
 
 const AuthPage = ({ ChildAuthForm }) => {
   const navigate = useNavigate();

@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Form, FormGroup, Label, Input, Button, Col } from "reactstrap";
 
 const defaultProdInputData = { username: "", password: "" };
-const defaultDevInputData = { username: "test123", password: "test123" };
+//for testing purposes
+// const defaultDevInputData = { username: "test123", password: "test123" };
 
 const LoginForm = ({ onSubmit }) => {
-  const [inputData, setInputData] = useState(defaultDevInputData);
+  const [inputData, setInputData] = useState(defaultProdInputData);
 
   const handleInput = (evt) => {
     const { name, value } = evt.target;

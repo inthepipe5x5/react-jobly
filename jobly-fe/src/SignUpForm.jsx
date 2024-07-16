@@ -9,6 +9,7 @@ const defaultProdInputData = {
   lastName: "",
   email: "",
 };
+//for testing purposes
 const defaultDevInputData = {
   username: "test123test",
   password: "test123",
@@ -18,7 +19,7 @@ const defaultDevInputData = {
 };
 
 const SignUpForm = ({ onSubmit }) => {
-  const [inputData, setInputData] = useState(defaultDevInputData);
+  const [inputData, setInputData] = useState(defaultProdInputData);
 
   const handleInput = (evt) => {
     const { name, value } = evt.target;
