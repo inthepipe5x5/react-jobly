@@ -36,18 +36,20 @@ const ListPage = () => {
     const getAllData = async () => {
       try {
         const resp = await JoblyApi.request(`${currentPath}`);
-        if (
-          resp.error ||
-          resp?.statusText !== "ok" ||
-          `${resp.status}`[0] !== 2
-        ) {
-          const err = new Error(resp.error || resp.data.error.message);
-          err.status = resp.status || resp.statusText || 404;
-          throw err
-        }
-        const listData = resp.data[currentPath];
-        setListContent(listData || []);
-      } catch (error) {
+        // if (
+        //   resp.error ||
+        //   resp?.statusText !== "ok" ||
+        //   `${resp.status}`[0] !== 2
+        // ) {
+          // }
+
+          const listData = resp.data[currentPath];
+          setListContent(listData || []);
+        } catch (error) {
+          console.log(error)
+        // const err = new Error(resp.error || resp.data.error.message);
+        // err.status = resp.status || resp.statusText || 404;
+        // throw err
         const { errTitle, errMessage } = handleCaughtError(error);
         setListContent({
           error: true,
