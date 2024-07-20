@@ -49,7 +49,7 @@ const UserContextProvider = ({ children }) => {
     try {
       const response = await JoblyApi.getUser(username);
       const jobs = await (await JoblyApi.request(`jobs`)).data.jobs;
-      if (response.applications && response.applications !== null ) {
+      if (response.applications !== undefined && response.applications !== null ) {
         const currentApps = response.applications.length > 0
             ? jobs.filter((job) => response.applications.includes(job.id))
             : [];
