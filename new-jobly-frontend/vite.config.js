@@ -34,6 +34,7 @@ export default defineConfig(({ command, mode }) => {
       }),
     ],
     define: {
+      'process.env': process.env,
       __APP_ENV__: JSON.stringify(env.APP_ENV),
       'import.meta.env.VITE_REACT_APP_BASE_URL': JSON.stringify(env.VITE_REACT_APP_BASE_URL),
     },
