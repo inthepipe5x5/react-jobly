@@ -26,7 +26,7 @@ const MainNavBar = () => {
   };
   return (
     <Navbar color="light" light expand="sm" className="mb-4">
-      <NavbarBrand className="logo" tag={Link} to="/">
+      <NavbarBrand tag={Link} to="/">
         Jobly
       </NavbarBrand>
       <NavbarToggler onClick={toggleOpenState} />

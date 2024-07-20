@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const BASE_URL = "https://react-jobly-60nf.onrender.com";
+const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL //||  "https://react-jobly-60nf.onrender.com";
 // const BASE_URL = "http://localhost:3001";
+console.log(BASE_URL)
 
 class JoblyApi {
   static token;
