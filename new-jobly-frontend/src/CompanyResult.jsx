@@ -16,6 +16,7 @@ import {
 import { useNavigate, Link } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import JobResult from "./JobResult";
+import ImageWithDefault from "./ImageWithDefault";
 
 const CompanyResult = ({ result, detailed = false }) => {
   const { handle, name, numEmployees, description, logoUrl, jobs } = result;
@@ -45,12 +46,11 @@ const CompanyResult = ({ result, detailed = false }) => {
             </ListGroup>
             {logoUrl && (
               <CardImg top>
-                <img
-                  src={logoUrl}
-                  alt={`${name} logo`}
-                  className="mt-3"
-                  style={{ maxWidth: "200px", height: "auto" }}
-                />
+                {createElement(ImageWithDefault, {
+                  src: logoUrl,
+                  defaultSrc: "company",
+                  altInfo: `${name} logo`,
+                })}
               </CardImg>
             )}
             <Button

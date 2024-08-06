@@ -2,14 +2,14 @@ import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL || import.meta.env.REACT_APP_BASE_URL //||  "https://react-jobly-60nf.onrender.com";
 // const BASE_URL = "http://localhost:3001";
-console.log(import.meta.env)
 
 class JoblyApi {
   static token;
   static async request(endpoint, data = {}, method = "get") {
     console.debug("API Call:", endpoint, data, method);
-
-    const url = `${BASE_URL}/${endpoint}`;
+    
+    console.log(import.meta.env)
+    const url = `${BASE_URL || import.meta.env.VITE_REACT_APP_BASE_URL}/${endpoint}`;
     const headers = JoblyApi.token
       ? { Authorization: `Bearer ${JoblyApi.token}` }
       : null;
