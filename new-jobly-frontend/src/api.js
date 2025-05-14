@@ -1,13 +1,13 @@
 import axios from "axios";
+import { getPhotos } from "../lib/pexels/client";
 
-const BASE_URL = import.meta.env.VITE_REACT_APP_BASE_URL || import.meta.env.REACT_APP_BASE_URL //||  "https://react-jobly-60nf.onrender.com";
-// const BASE_URL = "http://localhost:3001";
+const BASE_URL = import.meta.env.REACT_APP_BASE_URL
 
 class JoblyApi {
   static token;
   static async request(endpoint, data = {}, method = "get") {
     console.debug("API Call:", endpoint, data, method);
-    
+
     console.log(import.meta.env)
     const url = `${BASE_URL || import.meta.env.VITE_REACT_APP_BASE_URL}/${endpoint}`;
     const headers = JoblyApi.token
@@ -27,8 +27,14 @@ class JoblyApi {
   // Individual API routes
 
   static async getCompany(handle) {
-    let res = await this.request(`companies/${handle}`);
-    return res.company;
+    let [{ company }, photos] = await Promise.all([
+      this.request(`companies/${handle}`),
+      getPhotos({
+        query: handle
+      })
+    ]);
+    const result = { ...company, logoUrl: photos[0]?.src?.large };
+    return result;
   }
 
   static async getJob(title) {
@@ -103,10 +109,7 @@ class JoblyApi {
     }
   }
 }
-// for now, put token ("testuser" / "password" on class)
 JoblyApi.token = localStorage.getItem("JoblyUserToken");
-// ||"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
-//   "SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
-//   "FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc"; /* REMOVE test token in prod*/
+
 
 export default JoblyApi;

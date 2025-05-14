@@ -5,6 +5,14 @@ import { VitePWA } from "vite-plugin-pwa";
 export default defineConfig(
   //({ command, mode }) =>
   {
+    build: {
+      rollupOptions: {
+        input: {
+          main: "index.html",
+          // serviceWorker: "src/service-worker.js",
+        }
+      }
+    },
     // const env = loadEnv(mode, process.cwd(), '')
     //return
     // {
@@ -41,7 +49,7 @@ export default defineConfig(
     // 'import.meta.env.VITE_REACT_APP_BASE_URL': JSON.stringify(env.VITE_REACT_APP_BASE_URL),
     // },
     server: {
-      port: 3000,
+      port: 5173,
       // ...(env.NODE_ENV !== 'production' && { host: 'localhost' }),
     },
     // }

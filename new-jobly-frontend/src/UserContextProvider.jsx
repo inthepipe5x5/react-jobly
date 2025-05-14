@@ -1,4 +1,4 @@
-import React, {
+import {
   useState,
   useMemo,
   useCallback,
@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import JoblyApi from "./api.js";
+import PropTypes from "prop-types";
 import useLocalStorage from "./useLocalStorage.jsx";
 import { retrieveStoredPrevUser } from "./helper.js";
 
@@ -16,11 +17,19 @@ const UserContext = createContext({
   fetchUserDetails: () => {},
 });
 
-const UserContextProvider = ({ children }) => {
-  const [localUserToken, setLocalUserToken] = useLocalStorage();
-  const [currentUser, setCurrentUser] = useState(localUserToken);
-  const [userDetails, setUserDetails] = useState(null);
-  const [jobApps, setJobApps] = useState([]);
+const UserContextProvider = ({
+  children,
+}) => {
+  const [
+    localUserToken,
+    setLocalUserToken,
+  ] = useLocalStorage();
+  const [currentUser, setCurrentUser] =
+    useState(localUserToken);
+  const [userDetails, setUserDetails] =
+    useState(null);
+  const [jobApps, setJobApps] =
+    useState([]);
   const loginUser = useCallback(
     (token, username) => {
       if (!token || !username) return;
@@ -36,32 +45,57 @@ const UserContextProvider = ({ children }) => {
     setLocalUserToken(undefined); // Clear localStorage
     JoblyApi.token = null;
     //reset stored currentUser & userDetails
-    setCurrentUser({ token: null, username: null });
+    setCurrentUser({
+      token: null,
+      username: null,
+    });
     setUserDetails(null);
     //result job apps
     setJobApps([]);
-    
   }, [setLocalUserToken]);
 
-  const fetchUserDetails = useCallback(async () => {
-    if (!currentUser || !currentUser.username) return null;
-    const { username } = currentUser;
-    try {
-      const response = await JoblyApi.getUser(username);
-      const jobs = await (await JoblyApi.request(`jobs`)).data.jobs;
-      if (response.applications !== undefined && response.applications !== null ) {
-        const currentApps = response.applications.length > 0
-            ? jobs.filter((job) => response.applications.includes(job.id))
-            : [];
-            setUserDetails(response);
-            setJobApps(currentApps);
-      }  
-      return response;
-    } catch (err) {
-      console.error("Failed to fetch user details", err);
-      return null;
-    }
-  }, [currentUser]);
+  const fetchUserDetails =
+    useCallback(async () => {
+      if (
+        !currentUser ||
+        !currentUser.username
+      )
+        return null;
+      const { username } = currentUser;
+      try {
+        const response =
+          await JoblyApi.getUser(
+            username
+          );
+        const jobs = await (
+          await JoblyApi.request(`jobs`)
+        ).data.jobs;
+        if (
+          response.applications !==
+            undefined &&
+          response.applications !== null
+        ) {
+          const currentApps =
+            response.applications
+              .length > 0
+              ? jobs.filter((job) =>
+                  response.applications.includes(
+                    job.id
+                  )
+                )
+              : [];
+          setUserDetails(response);
+          setJobApps(currentApps);
+        }
+        return response;
+      } catch (err) {
+        console.error(
+          "Failed to fetch user details",
+          err
+        );
+        return null;
+      }
+    }, [currentUser]);
 
   useEffect(() => {
     if (currentUser) {
@@ -78,12 +112,29 @@ const UserContextProvider = ({ children }) => {
       logoutUser,
       fetchUserDetails,
     }),
-    [currentUser, userDetails, loginUser, logoutUser, fetchUserDetails, jobApps]
+    [
+      currentUser,
+      userDetails,
+      loginUser,
+      logoutUser,
+      fetchUserDetails,
+      jobApps,
+    ]
   );
 
   return (
-    <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
+    <UserContext.Provider
+      value={contextValue}
+    >
+      {children}
+    </UserContext.Provider>
   );
 };
+UserContextProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
-export { UserContext, UserContextProvider };
+export {
+  UserContext,
+  UserContextProvider,
+};

@@ -1,19 +1,32 @@
-import React from "react";
-import { Navigate, useParams } from "react-router";
+import {
+  Navigate,
+  useParams,
+} from "react-router";
+import PropTypes from "prop-types";
 import { useUserContext } from "./useUserContext";
 import { checkAuthStatus } from "./helper";
 import ErrorContentCard from "./ErrorContentCard";
+
 
 const ProtectedRoute = ({
   requireAdmin = false,
   redirectPath = "/login",
   children,
 }) => {
-  const {username} = useParams()
+  const { username } = useParams();
 
-  const { currentUser, userDetails } = useUserContext();
-  const permission = checkAuthStatus(currentUser);
-  if (requireAdmin && userDetails.isAdmin === false && username !== (currentUser.username || userDetails.username)) {
+  const { currentUser, userDetails } =
+    useUserContext();
+  const permission = checkAuthStatus(
+    currentUser
+  );
+  if (
+    requireAdmin &&
+    userDetails.isAdmin === false &&
+    username !==
+      (currentUser.username ||
+        userDetails.username)
+  ) {
     return (
       <ErrorContentCard
         errStatus={401}
@@ -24,10 +37,17 @@ const ProtectedRoute = ({
   }
   if (!permission) {
     console.error("wrong permissions");
-    return <Navigate to={redirectPath} />;
+    return (
+      <Navigate to={redirectPath} />
+    );
   }
 
   return children;
+};
+ProtectedRoute.propTypes = {
+  requireAdmin: PropTypes.bool,
+  redirectPath: PropTypes.string,
+  children: PropTypes.node.isRequired,
 };
 
 export default ProtectedRoute;

@@ -1,4 +1,8 @@
-import React, { useState, useEffect, createElement } from "react";
+import React, {
+  useState,
+  useEffect,
+  createElement,
+} from "react";
 import {
   Card,
   CardBody,
@@ -8,7 +12,10 @@ import {
   Row,
   Button,
 } from "reactstrap";
-import { useNavigate, useLocation } from "react-router-dom";
+import {
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { useUserContext } from "./useUserContext";
 import { useFlashMessage } from "./FlashMessageContext";
 import {
@@ -17,56 +24,113 @@ import {
   handleCaughtError,
 } from "./helper";
 
-const AuthPage = ({ ChildAuthForm }) => {
+const AuthPage = ({
+  ChildAuthForm,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [authType, setAuthType] = useState(
-    location.pathname.split("/")[1] || "login"
-  );
-  const { currentUser, loginUser, logoutUser } = useUserContext();
-  const { flashMessage, showFlashMessage, dismissFlashMessage } = useFlashMessage();
+  const [authType, setAuthType] =
+    useState(
+      location.pathname.split("/")[1] ||
+        "login"
+    );
+  const { loginUser, logoutUser } =
+    useUserContext();
+  const {
+    flashMessage,
+    showFlashMessage,
+    dismissFlashMessage,
+  } = useFlashMessage();
 
   //useEffect to sync authType to location changes
   useEffect(() => {
-    setAuthType(location.pathname.split("/")[1] || "login");
+    setAuthType(
+      location.pathname.split("/")[1] ||
+        "login"
+    );
   }, [location]);
 
   const handleLogout = () => {
     logoutUser();
-    showFlashMessage("Logout successful", "Hope to see you again!", "success");
+    showFlashMessage(
+      "Logout successful",
+      "Hope to see you again!",
+      "success"
+    );
     navigate("/login");
   };
 
-  const handleAuthSubmit = async (inputData, authType) => {
+  const handleAuthSubmit = async (
+    inputData,
+    authType
+  ) => {
     try {
-      const result = await handleAuth(inputData, authType);
-      console.log(authType, inputData, "=>", result);
+      const result = await handleAuth(
+        inputData,
+        authType
+      );
+      console.log(
+        authType,
+        inputData,
+        "=>",
+        result
+      );
       if (result.token) {
-        loginUser(result.token, result.username || inputData.username);
+        loginUser(
+          result.token,
+          result.username ||
+            inputData.username
+        );
         const successMessage = `Welcome ${inputData.username}`;
-        showFlashMessage(`${authType} successful!`, successMessage, "success");
+        showFlashMessage(
+          `${authType} successful!`,
+          successMessage,
+          "success"
+        );
         if (authType === "edit") {
-          return navigate(`/users/${result.username}`);
+          return navigate(
+            `/users/${result.username}`
+          );
         } else {
           return navigate("/");
         }
       } else {
-        let newErr = handleCaughtError(result, `${location.pathname}`);
+        let newErr = handleCaughtError(
+          result,
+          `${location.pathname}`
+        );
         console.debug(newErr);
-        showFlashMessage(newErr.title, newErr.message, "danger");
+        showFlashMessage(
+          newErr.title,
+          newErr.message,
+          "danger"
+        );
         throw new Error(newErr);
       }
     } catch (err) {
-      console.error("handleAuthSubmit Error:", err);
+      console.error(
+        "handleAuthSubmit Error:",
+        err
+      );
       if (!flashMessage) {
-        const fm = authType === "login" ? "Invalid credentials" : "Sorry, try again.";
-        showFlashMessage("Auth Error", fm, "danger");
+        const fm =
+          authType === "login"
+            ? "Invalid credentials"
+            : "Sorry, try again.";
+        showFlashMessage(
+          "Auth Error",
+          fm,
+          "danger"
+        );
       }
     }
   };
 
   const toggleAuthType = () => {
-    const newAuthType = authType === "signup" ? "login" : "signup";
+    const newAuthType =
+      authType === "signup"
+        ? "login"
+        : "signup";
     navigate(`/${newAuthType}`);
     setAuthType(newAuthType);
   };
@@ -80,12 +144,25 @@ const AuthPage = ({ ChildAuthForm }) => {
         <CardBody>
           {authType === "logout"
             ? handleLogout()
-            : createElement(ChildAuthForm, { onSubmit: handleAuthSubmit })}
+            : createElement(
+                ChildAuthForm,
+                {
+                  onSubmit:
+                    handleAuthSubmit,
+                }
+              )}
           {authType !== "edit" ? (
             <Row>
               <Col>
-                <Button color="secondary" onClick={toggleAuthType}>
-                  {authType === "signup" ? "Login" : "Sign up"}
+                <Button
+                  color="secondary"
+                  onClick={
+                    toggleAuthType
+                  }
+                >
+                  {authType === "signup"
+                    ? "Login"
+                    : "Sign up"}
                 </Button>
               </Col>
             </Row>
