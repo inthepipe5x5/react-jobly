@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getPhotos } from "../lib/pexels/client";
+// import { getPhotos } from "../lib/pexels/client";
 
 const BASE_URL = import.meta.env.REACT_APP_BASE_URL
 
