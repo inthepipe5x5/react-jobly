@@ -1,5 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, Suspense } from "react";
+import React, {
+  useState,
+  Suspense,
+} from "react";
 import { Container } from "reactstrap";
 import AppRoutes from "./AppRoutes";
 import MainNavBar from "./MainNavBar";
@@ -10,9 +13,13 @@ import { useFlashMessage } from "./FlashMessageContext";
 import FlashMessage from "./FlashMessage";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(false);
-  const { flashMessage, showFlashMessage, dismissFlashMessage } =
-    useFlashMessage();
+  const [isLoading, setIsLoading] =
+    useState(false);
+  const {
+    flashMessage,
+    showFlashMessage,
+    dismissFlashMessage,
+  } = useFlashMessage();
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -26,21 +33,27 @@ function App() {
             fluid
             className=" d-flex justify-content-center align-items-center mb-5"
           >
-            {flashMessage && (
+            {!!flashMessage ? (
               <FlashMessage
-                title={flashMessage.title}
-                message={flashMessage.message}
+                title={
+                  flashMessage.title
+                }
+                message={
+                  flashMessage.message
+                }
                 type={flashMessage.type}
-                onDismiss={dismissFlashMessage}
+                onDismiss={
+                  dismissFlashMessage
+                }
               />
-            )}
+            ) : null}
             <Suspense
               fallback={
                 <>
                   <LoadingSpinner></LoadingSpinner>
                 </>
               }
-              >
+            >
               <AppRoutes />
             </Suspense>
           </Container>

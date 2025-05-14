@@ -48,7 +48,15 @@ const FlashMessage = ({
   if (type === "error") type = "danger";
 
   return (
-    <Toast isOpen={visible}>
+    <Toast
+      isOpen={visible}
+      style={{
+        position: "absolute",
+        top: "60px",
+        right: "50%",
+        zIndex: 1000,
+      }}
+    >
       <ToastHeader
         toggle={onAcknowledge}
         icon={type}

@@ -1,4 +1,4 @@
-import React, {
+import {
   useState,
   useContext,
   createContext,
@@ -6,14 +6,17 @@ import React, {
   useCallback,
 } from "react";
 
-export const FlashMessageContext = createContext({
-  flashMessage: null,
-  showFlashMessage: () => {},
-  dismissFlashMessage: () => {},
-});
+export const FlashMessageContext =
+  createContext({
+    flashMessage: null,
+    showFlashMessage: () => {},
+    dismissFlashMessage: () => {},
+  });
 
 export const useFlashMessage = () => {
-  const context = useContext(FlashMessageContext);
+  const context = useContext(
+    FlashMessageContext
+  );
   if (!context) {
     throw new Error(
       "useFlashMessage must be used within a FlashMessageProvider"
@@ -22,18 +25,39 @@ export const useFlashMessage = () => {
   return context;
 };
 
-export const FlashMessageProvider = ({ children }) => {
-  const [flashMessage, setFlashMessage] = useState(null);
+export const FlashMessageProvider = ({
+  children,
+}) => {
+  const [
+    flashMessage,
+    setFlashMessage,
+  ] = useState(null);
 
-  const dismissFlashMessage = useCallback(() => {
-    setFlashMessage(null);
-  }, []);
+  const dismissFlashMessage =
+    useCallback(() => {
+      setFlashMessage(null);
+    }, []);
 
   const showFlashMessage = useCallback(
-    (title, message, type, interval = 50000) => {
-      type = type === "error" ? type : "danger";
-      setFlashMessage({ title, message, type });
-      setTimeout(() => dismissFlashMessage(), interval);
+    (
+      title,
+      message,
+      type,
+      interval = 50000
+    ) => {
+      type =
+        type === "error"
+          ? type
+          : "danger";
+      setFlashMessage({
+        title,
+        message,
+        type,
+      });
+      setTimeout(
+        () => dismissFlashMessage(),
+        interval
+      );
     },
     [dismissFlashMessage]
   );
@@ -44,11 +68,17 @@ export const FlashMessageProvider = ({ children }) => {
       showFlashMessage,
       dismissFlashMessage,
     }),
-    [flashMessage, showFlashMessage, dismissFlashMessage]
+    [
+      flashMessage,
+      showFlashMessage,
+      dismissFlashMessage,
+    ]
   );
 
   return (
-    <FlashMessageContext.Provider value={contextValue}>
+    <FlashMessageContext.Provider
+      value={contextValue}
+    >
       {children}
     </FlashMessageContext.Provider>
   );

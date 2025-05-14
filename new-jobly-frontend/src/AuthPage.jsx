@@ -1,4 +1,4 @@
-import React, {
+import {
   useState,
   useEffect,
   createElement,
@@ -7,7 +7,6 @@ import {
   Card,
   CardBody,
   CardTitle,
-  Col,
   Container,
   Row,
   Button,
@@ -23,6 +22,7 @@ import {
   getTitle,
   handleCaughtError,
 } from "./helper";
+import PropTypes from "prop-types";
 
 const AuthPage = ({
   ChildAuthForm,
@@ -39,7 +39,6 @@ const AuthPage = ({
   const {
     flashMessage,
     showFlashMessage,
-    dismissFlashMessage,
   } = useFlashMessage();
 
   //useEffect to sync authType to location changes
@@ -152,27 +151,38 @@ const AuthPage = ({
                 }
               )}
           {authType !== "edit" ? (
-            <Row>
-              <Col>
-                <Button
-                  color="secondary"
-                  onClick={
-                    toggleAuthType
-                  }
-                >
-                  {authType === "signup"
-                    ? "Login"
-                    : "Sign up"}
-                </Button>
-              </Col>
+            <Row
+              style={{
+                display: "flex",
+                justifyContent:
+                  "center",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
+            >
+              <Button
+                color="secondary"
+                onClick={toggleAuthType}
+                style={{
+                  width: "85%",
+                  flex: 1,
+                  display: "flex",
+                }}
+              >
+                {authType === "signup"
+                  ? "Login"
+                  : "Sign up"}
+              </Button>
             </Row>
-          ) : (
-            ""
-          )}
+          ) : null}
         </CardBody>
       </Card>
     </Container>
   );
+};
+AuthPage.propTypes = {
+  ChildAuthForm:
+    PropTypes.elementType.isRequired,
 };
 
 export default AuthPage;

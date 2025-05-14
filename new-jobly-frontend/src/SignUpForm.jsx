@@ -1,7 +1,15 @@
 import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router";
-import { Button, Form, FormGroup, Label, Input, Col } from "reactstrap";
-
+import {
+  Button,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Col,
+} from "reactstrap";
+import { config } from "./config";
+const { ENV } = config;
+//#region default input data
 const defaultProdInputData = {
   username: "",
   password: "",
@@ -17,10 +25,16 @@ const defaultDevInputData = {
   lastName: "test123first",
   email: "test123@test123.com",
 };
-
+// #endregion default input data
+//#region SignUpForm
 const SignUpForm = ({ onSubmit }) => {
-  const [inputData, setInputData] = useState(defaultProdInputData);
-
+  const [inputData, setInputData] =
+    useState(
+      ENV === "production"
+        ? defaultProdInputData
+        : defaultDevInputData
+    );
+  //#region methods
   const handleInput = (evt) => {
     const { name, value } = evt.target;
     setInputData((prevState) => ({
@@ -34,14 +48,45 @@ const SignUpForm = ({ onSubmit }) => {
     onSubmit(inputData, "signup");
   };
 
-  return (
-    <Form onSubmit={handleSubmit}>
-      <FormGroup>
-        <Label for="firstName" sm={3}>
+  const Names = () => (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        alignItems: "flex-start",
+        marginBottom: "1rem",
+        marginTop: "1rem",
+        padding: "1rem",
+        width: "80%", // Match sibling flex container width
+        margin: "auto", // Center align like sibling
+        borderRadius: "5px",
+      }}
+    >
+      <FormGroup
+        style={{
+          flex: 1,
+          margin: "auto",
+          display: "flex",
+          flexDirection: "column",
+          padding: "0.5rem",
+        }}
+      >
+        <Label
+          for="firstName"
+          style={{
+            textAlign: "left",
+            paddingLeft: "5px",
+          }}
+        >
           First Name
         </Label>
-        <Col sm={9}>
+        <Col>
           <Input
+            style={{
+              textAlign: "left",
+              paddingLeft: "5px",
+            }}
             bsSize="sm"
             id="firstName"
             name="firstName"
@@ -53,12 +98,30 @@ const SignUpForm = ({ onSubmit }) => {
           />
         </Col>
       </FormGroup>
-      <FormGroup>
-        <Label for="lastName" sm={3}>
+      <FormGroup
+        style={{
+          flex: 1,
+          margin: "auto",
+          display: "flex",
+          flexDirection: "column",
+          padding: "0.5rem",
+        }}
+      >
+        <Label
+          for="lastName"
+          style={{
+            textAlign: "left",
+            paddingLeft: "5px",
+          }}
+        >
           Last Name
         </Label>
-        <Col sm={9}>
+        <Col>
           <Input
+            style={{
+              textAlign: "left",
+              paddingLeft: "5px",
+            }}
             bsSize="sm"
             id="lastName"
             name="lastName"
@@ -70,61 +133,126 @@ const SignUpForm = ({ onSubmit }) => {
           />
         </Col>
       </FormGroup>
-      <FormGroup>
-        <Label for="username" sm={3}>
-          Username
-        </Label>
-        <Col sm={9}>
-          <Input
-            bsSize="sm"
-            id="username"
-            name="username"
-            placeholder="Username"
-            type="text"
-            value={inputData.username}
-            onChange={handleInput}
-            required
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup>
-        <Label for="password" sm={3}>
-          Password
-        </Label>
-        <Col sm={9}>
-          <Input
-            bsSize="sm"
-            id="password"
-            name="password"
-            placeholder="Password"
-            type="password"
-            value={inputData.password}
-            onChange={handleInput}
-            required
-            autoComplete="current-password"
-          />
-        </Col>
-      </FormGroup>
-      <FormGroup>
-        <Label for="email" sm={3}>
-          Email
-        </Label>
-        <Col sm={9}>
-          <Input
-            bsSize="sm"
-            id="email"
-            name="email"
-            placeholder="Email"
-            type="email"
-            value={inputData.email}
-            onChange={handleInput}
-            required
-          />
-        </Col>
-      </FormGroup>
+    </div>
+  );
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Names />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+          marginBottom: "1rem",
+          marginTop: "1rem",
+          padding: "0.5rem",
+          // border: "1px solid #ccc",
+          borderRadius: "5px",
+        }}
+      >
+        <FormGroup
+          style={{
+            flex: 1,
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            width: "80%",
+          }}
+        >
+          <Label
+            style={{
+              textAlign: "left",
+              paddingLeft: "5px",
+            }}
+            for="username"
+          >
+            Username
+          </Label>
+          <Col>
+            <Input
+              bsSize="sm"
+              id="username"
+              name="username"
+              placeholder="Username"
+              type="text"
+              value={inputData.username}
+              onChange={handleInput}
+              required
+            />
+          </Col>
+        </FormGroup>
+        <FormGroup
+          style={{
+            flex: 1,
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            width: "80%",
+          }}
+        >
+          <Label
+            for="password"
+            style={{
+              textAlign: "left",
+              paddingLeft: "5px",
+            }}
+          >
+            Password
+          </Label>
+          <Col>
+            <Input
+              bsSize="sm"
+              id="password"
+              name="password"
+              placeholder="Password"
+              type="password"
+              value={inputData.password}
+              onChange={handleInput}
+              required
+              autoComplete="current-password"
+            />
+          </Col>
+        </FormGroup>
+        <FormGroup
+          style={{
+            flex: 1,
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            width: "80%",
+          }}
+        >
+          <Label
+            for="email"
+            style={{
+              textAlign: "left",
+              paddingLeft: "5px",
+            }}
+          >
+            Email
+          </Label>
+          <Col>
+            <Input
+              bsSize="sm"
+              id="email"
+              name="email"
+              placeholder="Email"
+              type="email"
+              value={inputData.email}
+              onChange={handleInput}
+              required
+            />
+          </Col>
+        </FormGroup>
+      </div>
       <FormGroup>
         <Col>
-          <Button color="primary" type="submit">
+          <Button
+            color="primary"
+            type="submit"
+          >
             Sign Up
           </Button>
         </Col>
