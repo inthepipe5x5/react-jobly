@@ -27,14 +27,16 @@ class JoblyApi {
   // Individual API routes
 
   static async getCompany(handle) {
-    let [{ company }, photos] = await Promise.all([
-      this.request(`companies/${handle}`),
-      getPhotos({
-        query: handle
-      })
-    ]);
-    const result = { ...company, logoUrl: photos[0]?.src?.large };
-    return result;
+    // let [{ company }, photos] = await Promise.all([
+    //   this.request(`companies/${handle}`),
+    //   getPhotos({
+    //     query: handle
+    //   })
+    // ]);
+    // const result = { ...company, logoUrl: photos[0]?.src?.large };
+    // return result;
+    let res = await this.request(`companies/${handle}`);
+    return res.company;
   }
 
   static async getJob(title) {

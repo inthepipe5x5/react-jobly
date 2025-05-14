@@ -11,7 +11,8 @@ export default defineConfig(
           main: "index.html",
           // serviceWorker: "src/service-worker.js",
         }
-      }
+      },
+      sourcemap: true
     },
     // const env = loadEnv(mode, process.cwd(), '')
     //return
