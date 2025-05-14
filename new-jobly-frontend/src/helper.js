@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-boolean-cast */
 /*
 Helper functions for Jobly react frontend
 */
@@ -72,10 +73,9 @@ const retrieveStoredPrevUser = () => {
   }
 
   console.log(
-    `${
-      user.token
-        ? "found previous user token in storage: " + user.username
-        : "no token found in storage, initiated with anon user context"
+    `${user.token
+      ? "found previous user token in storage: " + user.username
+      : "no token found in storage, initiated with anon user context"
     }`
   );
   //return user if found, else return template currentUser object with null property values
@@ -229,7 +229,7 @@ function getArticle(followingWord) {
 const checkAuthStatus = (userObj) => {
   //takes userObject (ie. currentUser object) and returns true if .token or .username values are true
   //else returns true
-
+  if (!!!userObj) return false;
   if (!userObj) return false;
   const { token, username } = userObj;
   if (token && username) return true;
@@ -237,7 +237,7 @@ const checkAuthStatus = (userObj) => {
 };
 const removeFalsyObjValues = (obj) => {
   return Object.fromEntries(
-    Object.entries(obj).filter(([_, value]) => 
+    Object.entries(obj).filter(([_, value]) =>
       value !== false && value !== null && value !== undefined && value !== '' && value !== 0 && !Number.isNaN(value) && value.length !== 0
     )
   );

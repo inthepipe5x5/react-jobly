@@ -1,14 +1,14 @@
 import axios from "axios";
 // import { getPhotos } from "../lib/pexels/client";
-
+import { config } from "./config";
 const BASE_URL = import.meta.env.REACT_APP_BASE_URL
-
+const ENV = config.app.env ?? import.meta.env.MODE ?? "development";
 class JoblyApi {
   static token;
   static async request(endpoint, data = {}, method = "get") {
-    console.debug("API Call:", endpoint, data, method);
-
-    console.log(import.meta.env)
+    if (ENV === "development") {
+      console.debug("API Call:", endpoint, data, method);
+    }
     const url = `${BASE_URL || import.meta.env.VITE_REACT_APP_BASE_URL}/${endpoint}`;
     const headers = JoblyApi.token
       ? { Authorization: `Bearer ${JoblyApi.token}` }

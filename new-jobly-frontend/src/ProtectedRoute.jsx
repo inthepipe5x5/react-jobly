@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { useUserContext } from "./useUserContext";
 import { checkAuthStatus } from "./helper";
 import ErrorContentCard from "./ErrorContentCard";
-
+import { useFlashMessage } from "./FlashMessageContext";
 
 const ProtectedRoute = ({
   requireAdmin = false,
@@ -15,11 +15,14 @@ const ProtectedRoute = ({
 }) => {
   const { username } = useParams();
 
+  const userContext = useUserContext();
   const { currentUser, userDetails } =
-    useUserContext();
+    userContext ?? null;
   const permission = checkAuthStatus(
     currentUser
   );
+  const { showFlashMessage } =
+    useFlashMessage();
   if (
     requireAdmin &&
     userDetails.isAdmin === false &&
@@ -36,7 +39,12 @@ const ProtectedRoute = ({
     );
   }
   if (!permission) {
-    console.error("wrong permissions");
+    showFlashMessage(
+      "You don't have permission to view this page",
+      "You must be logged in to view this page",
+      "error",
+      5000
+    );
     return (
       <Navigate to={redirectPath} />
     );
