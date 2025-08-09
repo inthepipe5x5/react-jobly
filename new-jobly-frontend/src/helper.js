@@ -47,7 +47,7 @@ const formatSalary = (salary) => {
 
 //   return true;
 // };
-const tokenKey = "JoblyUserToken";
+const tokenKey = import.meta.env.VITE_APP_USER_TOKEN ?? "JoblyUserToken";
 
 const updateLocalStorageToken = ({ token, username }) => {
   if (!token || !username) {
